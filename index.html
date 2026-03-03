@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>Menú — Tacos Paisa Chema</title>
+  <title>Menú — Taquería Guadalupe Victoria</title>
 
   <!-- Leaflet (mapa gratis) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -40,7 +40,6 @@
       text-rendering: optimizeLegibility;
     }
 
-    /* Top bar */
     header{
       position: sticky; top: 0; z-index: 40;
       background: linear-gradient(180deg, rgba(59,42,31,.92), rgba(59,42,31,.86));
@@ -77,7 +76,6 @@
     }
     .pill b{font-size:13px}
 
-    /* Layout */
     .wrap{
       max-width:1200px;
       margin:0 auto;
@@ -112,7 +110,6 @@
     }
     .content{padding:14px}
 
-    /* Hero */
     .hero{
       border-radius: 22px;
       border:1px solid rgba(59,42,31,.15);
@@ -123,7 +120,6 @@
     .hero img{width:100%; height: 230px; object-fit: cover; display:block;}
     @media (max-width: 520px){ .hero img{height:170px} }
 
-    /* Search + tabs */
     .searchRow{display:flex; gap:10px; align-items:center; margin-top:12px;}
     .searchRow input{
       flex:1;
@@ -156,7 +152,6 @@
       box-shadow: 0 0 0 3px rgba(201,138,30,.18);
     }
 
-    /* Section title */
     .sectionTitle{
       margin: 12px 0 10px;
       font-size: 44px;
@@ -173,11 +168,9 @@
     }
     @media (max-width: 620px){ .sectionTitle{font-size:34px} }
 
-    /* Product grid */
     .items{display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px;}
     @media (max-width: 620px){ .items{grid-template-columns:1fr} }
 
-    /* Product card */
     .prod{
       background: rgba(255,255,255,.35);
       border:1px solid rgba(59,42,31,.18);
@@ -216,7 +209,6 @@
     }
     .prodImg img{width:100%; height:100%; object-fit: cover; display:block;}
 
-    /* Botones */
     .btnAdd, .stickyBtn{
       border:none; cursor:pointer;
       padding: 10px 26px;
@@ -244,7 +236,6 @@
       touch-action: manipulation;
     }
 
-    /* Cart */
     .cartLine{
       display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
       border-bottom:1px dashed rgba(59,42,31,.18);
@@ -265,7 +256,6 @@
       touch-action: manipulation;
     }
 
-    /* Right panel form */
     label{display:block; font-size:12px; font-weight:1000; margin:10px 0 6px; color: rgba(59,42,31,.90)}
     input, textarea, select{
       width:100%;
@@ -288,7 +278,6 @@
     }
     .totalRow strong{font-size:18px}
 
-    /* Sticky bottom */
     .stickyBar{
       position: sticky;
       bottom: 12px;
@@ -320,7 +309,6 @@
       touch-action: manipulation;
     }
 
-    /* Modal (modificadores) */
     .backdrop, .stepsBackdrop{
       position:fixed; inset:0;
       background:rgba(0,0,0,.58);
@@ -432,7 +420,6 @@
       margin-top:12px;
     }
 
-    /* ✅ STEPS: compacto + scroll interno + footer visible en smartphone */
     .steps{
       width:min(760px, 100%);
       max-height: 86vh;
@@ -464,7 +451,6 @@
     .stepRow{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     @media (max-width:520px){ .stepRow{grid-template-columns:1fr} }
 
-    /* ✅ Mapa compacto */
     .mapWrap{
       border:1px solid rgba(59,42,31,.18);
       border-radius:16px;
@@ -488,7 +474,6 @@
     .kpi b{display:block; font-size:12px}
     .kpi span{display:block; margin-top:4px; font-weight:1000}
 
-    /* ✅ Toggle flechas dirección */
     .detailsToggle{
       width:100%;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -512,8 +497,8 @@
 <header>
   <div class="row">
     <div class="brand">
-      <h1>🌮 Menú — Tacos Paisa Chema</h1>
-      <div class="sub">Pedidos rápidos • estilo Plick • WhatsApp</div>
+      <h1>🌮 Menú — Taquería Guadalupe Victoria</h1>
+      <div class="sub">Pedidos rápidos • WhatsApp</div>
     </div>
     <div class="pill" id="cartPill">🛒 <b>0</b> • <span id="pillTotal">$0.00</span></div>
   </div>
@@ -521,34 +506,32 @@
 
 <div class="wrap">
   <div class="hero">
-    <img src="menu.png" alt="Menú Tacos Paisa Chema">
+    <img src="menu.png" alt="Menú Taquería Guadalupe Victoria">
   </div>
 
   <div class="grid">
-    <!-- MENÚ -->
     <section class="card">
       <h2>Menú</h2>
       <div class="content">
         <div class="searchRow">
-          <input id="q" placeholder="Buscar un producto (ej. taco, gringa, coca)..."/>
+          <input id="q" placeholder="Buscar un producto (ej. taco, quesadilla, charola)..."/>
         </div>
 
         <div class="tabs" id="tabs"></div>
 
         <div id="sectionHdr">
-          <div class="sectionTitle" id="sectionTitle">PROMOS</div>
+          <div class="sectionTitle" id="sectionTitle">TACOS</div>
           <div class="divider"></div>
         </div>
 
         <div class="items" id="items"></div>
 
         <div class="note">
-          Tip: arma tu pedido rápido y pon notas si lo quieres <b>bien doradito</b>.
+          Tip: si pides <b>Combinado</b>, pon en nota las carnes (ej. “tripa + bistec”).
         </div>
       </div>
     </section>
 
-    <!-- CARRITO -->
     <aside class="card">
       <h2>
         Tu pedido
@@ -556,7 +539,6 @@
       </h2>
 
       <div class="content">
-        <!-- (Se mantiene oculto: lo controlamos por el paso 0) -->
         <select id="canal" style="display:none">
           <option value="aqui">Comer aquí</option>
           <option value="recoger">Pasar a recoger</option>
@@ -634,20 +616,14 @@
 /** =========================
  *  CONFIG
  *  ========================= */
-const TAQUERIA_NOMBRE = "Tacos Paisa Chema";
-const WHATSAPP_TAQ = "524621872594"; // 52 + número sin +
-
-/** Coordenadas taquería (ajusta si quieres más exacto) */
-const TQ_LAT = 20.6767;
-const TQ_LNG = -101.3563;
-
-/** Base de imágenes */
+const TAQUERIA_NOMBRE = "Taquería Guadalupe Victoria";
+const WHATSAPP_TAQ = "524621872594"; // <-- cambia aquí si es otro
+const TQ_LAT = 20.6767;             // <-- cambia aquí si es otro
+const TQ_LNG = -101.3563;           // <-- cambia aquí si es otro
 const IMG_BASE = "";
 
 /** =========================
- *  TARIFAS DOMICILIO (como en la otra página)
- *  ✅ sin “con lluvia” en UI
- *  ✅ sin “distancia estimada” en UI
+ *  TARIFAS DOMICILIO
  *  ========================= */
 const TARIFAS = [
   {from:0, to:3, normal:50, lluvia:65},
@@ -668,58 +644,45 @@ function getTarifa(km, lluvia=false){
 let lluvia = false; // fijo
 
 /** =========================
- *  CATALOGO
+ *  CATALOGO (Guadalupe Victoria)
  *  ========================= */
 const catalogo = [
-  // PROMOS
-  {id:"promo_taco_refresco", cat:"PROMOS", name:"Miércoles de TACOMANÍA", price:18, desc:"Cada miércoles hay promo en tacos. Solo por hoy, pasa a echar unos.", mods:true, img:"promo_taco_refresco.png"},
-  {id:"promo_2gringas", cat:"PROMOS", name:"Promo 2 Gringas", price:120, desc:"Para compartir bien a gusto.", mods:true, img:"promo_2gringas.png"},
-
   // TACOS
-  {id:"taco_1", cat:"TACOS", name:"Taco", price:18, desc:"Elige la carne.", mods:true, img:"taco_1.png"},
-  {id:"taco_doble", cat:"TACOS", name:"Taco doble", price:28, desc:"Doble tortilla (ya va incluido) — elige la carne.", mods:true, img:"taco_doble.png"},
-  {id:"orden_5_tacos", cat:"TACOS", name:"Orden 5 tacos", price:85, desc:"Ideal para no batallar.", mods:true, img:"orden_5_tacos.png"},
+  {id:"taco_tripa",    cat:"TACOS", name:"Taco de Tripa",    price:38, desc:"Tripa doradita.", mods:true,  img:"taco_tripa.png"},
+  {id:"taco_pastor",   cat:"TACOS", name:"Taco de Pastor",   price:28, desc:"Pastor clásico.", mods:false, img:"taco_pastor.png"},
+  {id:"taco_bistec",   cat:"TACOS", name:"Taco de Bistec",   price:28, desc:"Bistec bien servido.", mods:false, img:"taco_bistec.png"},
+  {id:"taco_chorizo",  cat:"TACOS", name:"Taco de Chorizo",  price:28, desc:"Chorizo doradito.", mods:false, img:"taco_chorizo.png"},
+  {id:"taco_alambre",  cat:"TACOS", name:"Taco de Alambre",  price:28, desc:"Alambre en taco.", mods:false, img:"taco_alambre.png"},
+  {id:"taco_costilla", cat:"TACOS", name:"Taco de Costilla", price:28, desc:"Costilla jugosa.", mods:false, img:"taco_costilla.png"},
+  {id:"taco_barbacoa", cat:"TACOS", name:"Taco de Barbacoa", price:28, desc:"Barbacoa suave.", mods:false, img:"taco_barbacoa.png"},
+  {id:"taco_higado",   cat:"TACOS", name:"Taco de Hígado",   price:28, desc:"Hígado bien sazonado.", mods:false, img:"taco_higado.png"},
+  {id:"taco_combinado",cat:"TACOS", name:"Taco Combinado",   price:38, desc:"Pon en nota tus carnes (ej. tripa + bistec).", mods:true, img:"taco_combinado.png"},
 
-  // GRINGAS
-  {id:"quesadilla", cat:"GRINGAS", name:"Quesadilla", price:35, desc:"Queso + carne a elegir.", mods:true, img:"quesadilla.png"},
-  {id:"gringa", cat:"GRINGAS", name:"Gringa", price:70, desc:"Harina + queso + carne a elegir.", mods:true, img:"gringa.png"},
+  // QUESADILLAS
+  {id:"quesa_tripa",   cat:"QUESADILLAS", name:"Quesadilla de Tripa",   price:100, desc:"Queso + tripa.", mods:false, img:"quesa_tripa.png"},
+  {id:"quesa_pastor",  cat:"QUESADILLAS", name:"Quesadilla de Pastor",  price:90,  desc:"Queso + pastor.", mods:false, img:"quesa_pastor.png"},
+  {id:"quesa_bistec",  cat:"QUESADILLAS", name:"Quesadilla de Bistec",  price:90,  desc:"Queso + bistec.", mods:false, img:"quesa_bistec.png"},
+  {id:"quesa_chorizo", cat:"QUESADILLAS", name:"Quesadilla de Chorizo", price:90,  desc:"Queso + chorizo.", mods:false, img:"quesa_chorizo.png"},
+  {id:"quesa_higado",  cat:"QUESADILLAS", name:"Quesadilla de Hígado",  price:90,  desc:"Queso + hígado.", mods:false, img:"quesa_higado.png"},
 
-  // VOLCANES
-  {id:"volcan", cat:"VOLCANES", name:"Volcán", price:45, desc:"Tostada + queso + carne a elegir.", mods:true, img:"volcan.png"},
-  {id:"volcan_doble", cat:"VOLCANES", name:"Volcán doble", price:65, desc:"Tostada + doble queso + carne.", mods:true, img:"volcan_doble.png"},
-
-  // TORTAS
-  {id:"torta", cat:"TORTAS", name:"Torta", price:75, desc:"Bolillo relleno con la carne de tu elección.", mods:true, img:"torta.png"},
-  {id:"torta_especial", cat:"TORTAS", name:"Torta especial", price:89, desc:"Con queso y extras.", mods:true, img:"torta_especial.png"},
-
-  // BEBIDAS
-  {id:"coca_600ml", cat:"BEBIDAS", name:"Coca 600ml", price:25, desc:"Bien fría.", mods:false, img:"coca_600ml.png"},
-  {id:"agua_fresca", cat:"BEBIDAS", name:"Agua fresca 1/2L", price:30, desc:"Del día.", mods:false, img:"agua_fresca.png"},
-
-  // EXTRAS
-  {id:"queso_extra", cat:"EXTRAS", name:"Queso extra", price:10, desc:"Agrégalo a tu pedido.", mods:false, img:"queso_extra.png"},
-  {id:"aguacate_extra", cat:"EXTRAS", name:"Aguacate extra", price:10, desc:"Para que quede fino.", mods:false, img:"aguacate_extra.png"},
-  {id:"cebollitas", cat:"EXTRAS", name:"Cebollitas", price:10, desc:"Doraditas.", mods:false, img:"cebollitas.png"},
+  // CHAROLAS
+  {id:"charola_combinada", cat:"CHAROLAS", name:"Charola Combinada", price:100, desc:"Pon en nota qué combinación quieres.", mods:true, img:"charola_combinada.png"},
+  {id:"charola_alambre",   cat:"CHAROLAS", name:"Charola de Alambre", price:90,  desc:"Alambre para compartir.", mods:false, img:"charola_alambre.png"},
 ];
-const CATS = ["PROMOS","TACOS","GRINGAS","VOLCANES","TORTAS","BEBIDAS","EXTRAS"];
+const CATS = ["TACOS","QUESADILLAS","CHAROLAS"];
 
 /** =========================
  *  MODIFICADORES
- *  ✅ Quitamos: tipo de tortilla / bebida / salsa
+ *  (los usamos solo como “con/sin” + nota para combinados)
  *  ========================= */
 const MODS = {
-  carne: { title:"Carne", type:"single", required:true,
-    options:["Pastor","Suadero","Bistec","Chorizo","Tripa","Campechano","Cabeza","Lengua"]
-  },
   conSin: { title:"Con todo / Sin…", type:"multi", required:false,
     options:["Con todo","Sin cebolla","Sin cilantro","Sin piña","Sin salsa"]
   }
 };
 function modsPara(item){
   if(!item.mods) return [];
-  if(item.cat==="BEBIDAS" || item.cat==="EXTRAS") return [];
-  // Para todos los sólidos: carne + con/sin
-  return ["carne","conSin"];
+  return ["conSin"];
 }
 
 /** =========================
@@ -807,7 +770,7 @@ q.addEventListener("input", renderItems);
 /** =========================
  *  CARRITO + SERVICIO
  *  ========================= */
-let cart = []; // {key, id, name, basePrice, qty, mods, note}
+let cart = [];
 const cartBox = document.getElementById("cart");
 const totalEl = document.getElementById("total");
 const cartPill = document.getElementById("cartPill");
@@ -881,7 +844,7 @@ function renderCart(){
 }
 
 /** =========================
- *  MODAL MODS (compacto)
+ *  MODAL MODS
  *  ========================= */
 const backdrop = document.getElementById("backdrop");
 const mTitle = document.getElementById("mTitle");
@@ -935,7 +898,7 @@ function openModal(item){
   n.innerHTML = `
     <div class="optTitle">
       <b>Nota (opcional)</b>
-      <span>ej. “bien doradito”</span>
+      <span>ej. “tripa + bistec” / “bien dorado”</span>
     </div>
     <div style="margin-top:10px">
       <input id="noteProd" placeholder="Escribe una nota para este producto..."/>
@@ -997,10 +960,7 @@ mAdd.addEventListener("click", ()=>{
 }, {passive:true});
 
 /** =========================
- *  CHECKOUT POR PASOS + MAPA (Leaflet)
- *  ✅ paso 0 servicio
- *  ✅ paso 2 mapa + toggle flechas detalles
- *  ✅ fix “mapa en blanco” recreando mapa al reabrir
+ *  CHECKOUT POR PASOS + MAPA
  *  ========================= */
 const stepsBackdrop = document.getElementById("stepsBackdrop");
 const stepsClose = document.getElementById("stepsClose");
@@ -1048,7 +1008,6 @@ function closeSteps(){
 }
 stepsClose.addEventListener("click", closeSteps, {passive:true});
 stepsBackdrop.addEventListener("pointerdown", (e)=>{ if(e.target===stepsBackdrop){ e.preventDefault(); closeSteps(); } }, {passive:false});
-
 btnCambioServicio.addEventListener("click", ()=> openSteps(0), {passive:true});
 
 function haversineKm(lat1, lon1, lat2, lon2) {
@@ -1089,15 +1048,12 @@ function ensureMapInit(){
   const el = document.getElementById("miniMap");
   if(!el) return;
 
-  // ✅ Si ya existe, solo recalcula tamaño
   if(mapReady){
     setTimeout(()=> map && map.invalidateSize(true), 80);
     return;
   }
 
-  // ✅ IMPORTANTE: cuando rehacemos stepsBody, el div del mapa es nuevo -> recrear mapa
   el.innerHTML = "";
-
   const centerLat = (form.lat ?? TQ_LAT);
   const centerLng = (form.lng ?? TQ_LNG);
 
@@ -1175,7 +1131,6 @@ function renderStep(){
   const subTotal = cartSubTotal();
   const total = cartTotal();
 
-  // Paso 0: servicio (como la otra página)
   if(step===0){
     stepTitle.textContent = "Antes de empezar…";
     stepSub.textContent = "¿Tu pedido es para domicilio, recoger o comer aquí?";
@@ -1218,7 +1173,6 @@ function renderStep(){
     return;
   }
 
-  // Paso 1: datos
   if(step===1){
     stepTitle.textContent = "Paso 1 de 3";
     stepSub.textContent = "Datos personales";
@@ -1250,7 +1204,6 @@ function renderStep(){
     return;
   }
 
-  // Paso 2: mapa (solo domicilio)
   if(step===2){
     btnBack.style.display = "inline-block";
     btnNext.textContent = "CONTINUAR";
@@ -1317,7 +1270,6 @@ function renderStep(){
     `;
 
     setTimeout(async ()=>{
-      // ✅ FIX mapa blanco: destruir + recrear cada vez que se renderiza este paso
       destroyMap();
       ensureMapInit();
 
@@ -1386,7 +1338,6 @@ function renderStep(){
     return;
   }
 
-  // Paso 3: pago + enviar
   btnBack.style.display = "inline-block";
   btnNext.textContent = "ENVIAR PEDIDO";
   stepTitle.textContent = "Paso 3 de 3";
@@ -1425,7 +1376,7 @@ function renderStep(){
     </div>
 
     <label>Notas / Indicaciones</label>
-    <textarea id="s_notas" placeholder="Ej. bien dorado / para llevar">${escapeHtml(form.notas)}</textarea>
+    <textarea id="s_notas" placeholder="Ej. bien dorado / combinados: tripa + bistec">${escapeHtml(form.notas)}</textarea>
   `;
 
   setTimeout(()=>{
