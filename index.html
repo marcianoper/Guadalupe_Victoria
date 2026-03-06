@@ -10,17 +10,17 @@
 
   <style>
     :root{
-      --bg:#f3e7d4;             /* crema */
-      --paper:#fbf2e2;          /* crema claro */
+      --bg:#f3e7d4;
+      --paper:#fbf2e2;
       --card:#fff7ea;
-      --ink:#3b2a1f;            /* café texto */
-      --muted:#6e5646;          /* café suave */
+      --ink:#3b2a1f;
+      --muted:#6e5646;
       --line:rgba(59,42,31,.15);
 
-      --brand:#3b2a1f;          /* café oscuro */
-      --gold1:#c98a1e;          /* dorado */
-      --gold2:#b77712;          /* dorado oscuro */
-      --green:#1f6b2a;          /* verde precio */
+      --brand:#3b2a1f;
+      --gold1:#c98a1e;
+      --gold2:#b77712;
+      --green:#1f6b2a;
 
       --shadow: 0 18px 50px rgba(32,24,16,.18);
       --r:18px;
@@ -204,10 +204,6 @@
     .price{margin-top:auto; font-weight:1000; color: var(--green); font-size: 16px;}
     .price b{display:block; font-size: 34px; letter-spacing:.3px;}
 
-    /* 👇 cuando no hay precio */
-    .price.na{ color: rgba(110,86,70,.95); }
-    .price.na b{ font-size: 20px; letter-spacing: 0; }
-
     .prodRight{
       position:relative;
       padding:14px;
@@ -240,15 +236,6 @@
     .btnAdd:active,.stickyBtn:active{transform: translateY(1px)}
     .btnAdd:focus,.stickyBtn:focus{outline: 3px solid rgba(201,138,30,.28)}
 
-    /* 👇 deshabilitado cuando no hay precio */
-    .btnAdd:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      filter: grayscale(.2);
-      transform:none !important;
-      box-shadow:none;
-    }
-
     .btnGhost{
       border:1px solid rgba(255,255,255,.18);
       background: rgba(255,255,255,.10);
@@ -256,9 +243,8 @@
       padding: 10px 12px;
       border-radius: 12px;
       font-weight: 1000;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      cursor:default;
+      pointer-events:none;
     }
 
     .cartLine{
@@ -560,14 +546,12 @@
     <aside class="card">
       <h2>
         Tu pedido
-        <button class="btnGhost" id="btnCambioServicio" title="Cambiar servicio">Servicio: <span id="servTxt">—</span> ✎</button>
+        <button class="btnGhost" id="btnCambioServicio" title="Servicio fijo">Servicio: <span id="servTxt">Domicilio</span></button>
       </h2>
 
       <div class="content">
         <select id="canal" style="display:none">
-          <option value="aqui">Comer aquí</option>
-          <option value="recoger">Pasar a recoger</option>
-          <option value="domicilio">Envío a domicilio</option>
+          <option value="domicilio" selected>Envío a domicilio</option>
         </select>
 
         <div id="cart"></div>
@@ -578,7 +562,7 @@
         </div>
 
         <div class="note">
-          Al dar <b>CONTINUAR</b> te sale el checkout por pasos y al final se abre WhatsApp listo para enviar.
+          Al dar <b>CONTINUAR</b> te sale el checkout y al final se abre WhatsApp listo para enviar.
         </div>
 
         <div class="stickyBar">
@@ -616,7 +600,7 @@
   </div>
 </div>
 
-<!-- CHECKOUT POR PASOS -->
+<!-- CHECKOUT -->
 <div class="stepsBackdrop" id="stepsBackdrop" aria-hidden="true">
   <div class="steps" role="dialog" aria-modal="true">
     <div class="stepsHead">
@@ -642,9 +626,9 @@
  *  CONFIG
  *  ========================= */
 const TAQUERIA_NOMBRE = "Taquería Guadalupe Victoria";
-const WHATSAPP_TAQ = "524621872594"; // <-- cambia aquí si es otro
-const TQ_LAT = 20.6767;             // <-- cambia aquí si es otro
-const TQ_LNG = -101.3563;           // <-- cambia aquí si es otro
+const WHATSAPP_TAQ = "524621872594";
+const TQ_LAT = 20.6767;
+const TQ_LNG = -101.3563;
 const IMG_BASE = "";
 
 /** =========================
@@ -666,13 +650,12 @@ function getTarifa(km, lluvia=false){
   if(!row) return {ok:false, precio:0, limiteKm: 10};
   return {ok:true, precio: lluvia ? row.lluvia : row.normal};
 }
-let lluvia = false; // fijo
+let lluvia = false;
 
 /** =========================
- *  CATALOGO (Guadalupe Victoria)
+ *  CATALOGO
  *  ========================= */
 const catalogo = [
-  // TACOS
   {id:"taco_tripa",    cat:"TACOS", name:"Taco de Tripa",    price:38, desc:"Tripa doradita.", mods:true,  img:"tacogdp.png"},
   {id:"taco_pastor",   cat:"TACOS", name:"Taco de Pastor",   price:28, desc:"Pastor clásico.", mods:false, img:"tacogdp.png"},
   {id:"taco_bistec",   cat:"TACOS", name:"Taco de Bistec",   price:28, desc:"Bistec bien servido.", mods:false, img:"tacogdp.png"},
@@ -683,49 +666,46 @@ const catalogo = [
   {id:"taco_higado",   cat:"TACOS", name:"Taco de Hígado",   price:28, desc:"Hígado bien sazonado.", mods:false, img:"tacogdp.png"},
   {id:"taco_combinado",cat:"TACOS", name:"Taco Combinado",   price:38, desc:"Pon en nota tus carnes (ej. tripa + bistec).", mods:true, img:"tacogdp.png"},
 
-  // QUESADILLAS
   {id:"quesa_tripa",   cat:"QUESADILLAS", name:"Quesadilla de Tripa",   price:100, desc:"Queso + tripa.", mods:false, img:"quesadillagdp.png"},
   {id:"quesa_pastor",  cat:"QUESADILLAS", name:"Quesadilla de Pastor",  price:90,  desc:"Queso + pastor.", mods:false, img:"quesadillagdp.png"},
   {id:"quesa_bistec",  cat:"QUESADILLAS", name:"Quesadilla de Bistec",  price:90,  desc:"Queso + bistec.", mods:false, img:"quesadillagdp.png"},
   {id:"quesa_chorizo", cat:"QUESADILLAS", name:"Quesadilla de Chorizo", price:90,  desc:"Queso + chorizo.", mods:false, img:"quesadillagdp.png"},
   {id:"quesa_higado",  cat:"QUESADILLAS", name:"Quesadilla de Hígado",  price:90,  desc:"Queso + hígado.", mods:false, img:"quesadillagdp.png"},
 
-  // CHAROLAS
   {id:"charola_combinada", cat:"CHAROLAS", name:"Charola Combinada", price:100, desc:"Pon en nota qué combinación quieres.", mods:true, img:"charolagdp.png"},
   {id:"charola_alambre",   cat:"CHAROLAS", name:"Charola de Alambre", price:90,  desc:"Alambre para compartir.", mods:false, img:"charolagdp.png"},
 
-  // ✅ VOLCANES
   {id:"volcan_tripa",   cat:"VOLCANES", name:"Volcán de Tripa",   price:90, desc:"Volcán bien servido.", mods:true,  img:"volcangdp.png"},
   {id:"volcan_pastor",  cat:"VOLCANES", name:"Volcán de Pastor",  price:85, desc:"Volcán de pastor.",    mods:true,  img:"volcangdp.png"},
   {id:"volcan_bistec",  cat:"VOLCANES", name:"Volcán de Bistec",  price:85, desc:"Volcán de bistec.",    mods:true,  img:"volcangdp.png"},
   {id:"volcan_chorizo", cat:"VOLCANES", name:"Volcán de Chorizo", price:85, desc:"Volcán de chorizo.",   mods:true,  img:"volcangdp.png"},
   {id:"volcan_higado",  cat:"VOLCANES", name:"Volcán de Hígado",  price:85, desc:"Volcán de hígado.",    mods:true,  img:"volcangdp.png"},
 
-  // ✅ BEBIDAS
-  {id:"beb_coca_light",  cat:"BEBIDAS", name:"Coca Light",        price:35,  desc:"", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_coca",        cat:"BEBIDAS", name:"Coca",              price:null,desc:"Precio pendiente", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_fresca",      cat:"BEBIDAS", name:"Fresca",            price:null,desc:"Precio pendiente", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_sprite",      cat:"BEBIDAS", name:"Sprite",            price:null,desc:"Precio pendiente", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_agua_fresca", cat:"BEBIDAS", name:"Agua fresca",       price:30,  desc:"Vaso", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_agua_lt",     cat:"BEBIDAS", name:"Agua fresca 1 Lt",  price:60,  desc:"1 litro", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_coca_light",  cat:"BEBIDAS", name:"Coca Light",       price:35, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_coca",        cat:"BEBIDAS", name:"Coca",             price:35, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_fresca",      cat:"BEBIDAS", name:"Fresca",           price:35, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_sprite",      cat:"BEBIDAS", name:"Sprite",           price:35, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_agua_fresca", cat:"BEBIDAS", name:"Agua fresca",      price:30, desc:"Vaso", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_agua_lt",     cat:"BEBIDAS", name:"Agua fresca 1 Lt", price:60, desc:"1 litro", mods:false, img:"bebidasgpd.png"},
 
-  // ✅ POSTRES
-  {id:"pos_pay_queso",   cat:"POSTRES", name:"Pay de queso",                 price:60,  desc:"", mods:false, img:"postresgdp.png"},
-  {id:"pos_gel_rompope", cat:"POSTRES", name:"Gelatina de vainilla con rompope", price:null, desc:"Precio pendiente", mods:false, img:"postresgdp.png"},
-  {id:"pos_arroz",       cat:"POSTRES", name:"Arroz con leche",              price:null, desc:"Precio pendiente", mods:false, img:"postresgdp.png"},
-  {id:"pos_flan",        cat:"POSTRES", name:"Flan",                         price:null, desc:"Precio pendiente", mods:false, img:"postresgdp.png"},
-  {id:"pos_gel_fresa",   cat:"POSTRES", name:"Gelatina de fresa con yoghurt",price:null, desc:"Precio pendiente", mods:false, img:"postresgdp.png"},
-  {id:"pos_napolitano",  cat:"POSTRES", name:"Napolitano",                   price:null, desc:"Precio pendiente", mods:false, img:"postresgdp.png"},
+  {id:"pos_pay_queso",   cat:"POSTRES", name:"Pay de queso",                    price:60, desc:"", mods:false, img:"postresgdp.png"},
+  {id:"pos_gel_rompope", cat:"POSTRES", name:"Gelatina de vainilla con rompope",price:60, desc:"", mods:false, img:"postresgdp.png"},
+  {id:"pos_arroz",       cat:"POSTRES", name:"Arroz con leche",                 price:60, desc:"", mods:false, img:"postresgdp.png"},
+  {id:"pos_flan",        cat:"POSTRES", name:"Flan",                            price:60, desc:"", mods:false, img:"postresgdp.png"},
+  {id:"pos_gel_fresa",   cat:"POSTRES", name:"Gelatina de fresa con yoghurt",   price:60, desc:"", mods:false, img:"postresgdp.png"},
+  {id:"pos_napolitano",  cat:"POSTRES", name:"Napolitano",                      price:60, desc:"", mods:false, img:"postresgdp.png"},
 ];
 
-/* ✅ CATEGORÍAS */
 const CATS = ["TACOS","QUESADILLAS","CHAROLAS","VOLCANES","BEBIDAS","POSTRES"];
 
 /** =========================
  *  MODIFICADORES
  *  ========================= */
 const MODS = {
-  conSin: { title:"Con todo / Sin…", type:"multi", required:false,
+  conSin: {
+    title:"Con todo / Sin…",
+    type:"multi",
+    required:false,
     options:["Con todo","Sin cebolla","Sin cilantro","Sin piña","Sin salsa"]
   }
 };
@@ -791,34 +771,25 @@ function renderItems(){
   const list = catalogo.filter(x=>{
     const inCat = x.cat===activeCat;
     const inSearch = !term || (x.name.toLowerCase().includes(term) || (x.desc||"").toLowerCase().includes(term));
-    return inCat && inSearch; // ✅ ya no filtramos por precio>0 (para mostrar “pendientes”)
+    return inCat && inSearch;
   });
 
   itemsBox.innerHTML = "";
   list.forEach(it=>{
-    const ok = hasPrecio(it);
-
-    const priceHtml = ok
-      ? `<div class="price">MXN <b>${money(it.price)}</b></div>`
-      : `<div class="price na">Precio <b>—</b></div>`;
-
     const card = document.createElement("div");
     card.className = "prod";
     card.innerHTML = `
       <div class="prodLeft">
         <h3 class="prodName">${escapeHtml(it.name)}</h3>
         <p class="prodDesc">${escapeHtml(it.desc || "")}</p>
-        ${priceHtml}
+        <div class="price">MXN <b>${money(it.price)}</b></div>
       </div>
       <div class="prodRight">
         <div class="prodImg"><img src="${IMG_BASE + it.img}" alt="${escapeHtml(it.name)}"></div>
-        <button class="btnAdd" type="button" ${ok ? "" : "disabled"}>${ok ? "Agregar" : "Sin precio"}</button>
+        <button class="btnAdd" type="button">Agregar</button>
       </div>
     `;
-    card.querySelector("button").addEventListener("click", ()=>{
-      if(!ok){ alert("Este producto aún no tiene precio cargado."); return; }
-      onAddClicked(it);
-    }, {passive:true});
+    card.querySelector("button").addEventListener("click", ()=> onAddClicked(it), {passive:true});
     itemsBox.appendChild(card);
   });
 
@@ -829,7 +800,7 @@ function renderItems(){
 q.addEventListener("input", renderItems);
 
 /** =========================
- *  CARRITO + SERVICIO
+ *  CARRITO
  *  ========================= */
 let cart = [];
 const cartBox = document.getElementById("cart");
@@ -839,7 +810,6 @@ const pillTotal = document.getElementById("pillTotal");
 const barTotal = document.getElementById("barTotal");
 const canalEl = document.getElementById("canal");
 const servTxt = document.getElementById("servTxt");
-const btnCambioServicio = document.getElementById("btnCambioServicio");
 
 function cartCount(){ return cart.reduce((a,x)=>a + x.qty, 0); }
 function cartSubTotal(){ return cart.reduce((a,x)=>a + x.qty*(x.basePrice), 0); }
@@ -847,25 +817,15 @@ function cartSubTotal(){ return cart.reduce((a,x)=>a + x.qty*(x.basePrice), 0); 
 let envioPrecio = 0;
 let envioKm = 0;
 
-function getCanal(){ return canalEl.value; }
-function cartTotal(){ return cartSubTotal() + (getCanal()==="domicilio" ? envioPrecio : 0); }
-
-function setCanal(v){
-  canalEl.value = v;
-  servTxt.textContent = (v==="domicilio") ? "Domicilio" : (v==="recoger" ? "Recoger" : "Comer aquí");
-  if(v!=="domicilio"){
-    envioPrecio = 0; envioKm = 0;
-    form.lat = null; form.lng = null;
-  }
-  renderCart();
-}
+function getCanal(){ return "domicilio"; }
+function cartTotal(){ return cartSubTotal() + envioPrecio; }
 
 function renderCart(){
   const count = cartCount();
-  cartPill.innerHTML = `🛒 <b>${count}</b> • <span>${money(cartTotal())}</span>`;
-  pillTotal.textContent = money(cartTotal());
+  cartPill.innerHTML = `🛒 <b>${count}</b> • <span id="pillTotal">${money(cartTotal())}</span>`;
   totalEl.textContent = money(cartTotal());
   barTotal.textContent = money(cartTotal());
+  servTxt.textContent = "Domicilio";
 
   if(cart.length===0){
     cartBox.innerHTML = `<div class="muted" style="font-weight:900">Aún no agregas nada 😄</div>`;
@@ -894,12 +854,24 @@ function renderCart(){
           <button class="mini" type="button" data-act="inc">+</button>
         </div>
         <div style="margin-top:6px; font-weight:1000">${money(lineTotal)}</div>
-        <button class="mini" type="button" style="margin-top:8px;width:100%;height:34px;border-radius:12px;font-weight:1000">✕</button>
+        <button class="mini" type="button" data-act="del" style="margin-top:8px;width:100%;height:34px;border-radius:12px;font-weight:1000">✕</button>
       </div>
     `;
-    wrap.querySelector('[data-act="dec"]').addEventListener("click", ()=>{ line.qty=Math.max(1,line.qty-1); renderCart(); }, {passive:true});
-    wrap.querySelector('[data-act="inc"]').addEventListener("click", ()=>{ line.qty+=1; renderCart(); }, {passive:true});
-    wrap.querySelector('.mini:last-child').addEventListener("click", ()=>{ cart.splice(idx,1); renderCart(); }, {passive:true});
+    wrap.querySelector('[data-act="dec"]').addEventListener("click", ()=>{
+      line.qty = Math.max(1, line.qty - 1);
+      renderCart();
+    }, {passive:true});
+
+    wrap.querySelector('[data-act="inc"]').addEventListener("click", ()=>{
+      line.qty += 1;
+      renderCart();
+    }, {passive:true});
+
+    wrap.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      cart.splice(idx,1);
+      renderCart();
+    }, {passive:true});
+
     cartBox.appendChild(wrap);
   });
 }
@@ -944,7 +916,8 @@ function openModal(item){
       btn.textContent = opt;
 
       btn.addEventListener("pointerdown", (e)=>{
-        e.preventDefault(); e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
         toggleOpt(k, opt, btn);
       }, {passive:false});
 
@@ -993,8 +966,13 @@ function toggleOpt(k, opt, el){
     draft.mods[k] = draft.mods[k] || [];
     const arr = draft.mods[k];
     const i = arr.indexOf(opt);
-    if(i>=0){ arr.splice(i,1); el.classList.remove("active"); }
-    else{ arr.push(opt); el.classList.add("active"); }
+    if(i>=0){
+      arr.splice(i,1);
+      el.classList.remove("active");
+    }else{
+      arr.push(opt);
+      el.classList.add("active");
+    }
   }
 }
 function addLine(item, mods, note){
@@ -1005,14 +983,18 @@ function addLine(item, mods, note){
   renderCart();
 }
 function onAddClicked(item){
-  if(!hasPrecio(item)){ alert("Este producto aún no tiene precio cargado."); return; }
   if(item.mods && modsPara(item).length) openModal(item);
   else addLine(item, {}, "");
 }
 
 mClose.addEventListener("click", closeModal, {passive:true});
 mCancel.addEventListener("click", closeModal, {passive:true});
-backdrop.addEventListener("pointerdown", (e)=>{ if(e.target===backdrop){ e.preventDefault(); closeModal(); } }, {passive:false});
+backdrop.addEventListener("pointerdown", (e)=>{
+  if(e.target===backdrop){
+    e.preventDefault();
+    closeModal();
+  }
+}, {passive:false});
 mAdd.addEventListener("click", ()=>{
   if(!currentItem || !draft) return;
   const err = validateRequired(currentItem, draft.mods);
@@ -1022,7 +1004,7 @@ mAdd.addEventListener("click", ()=>{
 }, {passive:true});
 
 /** =========================
- *  CHECKOUT POR PASOS + MAPA
+ *  CHECKOUT + MAPA
  *  ========================= */
 const stepsBackdrop = document.getElementById("stepsBackdrop");
 const stepsClose = document.getElementById("stepsClose");
@@ -1032,8 +1014,7 @@ const stepSub = document.getElementById("stepSub");
 const btnBack = document.getElementById("btnBack");
 const btnNext = document.getElementById("btnNext");
 
-let step = 0;
-let serviceChosen = false;
+let step = 1;
 
 const form = {
   nombre: "",
@@ -1069,8 +1050,12 @@ function closeSteps(){
   destroyMap();
 }
 stepsClose.addEventListener("click", closeSteps, {passive:true});
-stepsBackdrop.addEventListener("pointerdown", (e)=>{ if(e.target===stepsBackdrop){ e.preventDefault(); closeSteps(); } }, {passive:false});
-btnCambioServicio.addEventListener("click", ()=> openSteps(0), {passive:true});
+stepsBackdrop.addEventListener("pointerdown", (e)=>{
+  if(e.target===stepsBackdrop){
+    e.preventDefault();
+    closeSteps();
+  }
+}, {passive:false});
 
 function haversineKm(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -1138,7 +1123,8 @@ function ensureMapInit(){
   mapReady = true;
 }
 async function setDomFromLatLng(lat,lng, recompute=true){
-  form.lat = lat; form.lng = lng;
+  form.lat = lat;
+  form.lng = lng;
 
   try{
     const data = await reverseGeocode(lat,lng);
@@ -1164,18 +1150,13 @@ async function setDomFromLatLng(lat,lng, recompute=true){
   if(recompute) await recomputeEnvio();
 }
 async function recomputeEnvio(){
-  if(getCanal()!=="domicilio"){
-    envioPrecio = 0; envioKm = 0;
-    renderCart();
-    const envioTxt = document.getElementById("envioTxt");
-    if(envioTxt) envioTxt.textContent = money(0);
-    return;
-  }
   if(form.lat==null || form.lng==null){
-    envioPrecio = 0; envioKm = 0;
+    envioPrecio = 0;
+    envioKm = 0;
     renderCart();
     return;
   }
+
   envioKm = haversineKm(TQ_LAT, TQ_LNG, Number(form.lat), Number(form.lng));
   envioKm = Math.round(envioKm*10)/10;
 
@@ -1189,51 +1170,8 @@ async function recomputeEnvio(){
 }
 
 function renderStep(){
-  const canal = getCanal();
   const subTotal = cartSubTotal();
   const total = cartTotal();
-
-  if(step===0){
-    stepTitle.textContent = "Antes de empezar…";
-    stepSub.textContent = "¿Tu pedido es para domicilio, recoger o comer aquí?";
-    btnBack.style.display = "none";
-    btnNext.textContent = "LISTO";
-
-    stepsBody.innerHTML = `
-      <div class="note" style="margin-top:0">Selecciona una opción para continuar.</div>
-      <div class="optGroup" style="margin-top:12px">
-        <div class="optTitle"><b>Servicio</b><span>elige 1</span></div>
-        <div class="optList" id="canalOpts"></div>
-      </div>
-      <div class="note">
-        Si eliges <b>Domicilio</b>, te pediremos tu ubicación para calcular el envío.
-      </div>
-    `;
-
-    const opts = document.getElementById("canalOpts");
-    const opciones = [
-      {val:"aqui", label:"🍽️ Comer aquí"},
-      {val:"recoger", label:"🚶‍♂️ Pasar a recoger"},
-      {val:"domicilio", label:"🏠 Envío a domicilio"}
-    ];
-    opts.innerHTML = "";
-    opciones.forEach(o=>{
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "optBtn" + (canalEl.value===o.val ? " active":"");
-      b.textContent = o.label;
-
-      b.addEventListener("pointerdown", (e)=>{
-        e.preventDefault(); e.stopPropagation();
-        opts.querySelectorAll(".optBtn").forEach(x=>x.classList.remove("active"));
-        b.classList.add("active");
-        setCanal(o.val);
-      }, {passive:false});
-
-      opts.appendChild(b);
-    });
-    return;
-  }
 
   if(step===1){
     stepTitle.textContent = "Paso 1 de 3";
@@ -1253,7 +1191,7 @@ function renderStep(){
         </div>
       </div>
       <div class="note">
-        Servicio: <b>${canal==="domicilio"?"Domicilio":(canal==="recoger"?"Recoger":"Comer aquí")}</b><br>
+        Servicio: <b>Domicilio</b><br>
         Subtotal: <b>${money(subTotal)}</b>
       </div>
     `;
@@ -1270,22 +1208,8 @@ function renderStep(){
     btnBack.style.display = "inline-block";
     btnNext.textContent = "CONTINUAR";
     stepTitle.textContent = "Paso 2 de 3";
-
-    if(canal!=="domicilio"){
-      stepSub.textContent = "Confirmación rápida";
-      stepsBody.innerHTML = `
-        <div class="note" style="margin-top:0">
-          Como tu servicio no es domicilio, este paso se omite. Continuamos al pago.
-        </div>
-        <div class="kpiRow">
-          <div class="kpi"><b>Subtotal</b><span>${money(subTotal)}</span></div>
-          <div class="kpi"><b>Total</b><span>${money(total)}</span></div>
-        </div>
-      `;
-      return;
-    }
-
     stepSub.textContent = "Elige tu ubicación";
+
     stepsBody.innerHTML = `
       <div class="note" style="margin-top:0">Toca el mapa para poner tu pin o arrástralo. Con eso calculamos el envío.</div>
 
@@ -1405,20 +1329,12 @@ function renderStep(){
   stepTitle.textContent = "Paso 3 de 3";
   stepSub.textContent = "Pago y enviar pedido";
 
-  const envioLine = (canal==="domicilio") ? `
+  stepsBody.innerHTML = `
     <div class="kpiRow">
       <div class="kpi"><b>Subtotal</b><span>${money(subTotal)}</span></div>
       <div class="kpi"><b>Envío</b><span>${money(envioPrecio)}</span></div>
     </div>
-  ` : `
-    <div class="kpiRow">
-      <div class="kpi"><b>Subtotal</b><span>${money(subTotal)}</span></div>
-      <div class="kpi"><b>Total</b><span>${money(total)}</span></div>
-    </div>
-  `;
 
-  stepsBody.innerHTML = `
-    ${envioLine}
     <div class="stepRow" style="margin-top:10px">
       <div>
         <label>Método de pago</label>
@@ -1452,16 +1368,11 @@ function renderStep(){
 }
 
 function stepValidate(){
-  const canal = getCanal();
-
-  if(step===0){
-    if(!["aqui","recoger","domicilio"].includes(canal)) return "Elige el servicio.";
-  }
   if(step===1){
     if(!form.nombre.trim()) return "Pon tu nombre.";
     if(!form.tel.trim()) return "Pon tu celular.";
   }
-  if(step===2 && canal==="domicilio"){
+  if(step===2){
     if(form.lat==null || form.lng==null) return "Elige tu ubicación en el mapa (o usa “mi ubicación”).";
     if(!form.calle.trim()) return "Falta la calle.";
     if(!form.noext.trim()) return "Falta el número exterior.";
@@ -1487,8 +1398,6 @@ function cleanWA(text){
 }
 
 function buildWhatsAppText(){
-  const canal = getCanal();
-  const canalTxt = canal==="aqui" ? "Comer aquí" : (canal==="recoger" ? "Pasar a recoger" : "Domicilio");
   const sub = cartSubTotal();
   const total = cartTotal();
   const orderNo = String(Date.now()).slice(-6);
@@ -1498,26 +1407,24 @@ function buildWhatsAppText(){
   lines.push(`Hola, mi nombre es *${form.nombre}*, este es mi pedido:`);
   lines.push(``);
   lines.push(`Número de pedido: *${orderNo}*`);
-  lines.push(`Servicio: *${canalTxt}*`);
+  lines.push(`Servicio: *Domicilio*`);
   lines.push(`Contacto: *+52${form.tel.replace(/\D/g,"")}*`);
 
-  if(canal==="domicilio"){
-    const dir = [
-      `Calle: ${form.calle} ${form.noext}`,
-      `Colonia: ${form.col}`,
-      `Ciudad: ${form.ciudad}`,
-      `CP: ${form.cp}`,
-      `Estado: ${form.estado}`,
-      `Referencias: ${form.refs}`,
-      `Ubicación: ${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`
-    ].join("\n");
+  const dir = [
+    `Calle: ${form.calle} ${form.noext}`,
+    `Colonia: ${form.col}`,
+    `Ciudad: ${form.ciudad}`,
+    `CP: ${form.cp}`,
+    `Estado: ${form.estado}`,
+    `Referencias: ${form.refs}`,
+    `Ubicación: ${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`
+  ].join("\n");
 
-    lines.push(``);
-    lines.push(`Domicilio para la entrega:`);
-    lines.push(dir);
-    lines.push(``);
-    lines.push(`Envío: *${money(envioPrecio)}*`);
-  }
+  lines.push(``);
+  lines.push(`Domicilio para la entrega:`);
+  lines.push(dir);
+  lines.push(``);
+  lines.push(`Envío: *${money(envioPrecio)}*`);
 
   lines.push(``);
   lines.push(`--------------------------`);
@@ -1529,7 +1436,7 @@ function buildWhatsAppText(){
   });
   lines.push(`--------------------------`);
   lines.push(`Subtotal: ${money(sub)}`);
-  if(canal==="domicilio") lines.push(`Envío: ${money(envioPrecio)}`);
+  lines.push(`Envío: ${money(envioPrecio)}`);
   lines.push(`Total: *${money(total)}*`);
 
   if(form.metodo==="efectivo"){
@@ -1555,27 +1462,31 @@ function buildWhatsAppText(){
  *  BOTONES PRINCIPALES
  *  ========================= */
 document.getElementById("btnCheckout").addEventListener("click", ()=>{
-  if(cart.length===0){ alert("Agrega algo al carrito primero 😄"); return; }
-  if(!serviceChosen){ openSteps(0); return; }
+  if(cart.length===0){
+    alert("Agrega algo al carrito primero 😄");
+    return;
+  }
   openSteps(1);
 }, {passive:true});
 
 document.getElementById("btnClear").addEventListener("click", ()=>{
-  if(confirm("¿Vaciar carrito?")){ cart = []; renderCart(); }
+  if(confirm("¿Vaciar carrito?")){
+    cart = [];
+    renderCart();
+  }
 }, {passive:true});
 
 document.getElementById("btnBack").addEventListener("click", ()=>{
-  if(step>0){ step--; renderStep(); }
+  if(step>1){
+    step--;
+    renderStep();
+  }
 }, {passive:true});
 
 document.getElementById("btnNext").addEventListener("click", async ()=>{
   const err = stepValidate();
-  if(err){ alert(err); return; }
-
-  if(step===0){
-    serviceChosen = true;
-    closeSteps();
-    renderCart();
+  if(err){
+    alert(err);
     return;
   }
 
@@ -1586,10 +1497,11 @@ document.getElementById("btnNext").addEventListener("click", async ()=>{
   }
 
   if(step===2){
-    if(getCanal()==="domicilio"){
-      await recomputeEnvio();
-      const r = getTarifa(envioKm, lluvia);
-      if(!r.ok){ alert("Tu domicilio está fuera del rango de envío (0–10 km)."); return; }
+    await recomputeEnvio();
+    const r = getTarifa(envioKm, lluvia);
+    if(!r.ok){
+      alert("Tu domicilio está fuera del rango de envío (0–10 km).");
+      return;
     }
     step = 3;
     renderStep();
@@ -1608,12 +1520,6 @@ document.getElementById("btnNext").addEventListener("click", async ()=>{
 renderTabs();
 renderItems();
 renderCart();
-
-window.addEventListener("load", ()=>{
-  setCanal("recoger");     // default
-  serviceChosen = false;   // obliga elegir la primera vez
-  openSteps(0);            // abre selector servicio
-}, {passive:true});
 </script>
 
 </body>
