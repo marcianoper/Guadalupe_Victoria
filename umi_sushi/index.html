@@ -24,6 +24,8 @@
       --gold:#ffcc66;
 
       --ok:#27d17c;
+      --warn:#ffb020;
+      --bad:#ff5c5c;
       --shadow:0 18px 55px rgba(0,0,0,.45);
       --shadow2:0 10px 26px rgba(255,0,0,.14);
       --r:20px;
@@ -119,6 +121,45 @@
       font-size:12px;
       font-weight:1000;
       white-space:nowrap;
+    }
+
+    .statusBar{
+      max-width:1300px;
+      margin:0 auto;
+      padding:0 16px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .statusChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.1);
+      font-size:12px;
+      font-weight:1000;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+    }
+    .statusChip.open{
+      background:rgba(39,209,124,.12);
+      color:#ccffe6;
+      border-color:rgba(39,209,124,.28);
+      box-shadow:0 0 0 3px rgba(39,209,124,.08);
+    }
+    .statusChip.closed{
+      background:rgba(255,92,92,.10);
+      color:#ffd3d3;
+      border-color:rgba(255,92,92,.25);
+      box-shadow:0 0 0 3px rgba(255,92,92,.06);
+    }
+    .hoursText{
+      font-size:12px;
+      color:#f0dede;
+      font-weight:900;
     }
 
     .wrap{
@@ -311,6 +352,30 @@
       margin-bottom:18px;
     }
 
+    .promoBanner{
+      margin:0 0 14px;
+      padding:14px;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,0,0,.13), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow2);
+    }
+    .promoBanner b{
+      display:block;
+      margin-bottom:8px;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      font-size:13px;
+    }
+    .promoBanner ul{
+      margin:0;
+      padding-left:18px;
+      color:#f2f2f2;
+      font-size:13px;
+      line-height:1.5;
+      font-weight:800;
+    }
+
     .items{
       display:grid;
       grid-template-columns:repeat(2, minmax(0,1fr));
@@ -456,6 +521,12 @@
     .mini{
       width:32px;height:32px;
     }
+    .disabledBtn{
+      opacity:.45 !important;
+      cursor:not-allowed !important;
+      filter:grayscale(.25);
+      box-shadow:none !important;
+    }
 
     .cartLine{
       display:flex;
@@ -544,6 +615,63 @@
       line-height:1.45;
       font-weight:800;
       margin-top:12px;
+    }
+
+    .promoBox{
+      margin-top:14px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#101010;
+    }
+    .promoBox h3{
+      margin:0 0 8px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+    .promoOption{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 0;
+      border-bottom:1px dashed rgba(255,255,255,.08);
+    }
+    .promoOption:last-child{border-bottom:none}
+    .promoOption input{width:auto;margin-top:2px}
+    .promoOption b{
+      display:block;
+      font-size:13px;
+      margin-bottom:3px;
+    }
+    .promoOption span{
+      display:block;
+      color:#dadada;
+      font-size:12px;
+      font-weight:800;
+      line-height:1.35;
+    }
+    .promoApplied{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(39,209,124,.10);
+      border:1px solid rgba(39,209,124,.22);
+      color:#d4ffe8;
+      font-size:12px;
+      font-weight:1000;
+    }
+    .discountRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding-top:10px;
+      margin-top:10px;
+      border-top:1px dashed rgba(255,255,255,.08);
+      font-size:13px;
+      font-weight:1000;
+      color:#c9ffd9;
     }
 
     .backdrop,.stepsBackdrop{
@@ -733,6 +861,11 @@
     </div>
     <div class="pill" id="cartPill">🛒 <b>0</b> • <span id="pillTotal">$0.00</span></div>
   </div>
+
+  <div class="statusBar">
+    <div class="statusChip" id="openStatusChip">Consultando horario…</div>
+    <div class="hoursText" id="hoursSummary">Martes a domingo de 11:00 a. m. a 9:00 p. m. • Lunes cerrado</div>
+  </div>
 </header>
 
 <div class="wrap">
@@ -763,6 +896,16 @@
     <section class="card">
       <h2>Menú</h2>
       <div class="content">
+        <div class="promoBanner">
+          <b>Promociones activas • martes a domingo</b>
+          <ul>
+            <li>3x2 en rollos fríos, empanizados y premium</li>
+            <li>2 onigiris empanizados gratis en compras mayores a $200</li>
+            <li>1/2 kg de alitas por $100 al comprar 1 rollo a precio carta</li>
+            <li>Solo aplica 1 promoción por pedido</li>
+          </ul>
+        </div>
+
         <div class="searchRow">
           <input id="q" placeholder="Buscar producto (ej. california, paquete, ball, boneless, coca)..."/>
         </div>
@@ -796,12 +939,18 @@
 
         <div id="cart"></div>
 
+        <div class="promoBox">
+          <h3>Promoción del pedido</h3>
+          <div id="promoList"></div>
+          <div id="promoApplied"></div>
+        </div>
+
         <div class="totalRow">
           <span>Total</span>
           <strong id="total">$0.00</strong>
         </div>
 
-        <div class="note">
+        <div class="note" id="checkoutNote">
           Al dar <b>Continuar</b>, se abrirá el checkout y al final WhatsApp con el pedido listo para enviar.
         </div>
 
@@ -866,23 +1015,89 @@ const TQ_LAT = 20.6816783;
 const TQ_LNG = -101.36596;
 const IMG_BASE = "";
 
+/* =========================
+   HORARIOS
+========================= */
+const HORARIOS = {
+  0: {open:"11:00", close:"21:00"},
+  1: null,
+  2: {open:"11:00", close:"21:00"},
+  3: {open:"11:00", close:"21:00"},
+  4: {open:"11:00", close:"21:00"},
+  5: {open:"11:00", close:"21:00"},
+  6: {open:"11:00", close:"21:00"}
+};
+const DIAS = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+
+function hhmmToMinutes(str){
+  const [h,m] = String(str).split(":").map(Number);
+  return h * 60 + m;
+}
+function nowMx(){
+  return new Date(new Date().toLocaleString("en-US", { timeZone: "America/Mexico_City" }));
+}
+function getHorarioEstado(){
+  const now = nowMx();
+  const dow = now.getDay();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  const row = HORARIOS[dow];
+
+  if(!row){
+    return {
+      abierto:false,
+      texto:"Cerrado hoy",
+      detalle:`${DIAS[dow]}: cerrado`
+    };
+  }
+
+  const openM = hhmmToMinutes(row.open);
+  const closeM = hhmmToMinutes(row.close);
+  const abierto = mins >= openM && mins < closeM;
+
+  return {
+    abierto,
+    texto: abierto ? "Abierto ahora" : "Cerrado ahora",
+    detalle: `${DIAS[dow]}: ${formatHour(row.open)} – ${formatHour(row.close)}`
+  };
+}
+function formatHour(hhmm){
+  let [h,m] = hhmm.split(":").map(Number);
+  const ampm = h >= 12 ? "p. m." : "a. m.";
+  let h12 = h % 12;
+  if(h12 === 0) h12 = 12;
+  return `${h12}:${String(m).padStart(2,"0")} ${ampm}`;
+}
+function updateHorarioUI(){
+  const el = document.getElementById("openStatusChip");
+  const note = document.getElementById("checkoutNote");
+  const btnCheckout = document.getElementById("btnCheckout");
+  const estado = getHorarioEstado();
+
+  el.className = "statusChip " + (estado.abierto ? "open" : "closed");
+  el.textContent = estado.abierto ? "🟢 En este momento está abierto" : "🔴 En este momento está cerrado";
+
+  if(estado.abierto){
+    btnCheckout.classList.remove("disabledBtn");
+    note.innerHTML = `Al dar <b>Continuar</b>, se abrirá el checkout y al final WhatsApp con el pedido listo para enviar.`;
+  }else{
+    btnCheckout.classList.add("disabledBtn");
+    note.innerHTML = `Ahorita la tienda está <b>cerrada</b>. Horario de pedidos: <b>martes a domingo de 11:00 a. m. a 9:00 p. m.</b>`;
+  }
+}
+
+/* =========================
+   ENVÍO
+========================= */
 const TARIFAS = [
-  {from:0, to:3, normal:50, lluvia:65},
-  {from:3, to:4, normal:55, lluvia:75},
-  {from:4, to:5, normal:60, lluvia:85},
-  {from:5, to:6, normal:65, lluvia:95},
-  {from:6, to:7, normal:70, lluvia:105},
-  {from:7, to:8, normal:75, lluvia:115},
-  {from:8, to:9, normal:80, lluvia:125},
-  {from:9, to:10, normal:85, lluvia:135},
+  {from:0, to:10.000001, normal:40},
+  {from:10, to:18.000001, normal:80},
 ];
-function getTarifa(km, lluvia=false){
+function getTarifa(km){
   const k = Number(km);
   const row = TARIFAS.find(r => k >= r.from && k < r.to) || null;
-  if(!row) return {ok:false, precio:0, limiteKm:10};
-  return {ok:true, precio: lluvia ? row.lluvia : row.normal};
+  if(!row) return {ok:false, precio:0, limiteKm:18};
+  return {ok:true, precio: row.normal};
 }
-let lluvia = false;
 
 const catalogo = [
   {id:"ent_kappa_maki", cat:"ENTRADAS", name:"Kappa Maki", price:50, desc:"Rollo pequeño relleno solamente de pepino fresco envuelto en arroz de sushi sazonado y alga nori.", mods:false, img:"", emoji:"🥒"},
@@ -1116,6 +1331,185 @@ function renderMedia(item){
   }
   return `<div>${escapeHtml(item.emoji || "🍣")}</div>`;
 }
+function getItemById(id){
+  return catalogo.find(x => x.id === id) || null;
+}
+function isPromoDay(){
+  return [0,2,3,4,5,6].includes(nowMx().getDay());
+}
+function isRollPromoItem(line){
+  const item = getItemById(line.id);
+  return !!item && ["ROLLOS FRÍOS","ROLLOS EMPANIZADOS","ROLLOS PREMIUM"].includes(item.cat);
+}
+function hasCartaRollo(){
+  return cart.some(line => isRollPromoItem(line));
+}
+function hasHalfKgWings(){
+  return cart.some(line => line.id === "snk_alitas_media");
+}
+
+/* =========================
+   PROMOCIONES
+========================= */
+let selectedPromo = "none";
+
+function getPromoAvailability(){
+  const subtotal = cart.reduce((a,x)=>a + x.qty * x.basePrice, 0);
+  const eligibleRollPrices = [];
+  cart.forEach(line=>{
+    if(isRollPromoItem(line)){
+      for(let i=0;i<line.qty;i++) eligibleRollPrices.push(Number(line.basePrice));
+    }
+  });
+
+  const can3x2 = isPromoDay() && eligibleRollPrices.length >= 3;
+  const canOnigiri = isPromoDay() && subtotal > 200;
+  const canWings = isPromoDay() && hasCartaRollo() && hasHalfKgWings();
+
+  return {
+    none: {ok:true, title:"Sin promoción", desc:"Cobrar pedido normal."},
+    promo_3x2_rollos: {
+      ok: can3x2,
+      title:"3x2 en rollos",
+      desc:"Aplica en rollos fríos, empanizados y premium.",
+    },
+    promo_onigiris: {
+      ok: canOnigiri,
+      title:"2 onigiris empanizados gratis",
+      desc:"Aplica en compras mayores a $200.",
+    },
+    promo_alitas100: {
+      ok: canWings,
+      title:"1/2 kg de alitas por $100",
+      desc:"Aplica comprando 1 rollo a precio carta y teniendo alitas de 1/2 kg en el pedido.",
+    }
+  };
+}
+
+function computePromoDiscount(){
+  const availability = getPromoAvailability();
+  if(selectedPromo !== "none" && !availability[selectedPromo]?.ok){
+    selectedPromo = "none";
+  }
+
+  if(selectedPromo === "promo_3x2_rollos"){
+    const prices = [];
+    cart.forEach(line=>{
+      if(isRollPromoItem(line)){
+        for(let i=0;i<line.qty;i++) prices.push(Number(line.basePrice));
+      }
+    });
+    prices.sort((a,b)=>a-b);
+    const freeCount = Math.floor(prices.length / 3);
+    const discount = prices.slice(0, freeCount).reduce((a,b)=>a+b,0);
+    return {
+      id:selectedPromo,
+      title:"3x2 en rollos",
+      discount,
+      detail: freeCount ? `${freeCount} rollo(s) gratis por promoción 3x2.` : "Sin descuento aplicado."
+    };
+  }
+
+  if(selectedPromo === "promo_onigiris"){
+    return {
+      id:selectedPromo,
+      title:"2 onigiris empanizados gratis",
+      discount:0,
+      detail:"Se agregan 2 onigiris empanizados gratis al pedido."
+    };
+  }
+
+  if(selectedPromo === "promo_alitas100"){
+    const wingsLine = cart.find(x => x.id === "snk_alitas_media");
+    if(!wingsLine){
+      return {
+        id:selectedPromo,
+        title:"1/2 kg de alitas por $100",
+        discount:0,
+        detail:"No hay alitas de 1/2 kg en el carrito."
+      };
+    }
+    const regular = Number(wingsLine.basePrice);
+    const promoPrice = 100;
+    const discount = Math.max(0, regular - promoPrice);
+    return {
+      id:selectedPromo,
+      title:"1/2 kg de alitas por $100",
+      discount,
+      detail: discount > 0 ? `Se ajusta 1 orden de alitas de 1/2 kg de ${money(regular)} a ${money(promoPrice)}.` : "La promoción ya no genera descuento."
+    };
+  }
+
+  return {
+    id:"none",
+    title:"Sin promoción",
+    discount:0,
+    detail:""
+  };
+}
+
+function getPromoBonusLines(){
+  const bonus = [];
+
+  if(selectedPromo === "promo_onigiris"){
+    bonus.push({
+      id:"promo_bonus_onigiri",
+      name:"Onigiris Empanizados",
+      qty:2,
+      price:0,
+      note:"Promoción gratis"
+    });
+  }
+
+  return bonus;
+}
+
+function renderPromoOptions(){
+  const promoList = document.getElementById("promoList");
+  const promoApplied = document.getElementById("promoApplied");
+  const availability = getPromoAvailability();
+
+  const options = [
+    "none",
+    "promo_3x2_rollos",
+    "promo_onigiris",
+    "promo_alitas100"
+  ];
+
+  promoList.innerHTML = "";
+  options.forEach(key=>{
+    const p = availability[key];
+    const disabled = !p.ok;
+    const id = "promo_" + key;
+
+    const row = document.createElement("label");
+    row.className = "promoOption";
+    row.innerHTML = `
+      <input type="radio" name="promoPedido" id="${id}" value="${key}" ${selectedPromo === key ? "checked" : ""} ${disabled ? "disabled" : ""}>
+      <div>
+        <b>${escapeHtml(p.title)}</b>
+        <span>${escapeHtml(p.desc)}${disabled && key !== "none" ? " • No disponible ahorita para este carrito." : ""}</span>
+      </div>
+    `;
+    promoList.appendChild(row);
+  });
+
+  promoList.querySelectorAll('input[name="promoPedido"]').forEach(r=>{
+    r.addEventListener("change", e=>{
+      selectedPromo = e.target.value;
+      renderCart();
+    });
+  });
+
+  const promo = computePromoDiscount();
+  if(selectedPromo === "promo_onigiris"){
+    promoApplied.innerHTML = `<div class="promoApplied">Promoción aplicada: <b>2 onigiris empanizados gratis</b><br>Se agregarán 2 onigiris empanizados gratis al pedido.</div>`;
+  }else if(promo.discount > 0){
+    promoApplied.innerHTML = `<div class="promoApplied">Promoción aplicada: <b>${escapeHtml(promo.title)}</b><br>${escapeHtml(promo.detail)}</div>`;
+  }else{
+    promoApplied.innerHTML = "";
+  }
+}
 
 const tabs = document.getElementById("tabs");
 const itemsBox = document.getElementById("items");
@@ -1189,21 +1583,32 @@ function cartSubTotal(){ return cart.reduce((a,x)=>a + x.qty * x.basePrice, 0); 
 let envioPrecio = 0;
 let envioKm = 0;
 
-function cartTotal(){ return cartSubTotal() + envioPrecio; }
+function cartDiscount(){
+  return computePromoDiscount().discount || 0;
+}
+function cartTotal(){
+  return Math.max(0, cartSubTotal() - cartDiscount() + envioPrecio);
+}
 
 function renderCart(){
   const count = cartCount();
-  cartPill.innerHTML = `🛒 <b>${count}</b> • <span id="pillTotal">${money(cartTotal())}</span>`;
-  totalEl.textContent = money(cartTotal());
-  barTotal.textContent = money(cartTotal());
+  const totalFinal = cartTotal();
+  const bonusLines = getPromoBonusLines();
+
+  cartPill.innerHTML = `🛒 <b>${count}</b> • <span id="pillTotal">${money(totalFinal)}</span>`;
+  totalEl.textContent = money(totalFinal);
+  barTotal.textContent = money(totalFinal);
   servTxt.textContent = "Domicilio";
 
   if(cart.length === 0){
+    selectedPromo = "none";
     cartBox.innerHTML = `<div class="emptyState">Aún no agregas nada 😄</div>`;
+    renderPromoOptions();
     return;
   }
 
   cartBox.innerHTML = "";
+
   cart.forEach((line, idx)=>{
     const wrap = document.createElement("div");
     wrap.className = "cartLine";
@@ -1246,6 +1651,40 @@ function renderCart(){
 
     cartBox.appendChild(wrap);
   });
+
+  bonusLines.forEach(line=>{
+    const wrap = document.createElement("div");
+    wrap.className = "cartLine";
+    wrap.innerHTML = `
+      <div style="min-width:0">
+        <div style="font-weight:1000;font-size:14px;text-transform:uppercase;color:#c9ffd9">
+          🎁 ${escapeHtml(line.name)}
+          <span class="muted" style="font-weight:1000">(gratis)</span>
+        </div>
+        <div class="muted" style="font-size:12px; margin-top:4px; line-height:1.3; font-weight:900">
+          ${escapeHtml(line.note)}
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:1000">${line.qty}</div>
+        <div style="margin-top:6px; font-weight:1000;color:#c9ffd9">${money(0)}</div>
+      </div>
+    `;
+    cartBox.appendChild(wrap);
+  });
+
+  const promo = computePromoDiscount();
+  if(promo.discount > 0){
+    const disc = document.createElement("div");
+    disc.className = "discountRow";
+    disc.innerHTML = `
+      <span>Descuento promoción</span>
+      <span>-${money(promo.discount)}</span>
+    `;
+    cartBox.appendChild(disc);
+  }
+
+  renderPromoOptions();
 }
 
 const backdrop = document.getElementById("backdrop");
@@ -1578,7 +2017,7 @@ async function recomputeEnvio(){
   envioKm = haversineKm(TQ_LAT, TQ_LNG, Number(form.lat), Number(form.lng));
   envioKm = Math.round(envioKm * 10) / 10;
 
-  const r = getTarifa(envioKm, lluvia);
+  const r = getTarifa(envioKm);
   envioPrecio = r.ok ? r.precio : 0;
 
   const envioTxt = document.getElementById("envioTxt");
@@ -1589,6 +2028,7 @@ async function recomputeEnvio(){
 
 function renderStep(){
   const subTotal = cartSubTotal();
+  const discount = cartDiscount();
   const total = cartTotal();
 
   if(step === 1){
@@ -1610,7 +2050,9 @@ function renderStep(){
       </div>
       <div class="note">
         Servicio: <b>Domicilio</b><br>
-        Subtotal: <b>${money(subTotal)}</b>
+        Subtotal: <b>${money(subTotal)}</b><br>
+        ${discount > 0 ? `Descuento promo: <b>-${money(discount)}</b><br>` : ``}
+        Total parcial: <b>${money(total)}</b>
       </div>
     `;
     setTimeout(()=>{
@@ -1756,6 +2198,11 @@ function renderStep(){
       <div class="kpi"><b>Envío</b><span>${money(envioPrecio)}</span></div>
     </div>
 
+    <div class="kpiRow">
+      <div class="kpi"><b>Promoción</b><span>${money(cartDiscount())}</span></div>
+      <div class="kpi"><b>Total</b><span>${money(cartTotal())}</span></div>
+    </div>
+
     <div class="stepRow" style="margin-top:10px">
       <div>
         <label>Método de pago</label>
@@ -1769,6 +2216,13 @@ function renderStep(){
       <div>
         <div class="note">
           Total a pagar: <b>${money(cartTotal())}</b><br>
+          ${
+            selectedPromo === "promo_onigiris"
+              ? `Promoción aplicada: <b>2 onigiris empanizados gratis</b><br>`
+              : (selectedPromo !== "none" && cartDiscount() > 0
+                  ? `Promoción aplicada: <b>${escapeHtml(computePromoDiscount().title)}</b><br>`
+                  : ``)
+          }
           Al enviar, se abrirá WhatsApp con el pedido listo.
         </div>
       </div>
@@ -1789,6 +2243,11 @@ function renderStep(){
 }
 
 function stepValidate(){
+  const horario = getHorarioEstado();
+  if(!horario.abierto){
+    return "Ahorita la tienda está cerrada. Solo se puede pedir de martes a domingo de 11:00 a. m. a 9:00 p. m.";
+  }
+
   if(step === 1){
     if(!form.nombre.trim()) return "Pon tu nombre.";
     if(!form.tel.trim()) return "Pon tu celular.";
@@ -1800,8 +2259,8 @@ function stepValidate(){
     if(!form.col.trim()) return "Falta la colonia.";
     if(!form.cp.trim()) return "Falta el CP.";
     if(!form.refs.trim()) return "Faltan referencias.";
-    const r = getTarifa(envioKm, lluvia);
-    if(!r.ok) return "Tu domicilio está fuera del rango de envío (0–10 km).";
+    const r = getTarifa(envioKm);
+    if(!r.ok) return "Tu domicilio está fuera del rango de envío (0–18 km).";
   }
   if(step === 3){
     const p = form.pagareCon.trim();
@@ -1820,6 +2279,8 @@ function cleanWA(text){
 
 function buildWhatsAppText(){
   const sub = cartSubTotal();
+  const promo = computePromoDiscount();
+  const bonusLines = getPromoBonusLines();
   const total = cartTotal();
   const orderNo = String(Date.now()).slice(-6);
 
@@ -1848,14 +2309,35 @@ function buildWhatsAppText(){
   lines.push(`Envío: *${money(envioPrecio)}*`);
   lines.push(``);
   lines.push(`--------------------------`);
+
   cart.forEach(x=>{
     lines.push(`- ${x.qty} x ${x.name} (${money(x.basePrice)})`);
     const mt = modsToText(x.mods);
     if(mt) lines.push(`  • ${mt}`);
     if(x.note) lines.push(`  • Nota: ${x.note}`);
   });
+
+  if(bonusLines.length){
+    bonusLines.forEach(x=>{
+      lines.push(`- ${x.qty} x ${x.name} (${money(0)})`);
+      if(x.note) lines.push(`  • ${x.note}`);
+    });
+  }
+
   lines.push(`--------------------------`);
   lines.push(`Subtotal: ${money(sub)}`);
+
+  if(selectedPromo === "promo_onigiris"){
+    lines.push(`Promoción aplicada: *2 onigiris empanizados gratis*`);
+    lines.push(`Detalle promo: Se agregan 2 onigiris empanizados gratis al pedido.`);
+  }else if(promo.discount > 0){
+    lines.push(`Promoción aplicada: *${promo.title}*`);
+    lines.push(`Descuento promo: -${money(promo.discount)}`);
+    lines.push(`Detalle promo: ${promo.detail}`);
+  }else{
+    lines.push(`Promoción aplicada: *Ninguna*`);
+  }
+
   lines.push(`Envío: ${money(envioPrecio)}`);
   lines.push(`Total: *${money(total)}*`);
 
@@ -1879,6 +2361,11 @@ function buildWhatsAppText(){
 }
 
 document.getElementById("btnCheckout").addEventListener("click", ()=>{
+  const horario = getHorarioEstado();
+  if(!horario.abierto){
+    alert("Ahorita la tienda está cerrada. Solo se puede pedir de martes a domingo de 11:00 a. m. a 9:00 p. m.");
+    return;
+  }
   if(cart.length === 0){
     alert("Agrega algo al carrito primero 😄");
     return;
@@ -1889,6 +2376,7 @@ document.getElementById("btnCheckout").addEventListener("click", ()=>{
 document.getElementById("btnClear").addEventListener("click", ()=>{
   if(confirm("¿Vaciar carrito?")){
     cart = [];
+    selectedPromo = "none";
     renderCart();
   }
 }, {passive:true});
@@ -1915,9 +2403,9 @@ document.getElementById("btnNext").addEventListener("click", async ()=>{
 
   if(step === 2){
     await recomputeEnvio();
-    const r = getTarifa(envioKm, lluvia);
+    const r = getTarifa(envioKm);
     if(!r.ok){
-      alert("Tu domicilio está fuera del rango de envío (0–10 km).");
+      alert("Tu domicilio está fuera del rango de envío (0–18 km).");
       return;
     }
     step = 3;
@@ -1929,11 +2417,13 @@ document.getElementById("btnNext").addEventListener("click", async ()=>{
   const url = `https://wa.me/${WHATSAPP_TAQ}?text=${encodeURIComponent(text)}`;
   window.open(url, "_blank");
   closeSteps();
-});
+}, {passive:true});
 
 renderTabs();
 renderItems();
 renderCart();
+updateHorarioUI();
+setInterval(updateHorarioUI, 60000);
 </script>
 </body>
 </html>
