@@ -11,19 +11,22 @@
     :root{
       --bg:#f3e7d4;
       --paper:#fbf2e2;
+      --paper2:#fffaf1;
       --card:#fff7ea;
       --ink:#3b2a1f;
       --muted:#6e5646;
-      --line:rgba(59,42,31,.15);
+      --line:rgba(59,42,31,.14);
 
       --brand:#3b2a1f;
-      --gold1:#c98a1e;
+      --gold1:#d69a2b;
       --gold2:#b77712;
+      --goldSoft:rgba(214,154,43,.16);
       --green:#1f6b2a;
       --red:#b42318;
 
-      --shadow: 0 18px 50px rgba(32,24,16,.18);
-      --r:18px;
+      --shadow: 0 18px 50px rgba(32,24,16,.16);
+      --shadow-soft: 0 10px 28px rgba(32,24,16,.12);
+      --r:20px;
     }
 
     *{box-sizing:border-box}
@@ -32,8 +35,9 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(1200px 520px at 10% -10%, rgba(201,138,30,.20), transparent 60%),
-        radial-gradient(1200px 520px at 90% 0%, rgba(59,42,31,.12), transparent 55%),
+        radial-gradient(1200px 520px at 10% -10%, rgba(201,138,30,.22), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(59,42,31,.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0)),
         var(--bg);
       color:var(--ink);
       -webkit-font-smoothing: antialiased;
@@ -42,18 +46,21 @@
 
     header{
       position: sticky; top: 0; z-index: 40;
-      background: linear-gradient(180deg, rgba(59,42,31,.92), rgba(59,42,31,.86));
+      background: linear-gradient(180deg, rgba(59,42,31,.95), rgba(59,42,31,.88));
       color:#fff;
       padding:12px 14px;
       box-shadow: 0 12px 30px rgba(0,0,0,.25);
       border-bottom: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
     }
     header .row{
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       max-width:1200px; margin:0 auto;
       flex-wrap:wrap;
     }
-    header .brand{display:flex; flex-direction:column; line-height:1.05; min-width:0;}
+    header .brand{
+      display:flex; flex-direction:column; line-height:1.05; min-width:0;
+    }
     header h1{
       margin:0;
       font-size:16px;
@@ -111,7 +118,7 @@
     }
 
     .card{
-      background: var(--paper);
+      background: linear-gradient(180deg, rgba(255,255,255,.44), rgba(255,255,255,.18)), var(--paper);
       border: 1px solid var(--line);
       border-radius: var(--r);
       box-shadow: var(--shadow);
@@ -119,89 +126,156 @@
     }
     .card h2{
       margin:0;
-      padding:14px 14px 10px;
+      padding:14px 16px 12px;
       font-size:15px;
       border-bottom:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0));
+      background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,0));
       display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
     .content{padding:14px}
 
     .hero{
-      border-radius: 22px;
-      border:1px solid rgba(59,42,31,.15);
+      border-radius: 24px;
+      border:1px solid rgba(59,42,31,.14);
       overflow:hidden;
       box-shadow: 0 25px 70px rgba(32,24,16,.18);
-      background:#0b1220;
+      background:
+        radial-gradient(420px 160px at 10% 0%, rgba(214,154,43,.22), transparent 60%),
+        radial-gradient(420px 180px at 90% 0%, rgba(255,255,255,.14), transparent 65%),
+        #1a1510;
+      min-height: 230px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
-    .hero img{width:100%; height: 230px; object-fit: cover; display:block;}
-    @media (max-width: 520px){ .hero img{height:170px} }
+    .hero img{
+      width:100%;
+      height:230px;
+      object-fit: cover;
+      object-position:center;
+      display:block;
+    }
 
-    .searchRow{display:flex; gap:10px; align-items:center; margin-top:12px;}
+    @media (max-width: 920px){
+      .hero{
+        min-height: 210px;
+        padding:10px;
+      }
+      .hero img{
+        height:210px;
+        object-fit: contain;
+        background:#1a1510;
+      }
+    }
+
+    @media (max-width: 600px){
+      .hero{
+        min-height: 180px;
+        padding:8px;
+      }
+      .hero img{
+        height:180px;
+        object-fit: contain;
+        background:#1a1510;
+      }
+    }
+
+    .searchRow{
+      display:flex; gap:10px; align-items:center; margin-top:6px;
+    }
     .searchRow input{
       flex:1;
-      padding:12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(59,42,31,.20);
-      background: rgba(255,255,255,.65);
+      padding:13px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(59,42,31,.16);
+      background: rgba(255,255,255,.68);
       outline:none;
       font-size:14px;
       color: var(--ink);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
     }
-    .tabs{display:flex; flex-wrap:wrap; gap:10px; margin: 12px 0 10px;}
+
+    .tabs{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin: 14px 0 12px;
+    }
     .tab{
-      border:1px solid rgba(59,42,31,.22);
-      background: rgba(255,255,255,.55);
+      border:1px solid rgba(59,42,31,.18);
+      background: rgba(255,255,255,.58);
       padding:10px 14px;
-      border-radius: 12px;
+      border-radius: 999px;
       font-weight:900;
       font-size:13px;
       cursor:pointer;
       user-select:none;
       letter-spacing:.2px;
-      box-shadow: 0 10px 22px rgba(32,24,16,.10);
+      box-shadow: 0 10px 22px rgba(32,24,16,.08);
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease;
     }
+    .tab:active{transform:translateY(1px)}
     .tab.active{
-      background: rgba(255,255,255,.80);
-      border-color: rgba(201,138,30,.55);
-      box-shadow: 0 0 0 3px rgba(201,138,30,.18);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,247,230,.92));
+      border-color: rgba(201,138,30,.50);
+      box-shadow: 0 0 0 3px rgba(201,138,30,.14), 0 10px 22px rgba(32,24,16,.10);
+      color:#4a2f11;
     }
 
     .sectionTitle{
-      margin: 12px 0 10px;
-      font-size: 44px;
+      margin: 12px 0 6px;
+      font-size: 42px;
       letter-spacing: .8px;
       font-weight: 1000;
       color: rgba(59,42,31,.96);
       line-height:1;
     }
+    .sectionSub{
+      font-size:13px;
+      font-weight:900;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
     .divider{
       height: 4px;
       border-radius: 999px;
-      background: rgba(59,42,31,.20);
+      background: linear-gradient(90deg, rgba(201,138,30,.65), rgba(59,42,31,.20));
       margin: 8px 0 18px;
     }
-    @media (max-width: 620px){ .sectionTitle{font-size:34px} }
+    @media (max-width: 620px){
+      .sectionTitle{font-size:32px}
+    }
 
-    .items{display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px;}
-    @media (max-width: 620px){ .items{grid-template-columns:1fr} }
+    .items{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    @media (max-width: 720px){
+      .items{grid-template-columns:1fr}
+    }
 
     .prod{
-      background: rgba(255,255,255,.35);
-      border:1px solid rgba(59,42,31,.18);
-      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(255,255,255,.20));
+      border:1px solid rgba(59,42,31,.14);
+      border-radius: 20px;
       overflow:hidden;
       display:grid;
-      grid-template-columns: 1fr 1.2fr;
-      min-height: 170px;
-      box-shadow: 0 18px 50px rgba(32,24,16,.10);
+      grid-template-columns: 1fr 1.1fr;
+      min-height: 182px;
+      box-shadow: 0 18px 50px rgba(32,24,16,.09);
+      transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease;
     }
+    .prod:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 22px 54px rgba(32,24,16,.13);
+      border-color: rgba(201,138,30,.26);
+    }
+
     .prodLeft{
       padding:14px 14px 12px;
       display:flex; flex-direction:column; gap:8px;
-      background: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.25);
       min-width:0;
     }
 
@@ -212,46 +286,68 @@
       white-space: normal;
       overflow: visible;
       text-overflow: clip;
-      line-height:1.15;
+      line-height:1.12;
       word-break: break-word;
     }
 
-    .prodDesc{margin:0; color: var(--muted); font-weight:700; line-height:1.25; font-size:13px;}
+    .prodDesc{
+      margin:0;
+      color: var(--muted);
+      font-weight:700;
+      line-height:1.25;
+      font-size:13px;
+    }
 
-    .price{margin-top:auto; font-weight:1000; color: var(--green); font-size: 16px;}
-    .price b{display:block; font-size: 34px; letter-spacing:.3px;}
+    .price{
+      margin-top:auto;
+      font-weight:1000;
+      color: var(--green);
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .price b{
+      display:block;
+      font-size: 32px;
+      letter-spacing:.2px;
+      line-height:1;
+      margin-top:4px;
+    }
 
     .prodRight{
       position:relative;
       padding:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.30));
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.34));
       display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;
     }
     .prodImg{
       width: 100%;
-      height: 92px;
+      height: 96px;
       border-radius: 18px;
       overflow:hidden;
       background: #0b1220;
-      box-shadow: 0 18px 40px rgba(0,0,0,.22);
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
       border: 1px solid rgba(255,255,255,.10);
     }
-    .prodImg img{width:100%; height:100%; object-fit: cover; display:block;}
+    .prodImg img{
+      width:100%; height:100%; object-fit: cover; display:block;
+    }
 
     .btnAdd, .stickyBtn{
       border:none; cursor:pointer;
-      padding: 10px 26px;
+      padding: 11px 24px;
       border-radius: 999px;
       font-weight: 1000;
       color:#fff;
       background: linear-gradient(180deg, var(--gold1), var(--gold2));
-      box-shadow: 0 12px 26px rgba(201,138,30,.38);
-      font-size: 16px;
+      box-shadow: 0 12px 26px rgba(201,138,30,.30);
+      font-size: 15px;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      transition: transform .06s ease, filter .12s ease;
     }
+    .btnAdd:hover,.stickyBtn:hover{filter:brightness(1.04)}
     .btnAdd:active,.stickyBtn:active{transform: translateY(1px)}
-    .btnAdd:focus,.stickyBtn:focus{outline: 3px solid rgba(201,138,30,.28)}
+    .btnAdd:focus,.stickyBtn:focus{outline: 3px solid rgba(201,138,30,.26)}
     .btnDisabled{
       background: linear-gradient(180deg, #9a9a9a, #6f6f6f) !important;
       box-shadow:none !important;
@@ -271,9 +367,12 @@
     }
 
     .cartLine{
-      display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
-      border-bottom:1px dashed rgba(59,42,31,.18);
-      padding:10px 0;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      border-bottom:1px dashed rgba(59,42,31,.16);
+      padding:12px 0;
     }
     .cartLine:last-child{border-bottom:none}
     .muted{color: var(--muted)}
@@ -281,8 +380,8 @@
     .mini{
       width:30px; height:30px;
       border-radius:10px;
-      border:1px solid rgba(59,42,31,.22);
-      background: rgba(255,255,255,.65);
+      border:1px solid rgba(59,42,31,.18);
+      background: rgba(255,255,255,.75);
       cursor:pointer;
       font-weight:1000;
       color: var(--ink);
@@ -290,47 +389,56 @@
       touch-action: manipulation;
     }
 
-    label{display:block; font-size:12px; font-weight:1000; margin:10px 0 6px; color: rgba(59,42,31,.90)}
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:1000;
+      margin:10px 0 6px;
+      color: rgba(59,42,31,.90)
+    }
     input, textarea, select{
       width:100%;
       padding:12px 12px;
-      border:1px solid rgba(59,42,31,.18);
+      border:1px solid rgba(59,42,31,.16);
       border-radius:14px;
       font-size:14px;
       outline:none;
-      background: rgba(255,255,255,.65);
+      background: rgba(255,255,255,.72);
       color: var(--ink);
     }
     textarea{min-height:90px; resize:vertical}
 
     .totalRow{
       display:flex; justify-content:space-between; align-items:center;
-      padding-top:12px; margin-top:12px;
-      border-top:1px solid rgba(59,42,31,.18);
+      padding-top:14px; margin-top:14px;
+      border-top:1px solid rgba(59,42,31,.16);
       font-size:14px;
       font-weight:900;
     }
-    .totalRow strong{font-size:18px}
+    .totalRow strong{
+      font-size:22px;
+      color:#3f2b12;
+    }
 
     .stickyBar{
       position: sticky;
       bottom: 12px;
       z-index: 25;
-      margin-top: 12px;
-      background: linear-gradient(180deg, rgba(59,42,31,.94), rgba(59,42,31,.90));
+      margin-top: 14px;
+      background: linear-gradient(180deg, rgba(59,42,31,.96), rgba(59,42,31,.90));
       color:#fff;
-      border-radius: 14px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.28);
+      border-radius: 16px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.24);
       border:1px solid rgba(255,255,255,.12);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding: 10px 10px 10px 12px;
+      padding: 12px;
       flex-wrap:wrap;
     }
     .stickyBar .left{display:flex; align-items:center; gap:10px; font-weight:1000;}
-    .stickyBar .amount{font-size:18px; letter-spacing:.2px;}
+    .stickyBar .amount{font-size:20px; letter-spacing:.2px;}
     .stickyBtn{min-width: 160px;}
     .btnClear{
       border:1px solid rgba(255,255,255,.18);
@@ -357,21 +465,21 @@
     .modal, .steps{
       width:min(820px, 100%);
       background: var(--paper);
-      border-radius:18px;
+      border-radius:20px;
       overflow:hidden;
-      border:1px solid rgba(59,42,31,.18);
-      box-shadow: 0 40px 100px rgba(0,0,0,.35);
+      border:1px solid rgba(59,42,31,.16);
+      box-shadow: 0 40px 100px rgba(0,0,0,.30);
       pointer-events:auto;
     }
     .modalHead, .stepsHead{
       padding:14px 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0));
-      border-bottom:1px solid rgba(59,42,31,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,0));
+      border-bottom:1px solid rgba(59,42,31,.14);
       display:flex; justify-content:space-between; align-items:center; gap:10px;
     }
     .modalHead h3{margin:0; font-size:15px}
     .closeX{
-      border:1px solid rgba(59,42,31,.18);
+      border:1px solid rgba(59,42,31,.14);
       background: rgba(255,255,255,.65);
       border-radius:12px;
       width:40px; height:40px;
@@ -383,19 +491,19 @@
     }
 
     .optGroup{
-      border:1px solid rgba(59,42,31,.16);
+      border:1px solid rgba(59,42,31,.12);
       border-radius:16px;
       padding:12px 12px;
       margin-top:10px;
-      background: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.38);
     }
     .optTitle{display:flex; align-items:center; justify-content:space-between; gap:10px;}
     .optTitle b{font-size:13px}
     .optTitle span{font-size:12px; color:var(--muted); font-weight:800}
     .optList{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
     .optBtn{
-      border:1px solid rgba(59,42,31,.18);
-      background: rgba(255,255,255,.65);
+      border:1px solid rgba(59,42,31,.16);
+      background: rgba(255,255,255,.70);
       padding:8px 10px;
       border-radius:999px;
       font-size:13px;
@@ -408,14 +516,15 @@
     }
     .optBtn.active{
       border-color: rgba(201,138,30,.60);
-      box-shadow:0 0 0 3px rgba(201,138,30,.18);
+      box-shadow:0 0 0 3px rgba(201,138,30,.16);
+      background: rgba(255,250,238,.95);
     }
 
     .footerBtns{
       display:flex;
       gap:10px;
       padding:14px 16px;
-      border-top:1px solid rgba(59,42,31,.16);
+      border-top:1px solid rgba(59,42,31,.14);
       background: rgba(255,255,255,.25);
     }
     .footerBtns button{flex:1}
@@ -426,14 +535,14 @@
       border-radius: 12px;
       font-weight:1000;
       color:#fff;
-      background: linear-gradient(180deg, rgba(59,42,31,.92), rgba(59,42,31,.86));
-      box-shadow: 0 14px 30px rgba(0,0,0,.25);
+      background: linear-gradient(180deg, rgba(59,42,31,.94), rgba(59,42,31,.88));
+      box-shadow: 0 14px 30px rgba(0,0,0,.18);
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
     .btnLight{
-      border:1px solid rgba(59,42,31,.18);
-      background: rgba(255,255,255,.65);
+      border:1px solid rgba(59,42,31,.16);
+      background: rgba(255,255,255,.72);
       color: var(--ink);
       padding:12px 14px;
       border-radius: 12px;
@@ -447,11 +556,11 @@
       font-size:12px;
       color: var(--muted);
       font-weight:800;
-      line-height:1.35;
-      background: rgba(255,255,255,.35);
+      line-height:1.4;
+      background: rgba(255,255,255,.42);
       padding:10px 12px;
       border-radius:12px;
-      border:1px solid rgba(59,42,31,.16);
+      border:1px solid rgba(59,42,31,.12);
       margin-top:12px;
     }
     .noteWarn{
@@ -483,7 +592,7 @@
     .stepsFoot{
       display:flex; gap:10px;
       padding:14px 16px;
-      border-top:1px solid rgba(59,42,31,.16);
+      border-top:1px solid rgba(59,42,31,.14);
       background: rgba(255,255,255,.25);
       flex: 0 0 auto;
       position: sticky;
@@ -497,11 +606,11 @@
     @media (max-width:520px){ .stepRow{grid-template-columns:1fr} }
 
     .mapWrap{
-      border:1px solid rgba(59,42,31,.18);
+      border:1px solid rgba(59,42,31,.16);
       border-radius:16px;
       overflow:hidden;
       background:#fff;
-      box-shadow: 0 10px 26px rgba(0,0,0,.10);
+      box-shadow: 0 10px 26px rgba(0,0,0,.08);
       margin-top:10px;
     }
     #miniMap{width:100%; height:150px; background:#eee; touch-action: pan-x pan-y;}
@@ -509,9 +618,14 @@
     .mapBar{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
     .mapBar .btnLight{flex:1; min-width: 170px;}
 
-    .kpiRow{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+    .kpiRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
     .kpi{
-      border:1px solid rgba(59,42,31,.16);
+      border:1px solid rgba(59,42,31,.12);
       border-radius:16px;
       background: rgba(255,255,255,.45);
       padding:10px 12px;
@@ -522,7 +636,7 @@
     .detailsToggle{
       width:100%;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border:1px solid rgba(59,42,31,.18);
+      border:1px solid rgba(59,42,31,.16);
       background: rgba(255,255,255,.55);
       padding:10px 12px;
       border-radius:14px;
@@ -535,6 +649,28 @@
     .detailsToggle .arrow{font-size:18px; line-height:1}
     .detailsWrap{display:none}
     .detailsWrap.show{display:block}
+
+    .menuBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: var(--goldSoft);
+      border:1px solid rgba(201,138,30,.20);
+      font-size:12px;
+      font-weight:1000;
+      color:#6b4610;
+    }
+
+    .emptyState{
+      padding:18px;
+      border:1px dashed rgba(59,42,31,.18);
+      border-radius:16px;
+      background: rgba(255,255,255,.36);
+      color:var(--muted);
+      font-weight:900;
+    }
   </style>
 </head>
 
@@ -560,25 +696,30 @@
 
   <div class="grid">
     <section class="card">
-      <h2>Menú</h2>
+      <h2>
+        <span>Menú</span>
+        <span class="menuBadge">✨ Pedido en línea</span>
+      </h2>
+
       <div class="content">
         <div id="horarioAviso"></div>
 
         <div class="searchRow">
-          <input id="q" placeholder="Buscar un producto (ej. taco, quesadilla, charola)..."/>
+          <input id="q" placeholder="Buscar un producto (ej. taco, quesadilla, volcán, refresco)..."/>
         </div>
 
         <div class="tabs" id="tabs"></div>
 
         <div id="sectionHdr">
           <div class="sectionTitle" id="sectionTitle">TACOS</div>
+          <div class="sectionSub" id="sectionSub">Elige tus tacos favoritos</div>
           <div class="divider"></div>
         </div>
 
         <div class="items" id="items"></div>
 
         <div class="note">
-          Tip: si pides <b>Combinado</b>, pon en nota las carnes (ej. “tripa + bistec”).
+          Tip: si pides <b>Combinado</b>, pon en nota las carnes. Ejemplo: <b>tripa + bistec</b>.
         </div>
       </div>
     </section>
@@ -671,17 +812,15 @@ const IMG_BASE = "";
 
 /** =========================
  *  HORARIO
- *  =========================
- *  0 = domingo, 1 = lunes ... 6 = sábado
- */
+ *  ========================= */
 const HORARIO = {
-  0: null, // domingo cerrado
-  1: { open: "17:00", close: "00:30" }, // lunes
-  2: { open: "17:00", close: "00:30" }, // martes
-  3: { open: "17:00", close: "00:30" }, // miércoles
-  4: { open: "17:00", close: "00:30" }, // jueves
-  5: { open: "17:00", close: "00:30" }, // viernes
-  6: { open: "17:00", close: "00:30" }, // sábado
+  0: null,
+  1: { open: "17:00", close: "00:30" },
+  2: { open: "17:00", close: "00:30" },
+  3: { open: "17:00", close: "00:30" },
+  4: { open: "17:00", close: "00:30" },
+  5: { open: "17:00", close: "00:30" },
+  6: { open: "17:00", close: "00:30" },
 };
 
 const NOMBRES_DIA = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
@@ -710,7 +849,6 @@ function getHorarioEstado(now = new Date()){
   const prevDay = (day + 6) % 7;
   const prev = HORARIO[prevDay];
 
-  // 1) revisar si seguimos abiertos por horario del día anterior (ej. 12:10 a.m.)
   if(prev){
     const prevOpen = hhmmToMinutes(prev.open);
     const prevClose = hhmmToMinutes(prev.close);
@@ -727,7 +865,6 @@ function getHorarioEstado(now = new Date()){
     }
   }
 
-  // 2) revisar horario normal del día
   if(!today){
     return {
       open: false,
@@ -784,14 +921,12 @@ function renderHorarioEstado(){
   pill.classList.add(estado.open ? "open" : "closed");
   pill.textContent = estado.open ? `🟢 ${estado.statusText}` : `🔴 ${estado.statusText}`;
 
-  sub.textContent = estado.open
-    ? `Pedidos rápidos • Picapiedra • ${estado.statusText}`
-    : `Pedidos rápidos • Picapiedra • ${estado.statusText}`;
+  sub.textContent = `Pedidos rápidos • Picapiedra • ${estado.statusText}`;
 
   if(estado.open){
     aviso.innerHTML = `
       <div class="note">
-        <b>Horario de servicio:</b> lunes, martes, miércoles, jueves, viernes y sábado de <b>5:00 p.m.</b> a <b>12:30 a.m.</b>. Domingo <b>cerrado</b>.
+        <b>Horario de servicio:</b> lunes a sábado de <b>5:00 p.m.</b> a <b>12:30 a.m.</b>. Domingo <b>cerrado</b>.
       </div>
     `;
     btn.disabled = false;
@@ -814,7 +949,7 @@ function renderHorarioEstado(){
 }
 
 /** =========================
- *  TARIFAS DOMICILIO
+ *  TARIFAS
  *  ========================= */
 const TARIFAS = [
   {from:0,   to:3.1, precio:50, lluvia:65},
@@ -857,15 +992,15 @@ const catalogo = [
   {id:"quesa_alambre",    cat:"QUESADILLAS", name:"Quesadilla de Alambre",    price:90,  desc:"Queso + alambre.", mods:false, img:"quesadillagdp.png"},
   {id:"quesa_combinada",  cat:"QUESADILLAS", name:"Quesadilla Combinada",     price:100, desc:"Pon en nota qué combinación quieres.", mods:true, img:"quesadillagdp.png"},
 
-  {id:"quesa_chica_tripa",      cat:"QUESADILLAS", name:"Quesadilla Chica de Tripa",      price:70, desc:"Versión chica con queso + tripa.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_pastor",     cat:"QUESADILLAS", name:"Quesadilla Chica de Pastor",     price:50, desc:"Versión chica con queso + pastor.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_bistec",     cat:"QUESADILLAS", name:"Quesadilla Chica de Bistec",     price:50, desc:"Versión chica con queso + bistec.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_chorizo",    cat:"QUESADILLAS", name:"Quesadilla Chica de Chorizo",    price:50, desc:"Versión chica con queso + chorizo.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_higado",     cat:"QUESADILLAS", name:"Quesadilla Chica de Hígado",     price:50, desc:"Versión chica con queso + hígado.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_costilla",   cat:"QUESADILLAS", name:"Quesadilla Chica de Costilla",   price:50, desc:"Versión chica con queso + costilla.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_barbacoa",   cat:"QUESADILLAS", name:"Quesadilla Chica de Barbacoa",   price:50, desc:"Versión chica con queso + barbacoa.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_alambre",    cat:"QUESADILLAS", name:"Quesadilla Chica de Alambre",    price:50, desc:"Versión chica con queso + alambre.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chica_combinada",  cat:"QUESADILLAS", name:"Quesadilla Chica Combinada",     price:50, desc:"Versión chica. Pon en nota qué combinación quieres.", mods:true, img:"quesadillagdp.png"},
+  {id:"quesa_chica_tripa",      cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Tripa",      price:70, desc:"Versión chica con queso + tripa.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_pastor",     cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Pastor",     price:50, desc:"Versión chica con queso + pastor.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_bistec",     cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Bistec",     price:50, desc:"Versión chica con queso + bistec.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_chorizo",    cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Chorizo",    price:50, desc:"Versión chica con queso + chorizo.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_higado",     cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Hígado",     price:50, desc:"Versión chica con queso + hígado.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_costilla",   cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Costilla",   price:50, desc:"Versión chica con queso + costilla.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_barbacoa",   cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Barbacoa",   price:50, desc:"Versión chica con queso + barbacoa.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_alambre",    cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Alambre",    price:50, desc:"Versión chica con queso + alambre.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chica_combinada",  cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica Combinada",     price:50, desc:"Versión chica. Pon en nota qué combinación quieres.", mods:true, img:"quesadillagdp.png"},
 
   {id:"charola_combinada", cat:"CHAROLAS", name:"Charola Combinada", price:100, desc:"Pon en nota qué combinación quieres.", mods:true, img:"charolagdp.png"},
   {id:"charola_alambre",   cat:"CHAROLAS", name:"Charola de Alambre", price:90,  desc:"Alambre para compartir.", mods:false, img:"charolagdp.png"},
@@ -895,7 +1030,17 @@ const catalogo = [
   {id:"pos_napolitano",  cat:"POSTRES", name:"Napolitano",                      price:60, desc:"", mods:false, img:"postresgdp.png"},
 ];
 
-const CATS = ["TACOS","QUESADILLAS","CHAROLAS","VOLCANES","BEBIDAS","POSTRES"];
+const CATS = ["TACOS","QUESADILLAS","QUESADILLAS CHICAS","CHAROLAS","VOLCANES","BEBIDAS","POSTRES"];
+
+const CAT_META = {
+  "TACOS": "Elige tus tacos favoritos",
+  "QUESADILLAS": "Quesadillas grandes y bien servidas",
+  "QUESADILLAS CHICAS": "Opciones chicas para antojo o complemento",
+  "CHAROLAS": "Para compartir o pedir algo con más volumen",
+  "VOLCANES": "Crujientes, dorados y llenos de sabor",
+  "BEBIDAS": "Refrescos y aguas para acompañar",
+  "POSTRES": "El toque dulce para cerrar tu pedido"
+};
 
 /** =========================
  *  MODIFICADORES
@@ -948,6 +1093,7 @@ function validateRequired(item, mods){
 const tabs = document.getElementById("tabs");
 const itemsBox = document.getElementById("items");
 const sectionTitle = document.getElementById("sectionTitle");
+const sectionSub = document.getElementById("sectionSub");
 const q = document.getElementById("q");
 let activeCat = CATS[0];
 
@@ -957,12 +1103,18 @@ function renderTabs(){
     const el = document.createElement("div");
     el.className = "tab" + (c===activeCat ? " active":"");
     el.textContent = c;
-    el.addEventListener("click", ()=>{ activeCat=c; renderTabs(); renderItems(); }, {passive:true});
+    el.addEventListener("click", ()=>{
+      activeCat=c;
+      renderTabs();
+      renderItems();
+    }, {passive:true});
     tabs.appendChild(el);
   });
 }
 function renderItems(){
   sectionTitle.textContent = activeCat;
+  sectionSub.textContent = CAT_META[activeCat] || "Explora el menú";
+
   const term = (q.value||"").trim().toLowerCase();
   const list = catalogo.filter(x=>{
     const inCat = x.cat===activeCat;
@@ -990,7 +1142,7 @@ function renderItems(){
   });
 
   if(list.length===0){
-    itemsBox.innerHTML = `<div class="muted" style="font-weight:900">No hay resultados.</div>`;
+    itemsBox.innerHTML = `<div class="emptyState">No hay resultados en esta categoría.</div>`;
   }
 }
 q.addEventListener("input", renderItems);
@@ -1021,7 +1173,7 @@ function renderCart(){
   servTxt.textContent = "Domicilio";
 
   if(cart.length===0){
-    cartBox.innerHTML = `<div class="muted" style="font-weight:900">Aún no agregas nada 😄</div>`;
+    cartBox.innerHTML = `<div class="emptyState">Aún no agregas nada 😄</div>`;
     return;
   }
 
@@ -1748,7 +1900,7 @@ function buildWhatsAppText(){
 }
 
 /** =========================
- *  BOTONES PRINCIPALES
+ *  BOTONES
  *  ========================= */
 document.getElementById("btnCheckout").addEventListener("click", ()=>{
   if(!localAbiertoAhora()){
