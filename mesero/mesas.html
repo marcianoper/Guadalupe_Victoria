@@ -1267,8 +1267,8 @@ function abrirDrinkModal(item, cardEl, sumaRapida=false){
   drinkDraft = { item, cardEl, sumaRapida };
   drinkModalTitle.textContent = item.name;
   drinkOptions.innerHTML = `
-    <button type="button" class="modBtn" data-pres="taparosca">Taparosca — $30</button>
-    <button type="button" class="modBtn" data-pres="vidrio">Vidrio — $35</button>
+    <button type="button" class="modBtn" data-pres="taparosca">Taparosca — $35</button>
+    <button type="button" class="modBtn" data-pres="vidrio">Vidrio — $30</button>
   `;
 
   drinkOptions.querySelectorAll("[data-pres]").forEach(btn=>{
