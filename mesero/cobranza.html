@@ -610,7 +610,7 @@ header{
         <div class="mesasGrid" id="mesasGrid"></div>
 
         <div class="actions">
-          <button class="btn btnYellow" id="btnWhatsappResumen" type="button">Enviar resumen a WhatsApp</button>
+          <button class="btn btnYellow" id="btnResumen" type="button">Imprimir resumen</button>
           <button class="btn btnGreen" id="btnCuenta" type="button">Imprimir cuenta</button>
           <button class="btn btnRed" id="btnCerrar" type="button">Cerrar cuenta</button>
           <button class="btn btnLight" id="btnActualizarMesas" type="button">Actualizar</button>
@@ -696,13 +696,10 @@ header{
 
 <script>
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
 
 /* solo operativo */
 const ADMIN_PIN = "1234";
-
-/* número fijo para resumen */
-const WHATSAPP_RESUMEN_NUMERO = "4622527782";
 
 
 
@@ -798,10 +795,6 @@ const btnTipoCarrito = document.getElementById("btnTipoCarrito");
 
 function money(n){
   return "$" + Number(n || 0).toFixed(2);
-}
-
-function moneyPlain(n){
-  return Number(n || 0).toFixed(2);
 }
 
 function escapeHtml(s){
@@ -933,17 +926,6 @@ function renderMesas(){
 
     mesasGrid.appendChild(btn);
   });
-}
-
-function getHoyRangeLocalISO(){
-  const now = new Date();
-  const inicio = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-  const fin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-  return {
-    inicioISO: inicio.toISOString(),
-    finISO: fin.toISOString(),
-    etiqueta: `${String(now.getDate()).padStart(2,"0")}/${String(now.getMonth()+1).padStart(2,"0")}/${now.getFullYear()}`
-  };
 }
 
 async function cargarEstadoMesas(){
@@ -1341,6 +1323,37 @@ function buildCuentaPrint(){
   return html;
 }
 
+function buildResumenPrint(){
+  if(!comandaActual) return "";
+
+  const grupos = agruparItemsPorPlato(itemsActuales);
+
+  let html = `
+    <div class="ticket">
+      <div class="c b lg">RESUMEN</div>
+      <div class="c b">${escapeHtml(comandaActual.mesa || "Cuenta")}</div>
+      <div class="c">Mesero: ${escapeHtml(comandaActual.mesero || "—")}</div>
+      <div class="hr"></div>
+  `;
+
+  grupos.forEach(group => {
+    html += `<div class="g">${escapeHtml(group.plato)}</div>`;
+
+    group.items.forEach(item => {
+      html += `
+        <div class="it">
+          <div class="itn">${escapeHtml(item.qty)} x ${escapeHtml(item.producto_nombre || "Producto")}</div>
+          ${item.nota ? `<div class="sub">• ${escapeHtml(item.nota)}</div>` : ``}
+        </div>
+      `;
+    });
+
+    html += `<div class="hr"></div>`;
+  });
+
+  return html + `</div>`;
+}
+
 function imprimirHtmlTicket(htmlContenido){
   const iframe = document.createElement("iframe");
   iframe.style.position = "fixed";
@@ -1421,6 +1434,14 @@ function imprimirCuenta(){
   imprimirHtmlTicket(buildCuentaPrint());
 }
 
+function imprimirResumen(){
+  if(!comandaActual){
+    alert("Primero selecciona una cuenta.");
+    return;
+  }
+  imprimirHtmlTicket(buildResumenPrint());
+}
+
 function cambiarTipoVista(nuevoTipo){
   tipoVista = nuevoTipo;
   mesaActual = "";
@@ -1432,157 +1453,6 @@ function cambiarTipoVista(nuevoTipo){
   detalleCuenta.innerHTML = `<div class="emptyState">Selecciona una cuenta.</div>`;
   updateTipoUI();
   renderMesas();
-}
-
-function sanitizarTelefonoMX(valor){
-  const solo = String(valor || "").replace(/\D/g, "");
-  if(!solo) return "";
-  if(solo.startsWith("52")) return solo;
-  return "52" + solo;
-}
-
-async function obtenerResumenDelDia(){
-  const { inicioISO, finISO, etiqueta } = getHoyRangeLocalISO();
-
-  const { data: comandas, error: errComandas } = await supabase
-    .from("comandas")
-    .select("id, mesa, mesero, estado, created_at, updated_at")
-    .gte("created_at", inicioISO)
-    .lte("created_at", finISO)
-    .order("created_at", { ascending:true });
-
-  if(errComandas){
-    throw errComandas;
-  }
-
-  const listaComandas = comandas || [];
-  if(!listaComandas.length){
-    return {
-      texto: `*Resumen del día ${etiqueta}*\n\nNo hubo pedidos registrados hoy.`,
-      total: 0
-    };
-  }
-
-  const ids = listaComandas.map(c => c.id);
-
-  const { data: items, error: errItems } = await supabase
-    .from("comandas_items")
-    .select("*")
-    .in("comanda_id", ids)
-    .order("created_at", { ascending:true });
-
-  if(errItems){
-    throw errItems;
-  }
-
-  const itemsLista = items || [];
-  const itemsPorComanda = {};
-  const resumenProductos = {};
-  let totalGeneral = 0;
-  let totalPiezas = 0;
-
-  itemsLista.forEach(it => {
-    if(!itemsPorComanda[it.comanda_id]) itemsPorComanda[it.comanda_id] = [];
-    itemsPorComanda[it.comanda_id].push(it);
-
-    const precio = (it.precio_unitario != null && it.precio_unitario !== "")
-      ? Number(it.precio_unitario || 0)
-      : Number(PRECIOS[it.producto_id] || 0);
-
-    const qty = Number(it.qty || 0);
-    const importe = qty * precio;
-    totalGeneral += importe;
-    totalPiezas += qty;
-
-    const nombre = it.producto_nombre || it.name || it.producto_id || "Producto";
-    if(!resumenProductos[nombre]){
-      resumenProductos[nombre] = {
-        qty: 0,
-        total: 0
-      };
-    }
-    resumenProductos[nombre].qty += qty;
-    resumenProductos[nombre].total += importe;
-  });
-
-  let texto = `*Resumen del día ${etiqueta}*\n\n`;
-  texto += `*Cuentas registradas:* ${listaComandas.length}\n`;
-  texto += `*Productos vendidos:* ${totalPiezas}\n`;
-  texto += `*Total ganado:* $${moneyPlain(totalGeneral)}\n\n`;
-
-  texto += `*Pedidos del día*\n`;
-  listaComandas.forEach((com, idx) => {
-    const arr = itemsPorComanda[com.id] || [];
-    const totalCuenta = arr.reduce((acc, it) => {
-      const precio = (it.precio_unitario != null && it.precio_unitario !== "")
-        ? Number(it.precio_unitario || 0)
-        : Number(PRECIOS[it.producto_id] || 0);
-      return acc + (Number(it.qty || 0) * precio);
-    }, 0);
-
-    texto += `\n${idx + 1}. *${com.mesa || "Cuenta"}*`;
-    if(com.mesero) texto += ` - ${com.mesero}`;
-    texto += `\n`;
-
-    if(!arr.length){
-      texto += `   • Sin productos\n`;
-    } else {
-      arr.forEach(it => {
-        const precio = (it.precio_unitario != null && it.precio_unitario !== "")
-          ? Number(it.precio_unitario || 0)
-          : Number(PRECIOS[it.producto_id] || 0);
-        const importe = Number(it.qty || 0) * precio;
-        texto += `   • ${it.qty} x ${it.producto_nombre || it.name || "Producto"} = $${moneyPlain(importe)}\n`;
-        if(it.nota){
-          texto += `     Nota: ${String(it.nota).trim()}\n`;
-        }
-      });
-    }
-
-    texto += `   *Total cuenta:* $${moneyPlain(totalCuenta)}\n`;
-  });
-
-  const productosOrdenados = Object.entries(resumenProductos)
-    .sort((a,b) => b[1].total - a[1].total);
-
-  texto += `\n*Resumen por producto*\n`;
-  productosOrdenados.forEach(([nombre, info]) => {
-    texto += `• ${nombre}: ${info.qty} pzas / $${moneyPlain(info.total)}\n`;
-  });
-
-  texto += `\n*TOTAL DEL DÍA:* $${moneyPlain(totalGeneral)}`;
-
-  return {
-    texto,
-    total: totalGeneral
-  };
-}
-
-async function enviarResumenWhatsapp(){
-  if(!supabaseReady){
-    setSyncStatus("Configura Supabase primero", "bad");
-    return;
-  }
-
-  try{
-    setSyncStatus("Generando resumen del día...", "warn");
-
-    const numero = sanitizarTelefonoMX(WHATSAPP_RESUMEN_NUMERO);
-    if(!numero){
-      alert("El número fijo de WhatsApp no es válido.");
-      return;
-    }
-
-    const resumen = await obtenerResumenDelDia();
-    const url = `https://wa.me/${numero}?text=${encodeURIComponent(resumen.texto)}`;
-
-    setSyncStatus(`Resumen listo para ${WHATSAPP_RESUMEN_NUMERO}. Total del día: ${money(resumen.total)}`, "ok");
-    window.open(url, "_blank");
-  }catch(err){
-    console.error(err);
-    setSyncStatus("Error al generar el resumen del día", "bad");
-    alert("No se pudo generar el resumen del día.");
-  }
 }
 
 loginRol.addEventListener("change", ()=>{
@@ -1610,7 +1480,7 @@ document.getElementById("btnEditSave").onclick = guardarEdicion;
 
 document.getElementById("btnCerrar").onclick = cerrarCuenta;
 document.getElementById("btnCuenta").onclick = imprimirCuenta;
-document.getElementById("btnWhatsappResumen").onclick = enviarResumenWhatsapp;
+document.getElementById("btnResumen").onclick = imprimirResumen;
 document.getElementById("btnActualizarMesas").onclick = async ()=>{
   await cargarEstadoMesas();
   if (mesaActual) await cargarCuenta();
