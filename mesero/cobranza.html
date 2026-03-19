@@ -564,6 +564,105 @@ header{
   font-weight:800;
   font-size:14px;
 }
+
+/* ===== MODO TICKET ===== */
+body.ticket-mode{
+  background:#fff !important;
+}
+
+body.ticket-mode > *:not(#ticketPrintRoot){
+  display:none !important;
+}
+
+#ticketPrintRoot{
+  display:none;
+}
+
+body.ticket-mode #ticketPrintRoot{
+  display:block !important;
+  width:80mm;
+  max-width:80mm;
+  margin:0 auto;
+  background:#fff;
+  color:#000;
+}
+
+.ticket{
+  width:72mm;
+  margin:0 auto;
+  box-sizing:border-box;
+  padding:2mm 1.5mm 3mm;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size:12px;
+  line-height:1.25;
+  color:#000;
+  background:#fff;
+}
+.ticket .c{text-align:center}
+.ticket .b{font-weight:900}
+.ticket .lg{font-size:18px}
+.ticket .hr{border-top:1px dashed #000;margin:5px 0}
+.ticket .g{
+  font-weight:900;
+  margin-top:6px;
+  font-size:12px;
+  text-transform:uppercase;
+}
+.ticket .it{margin:5px 0}
+.ticket .itn{
+  font-weight:900;
+  font-size:13px;
+  line-height:1.15;
+}
+.ticket .sub{
+  padding-left:6px;
+  font-size:11px;
+  white-space:pre-wrap;
+}
+.ticket .priceRow{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:11px;
+  margin-top:2px;
+}
+.ticket .totalRowPrint{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:18px;
+  font-weight:900;
+  margin-top:8px;
+}
+
+@page{
+  size:80mm auto;
+  margin:0;
+}
+
+@media print{
+  html, body{
+    width:80mm !important;
+    max-width:80mm !important;
+    background:#fff !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+  }
+
+  body > *:not(#ticketPrintRoot){
+    display:none !important;
+  }
+
+  #ticketPrintRoot{
+    display:block !important;
+    width:80mm !important;
+    max-width:80mm !important;
+    margin:0 auto !important;
+    padding:0 !important;
+    background:#fff !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -685,6 +784,8 @@ header{
   </div>
 </div>
 
+<div id="ticketPrintRoot"></div>
+
 <script>
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
@@ -692,6 +793,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const ADMIN_PIN = "1234";
 
 
+let restaurarImpresionTimer = null;
 
 if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase && typeof window.supabase.createClient === "function") {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -782,6 +884,7 @@ const editHelp = document.getElementById("editHelp");
 const btnTipoMesas = document.getElementById("btnTipoMesas");
 const btnTipoLlevar = document.getElementById("btnTipoLlevar");
 const btnTipoCarrito = document.getElementById("btnTipoCarrito");
+const ticketPrintRoot = document.getElementById("ticketPrintRoot");
 
 function money(n){
   return "$" + Number(n || 0).toFixed(2);
@@ -1345,125 +1448,44 @@ function buildResumenPrint(){
   return html;
 }
 
+function restaurarVistaDespuesDeImprimir(){
+  if (restaurarImpresionTimer) {
+    clearTimeout(restaurarImpresionTimer);
+    restaurarImpresionTimer = null;
+  }
+  document.body.classList.remove("ticket-mode");
+  ticketPrintRoot.innerHTML = "";
+}
+
+window.addEventListener("afterprint", () => {
+  restaurarVistaDespuesDeImprimir();
+});
+
 function imprimirHtmlTicket(htmlContenido){
   if(!htmlContenido) return;
 
-  const win = window.open("", "_blank", "width=420,height=800");
+  try{
+    ticketPrintRoot.innerHTML = htmlContenido;
+    document.body.classList.add("ticket-mode");
 
-  if(!win){
-    alert("El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para esta página.");
-    return;
+    restaurarImpresionTimer = setTimeout(() => {
+      restaurarVistaDespuesDeImprimir();
+    }, 4000);
+
+    setTimeout(() => {
+      try{
+        window.print();
+      }catch(err){
+        console.error(err);
+        restaurarVistaDespuesDeImprimir();
+        alert("Se produjo un error al imprimir.");
+      }
+    }, 250);
+  }catch(err){
+    console.error(err);
+    restaurarVistaDespuesDeImprimir();
+    alert("No se pudo preparar el ticket para imprimir.");
   }
-
-  win.document.open();
-  win.document.write(`
-    <!doctype html>
-    <html lang="es">
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-      <title>Ticket</title>
-      <style>
-        @page{
-          size: 80mm auto;
-          margin: 0;
-        }
-
-        html, body{
-          margin:0;
-          padding:0;
-          background:#fff;
-          width:80mm;
-          max-width:80mm;
-          overflow:hidden;
-        }
-
-        body{
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          color:#000;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-
-        .ticket{
-          width:72mm;
-          margin:0 auto;
-          box-sizing:border-box;
-          padding:2mm 1.5mm 3mm;
-          font-size:12px;
-          line-height:1.25;
-          color:#000;
-          background:#fff;
-        }
-
-        .c{text-align:center}
-        .b{font-weight:900}
-        .lg{font-size:18px}
-        .hr{border-top:1px dashed #000;margin:5px 0}
-        .g{
-          font-weight:900;
-          margin-top:6px;
-          font-size:12px;
-          text-transform:uppercase;
-        }
-        .it{margin:5px 0}
-        .itn{
-          font-weight:900;
-          font-size:13px;
-          line-height:1.15;
-        }
-        .sub{
-          padding-left:6px;
-          font-size:11px;
-          white-space:pre-wrap;
-        }
-        .priceRow{
-          display:flex;
-          justify-content:space-between;
-          gap:8px;
-          font-size:11px;
-          margin-top:2px;
-        }
-        .totalRowPrint{
-          display:flex;
-          justify-content:space-between;
-          gap:8px;
-          font-size:18px;
-          font-weight:900;
-          margin-top:8px;
-        }
-
-        .screenWrap{
-          display:flex;
-          justify-content:center;
-          background:#fff;
-          padding:8px 0;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="screenWrap">
-        ${htmlContenido}
-      </div>
-
-      <script>
-        window.onload = function(){
-          setTimeout(function(){
-            window.focus();
-            window.print();
-          }, 250);
-        };
-
-        window.onafterprint = function(){
-          setTimeout(function(){
-            window.close();
-          }, 300);
-        };
-      <\/script>
-    </body>
-    </html>
-  `);
-  win.document.close();
 }
 
 function imprimirCuenta(){
