@@ -696,10 +696,13 @@ header{
 
 <script>
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
 
 /* solo operativo */
 const ADMIN_PIN = "1234";
+
+/* número fijo para resumen */
+const WHATSAPP_RESUMEN_NUMERO = "4622527782";
 
 
 
@@ -1564,19 +1567,16 @@ async function enviarResumenWhatsapp(){
   try{
     setSyncStatus("Generando resumen del día...", "warn");
 
-    const telefono = prompt("¿A qué número quieres enviar el resumen?\nEjemplo: 4621561193");
-    if(telefono === null) return;
-
-    const numero = sanitizarTelefonoMX(telefono);
+    const numero = sanitizarTelefonoMX(WHATSAPP_RESUMEN_NUMERO);
     if(!numero){
-      alert("Escribe un número válido.");
+      alert("El número fijo de WhatsApp no es válido.");
       return;
     }
 
     const resumen = await obtenerResumenDelDia();
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(resumen.texto)}`;
 
-    setSyncStatus(`Resumen listo. Total del día: ${money(resumen.total)}`, "ok");
+    setSyncStatus(`Resumen listo para ${WHATSAPP_RESUMEN_NUMERO}. Total del día: ${money(resumen.total)}`, "ok");
     window.open(url, "_blank");
   }catch(err){
     console.error(err);
