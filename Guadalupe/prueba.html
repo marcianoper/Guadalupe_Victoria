@@ -924,7 +924,7 @@ function renderHorarioEstado(){
 
   const estado = getHorarioEstado();
   const hoy = NOMBRES_DIA[new Date().getDay()];
-  const lluviaTxt = LLUVIA_ACTIVA ? "Tarifa de lluvia activa." : "Tarifa normal activa.";
+  const lluviaTxt = LLUVIA_ACTIVA ? "Tarifa de lluvia activa." : "Los esperamos";
 
   pill.classList.remove("open","closed");
   pill.classList.add(estado.open ? "open" : "closed");
