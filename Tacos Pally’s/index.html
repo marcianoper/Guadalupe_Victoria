@@ -1,1 +1,1950 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Menú — Tacos Pally's</title>
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <style>
+    :root{
+      --bg:#24140e;
+      --paper:#f3e3c5;
+      --paper2:#fff7e8;
+      --card:#fff5df;
+      --ink:#2f1a12;
+      --muted:#6e5646;
+      --line:rgba(47,26,18,.14);
+
+      --brand:#f4b53f;
+      --brand2:#cf7a18;
+      --goldSoft:rgba(244,181,63,.16);
+      --green:#1f6b2a;
+      --red:#b42318;
+
+      --shadow: 0 18px 50px rgba(0,0,0,.20);
+      --shadow-soft: 0 10px 28px rgba(0,0,0,.14);
+      --r:20px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 520px at 10% -10%, rgba(244,181,63,.18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(255,255,255,.03), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)),
+        var(--bg);
+      color:var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    header{
+      position: sticky; top: 0; z-index: 40;
+      background: linear-gradient(180deg, rgba(38,20,14,.96), rgba(38,20,14,.90));
+      color:#fff;
+      padding:12px 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+    }
+    header .row{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      max-width:1200px; margin:0 auto;
+      flex-wrap:wrap;
+    }
+    header .brand{
+      display:flex; flex-direction:column; line-height:1.05; min-width:0;
+    }
+    header h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    header .sub{
+      font-size:12px; opacity:.92; margin-top:3px;
+    }
+
+    .topRight{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .pill b{font-size:13px}
+    .pillStatus.open{ background: rgba(31,107,42,.22); }
+    .pillStatus.closed{ background: rgba(180,35,24,.24); }
+
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px;
+      display:grid;
+      gap:14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.45fr .95fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.40), rgba(255,255,255,.16)), var(--paper);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card h2{
+      margin:0;
+      padding:14px 16px 12px;
+      font-size:15px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,0));
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .content{padding:14px}
+
+    .hero{
+      border-radius: 24px;
+      border:1px solid rgba(255,255,255,.06);
+      overflow:hidden;
+      box-shadow: 0 25px 70px rgba(0,0,0,.22);
+      background:#1a120e;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0;
+    }
+    .hero img{
+      width:100%;
+      height:340px;
+      object-fit:cover;
+      display:block;
+      background:#1a120e;
+    }
+    @media (max-width: 860px){
+      .hero{grid-template-columns:1fr}
+      .hero img{height:280px; object-fit:contain}
+    }
+    @media (max-width: 600px){
+      .hero img{height:220px}
+    }
+
+    .searchRow{
+      display:flex; gap:10px; align-items:center; margin-top:6px;
+    }
+    .searchRow input{
+      flex:1;
+      padding:13px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(47,26,18,.16);
+      background: rgba(255,255,255,.68);
+      outline:none;
+      font-size:14px;
+      color: var(--ink);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
+    }
+
+    .tabs{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin: 14px 0 12px;
+    }
+    .tab{
+      border:1px solid rgba(47,26,18,.18);
+      background: rgba(255,255,255,.58);
+      padding:10px 14px;
+      border-radius: 999px;
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      letter-spacing:.2px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+    .tab:active{transform:translateY(1px)}
+    .tab.active{
+      background: linear-gradient(180deg, rgba(255,248,232,.96), rgba(255,240,214,.92));
+      border-color: rgba(244,181,63,.65);
+      box-shadow: 0 0 0 3px rgba(244,181,63,.14), 0 10px 22px rgba(0,0,0,.10);
+      color:#4a2f11;
+    }
+
+    .sectionTitle{
+      margin: 12px 0 6px;
+      font-size: 42px;
+      letter-spacing: .8px;
+      font-weight: 1000;
+      color: rgba(47,26,18,.96);
+      line-height:1;
+    }
+    .sectionSub{
+      font-size:13px;
+      font-weight:900;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .divider{
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(244,181,63,.75), rgba(47,26,18,.18));
+      margin: 8px 0 18px;
+    }
+    @media (max-width: 620px){
+      .sectionTitle{font-size:32px}
+    }
+
+    .items{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    @media (max-width: 720px){
+      .items{grid-template-columns:1fr}
+    }
+
+    .prod{
+      background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(255,255,255,.20));
+      border:1px solid rgba(47,26,18,.14);
+      border-radius: 20px;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 1fr 1.05fr;
+      min-height: 182px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.09);
+      transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+    .prod:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 22px 54px rgba(0,0,0,.13);
+      border-color: rgba(244,181,63,.35);
+    }
+
+    .prodLeft{
+      padding:14px 14px 12px;
+      display:flex; flex-direction:column; gap:8px;
+      background: rgba(255,255,255,.25);
+      min-width:0;
+    }
+
+    .prodName{
+      font-weight:1000;
+      font-size: 22px;
+      margin:0;
+      line-height:1.12;
+      word-break: break-word;
+    }
+
+    .prodDesc{
+      margin:0;
+      color: var(--muted);
+      font-weight:700;
+      line-height:1.25;
+      font-size:13px;
+    }
+
+    .price{
+      margin-top:auto;
+      font-weight:1000;
+      color: var(--green);
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .price b{
+      display:block;
+      font-size: 32px;
+      letter-spacing:.2px;
+      line-height:1;
+      margin-top:4px;
+    }
+
+    .prodRight{
+      position:relative;
+      padding:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.30));
+      display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;
+    }
+    .prodImg{
+      width: 100%;
+      height: 96px;
+      border-radius: 18px;
+      overflow:hidden;
+      background: #0b1220;
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .prodImg img{
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+
+    .btnAdd, .stickyBtn{
+      border:none; cursor:pointer;
+      padding: 11px 24px;
+      border-radius: 999px;
+      font-weight: 1000;
+      color:#fff;
+      background: linear-gradient(180deg, var(--brand), var(--brand2));
+      box-shadow: 0 12px 26px rgba(244,181,63,.24);
+      font-size: 15px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: transform .06s ease, filter .12s ease;
+    }
+    .btnAdd:hover,.stickyBtn:hover{filter:brightness(1.04)}
+    .btnAdd:active,.stickyBtn:active{transform: translateY(1px)}
+    .btnAdd:focus,.stickyBtn:focus{outline: 3px solid rgba(244,181,63,.26)}
+    .btnDisabled{
+      background: linear-gradient(180deg, #9a9a9a, #6f6f6f) !important;
+      box-shadow:none !important;
+      cursor:not-allowed !important;
+      opacity:.85;
+    }
+
+    .btnGhost{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 1000;
+      cursor:default;
+      pointer-events:none;
+    }
+
+    .cartLine{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      border-bottom:1px dashed rgba(47,26,18,.16);
+      padding:12px 0;
+    }
+    .cartLine:last-child{border-bottom:none}
+    .muted{color: var(--muted)}
+    .qtyRow{display:flex; gap:6px; align-items:center}
+    .mini{
+      width:30px; height:30px;
+      border-radius:10px;
+      border:1px solid rgba(47,26,18,.18);
+      background: rgba(255,255,255,.75);
+      cursor:pointer;
+      font-weight:1000;
+      color: var(--ink);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:1000;
+      margin:10px 0 6px;
+      color: rgba(47,26,18,.90)
+    }
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border:1px solid rgba(47,26,18,.16);
+      border-radius:14px;
+      font-size:14px;
+      outline:none;
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+    }
+    textarea{min-height:90px; resize:vertical}
+
+    .totalRow{
+      display:flex; justify-content:space-between; align-items:center;
+      padding-top:14px; margin-top:14px;
+      border-top:1px solid rgba(47,26,18,.16);
+      font-size:14px;
+      font-weight:900;
+    }
+    .totalRow strong{
+      font-size:22px;
+      color:#3f2b12;
+    }
+
+    .stickyBar{
+      position: sticky;
+      bottom: 12px;
+      z-index: 25;
+      margin-top: 14px;
+      background: linear-gradient(180deg, rgba(38,20,14,.96), rgba(38,20,14,.90));
+      color:#fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.24);
+      border:1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px;
+      flex-wrap:wrap;
+    }
+    .stickyBar .left{display:flex; align-items:center; gap:10px; font-weight:1000;}
+    .stickyBar .amount{font-size:20px; letter-spacing:.2px;}
+    .stickyBtn{min-width: 160px;}
+    .btnClear{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 1000;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .backdrop, .stepsBackdrop{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.58);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:60;
+      touch-action:none;
+    }
+    .modal, .steps{
+      width:min(820px, 100%);
+      background: var(--paper);
+      border-radius:20px;
+      overflow:hidden;
+      border:1px solid rgba(47,26,18,.16);
+      box-shadow: 0 40px 100px rgba(0,0,0,.30);
+      pointer-events:auto;
+    }
+    .modalHead, .stepsHead{
+      padding:14px 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,0));
+      border-bottom:1px solid rgba(47,26,18,.14);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .modalHead h3{margin:0; font-size:15px}
+    .closeX{
+      border:1px solid rgba(47,26,18,.14);
+      background: rgba(255,255,255,.65);
+      border-radius:12px;
+      width:40px; height:40px;
+      cursor:pointer;
+      font-weight:1000;
+      color: var(--ink);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .optGroup{
+      border:1px solid rgba(47,26,18,.12);
+      border-radius:16px;
+      padding:12px 12px;
+      margin-top:10px;
+      background: rgba(255,255,255,.38);
+    }
+    .optTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      flex-wrap:wrap;
+    }
+    .optTitle b{font-size:13px}
+    .optTitle span{font-size:12px; color:var(--muted); font-weight:800}
+    .optList{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .optBtn{
+      border:1px solid rgba(47,26,18,.16);
+      background: rgba(255,255,255,.70);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      font-weight:900;
+      color: var(--ink);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .optBtn.active{
+      border-color: rgba(244,181,63,.70);
+      box-shadow:0 0 0 3px rgba(244,181,63,.16);
+      background: rgba(255,250,238,.95);
+    }
+
+    .footerBtns{
+      display:flex;
+      gap:10px;
+      padding:14px 16px;
+      border-top:1px solid rgba(47,26,18,.14);
+      background: rgba(255,255,255,.25);
+    }
+    .footerBtns button{flex:1}
+
+    .btnDark{
+      border:none; cursor:pointer;
+      padding:12px 14px;
+      border-radius: 12px;
+      font-weight:1000;
+      color:#fff;
+      background: linear-gradient(180deg, rgba(47,26,18,.95), rgba(47,26,18,.88));
+      box-shadow: 0 14px 30px rgba(0,0,0,.18);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .btnLight{
+      border:1px solid rgba(47,26,18,.16);
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+      padding:12px 14px;
+      border-radius: 12px;
+      font-weight:1000;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .note{
+      font-size:12px;
+      color: var(--muted);
+      font-weight:800;
+      line-height:1.4;
+      background: rgba(255,255,255,.42);
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(47,26,18,.12);
+      margin-top:12px;
+    }
+    .noteWarn{
+      color:#7a2e00;
+      background: rgba(255,235,205,.75);
+      border-color: rgba(244,181,63,.35);
+    }
+    .noteClosed{
+      color:#7a0f0f;
+      background: rgba(255,232,232,.90);
+      border-color: rgba(180,35,24,.25);
+    }
+
+    .steps{
+      width:min(760px, 100%);
+      max-height: 86vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .stepsHead .t{display:flex; flex-direction:column; gap:4px;}
+    .stepsHead .t b{font-size:16px}
+    .stepsHead .t span{font-size:12px; color:var(--muted); font-weight:900}
+    .stepsBody{
+      padding:14px 16px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      flex: 1 1 auto;
+    }
+    .stepsFoot{
+      display:flex; gap:10px;
+      padding:14px 16px;
+      border-top:1px solid rgba(47,26,18,.14);
+      background: rgba(255,255,255,.25);
+      flex: 0 0 auto;
+      position: sticky;
+      bottom: 0;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      z-index:2;
+    }
+    .stepsFoot button{flex:1}
+
+    .stepRow{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width:520px){ .stepRow{grid-template-columns:1fr} }
+
+    .mapWrap{
+      border:1px solid rgba(47,26,18,.16);
+      border-radius:16px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.08);
+      margin-top:10px;
+    }
+    #miniMap{width:100%; height:150px; background:#eee; touch-action: pan-x pan-y;}
+
+    .mapBar{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+    .mapBar .btnLight{flex:1; min-width: 170px;}
+
+    .kpiRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .kpi{
+      border:1px solid rgba(47,26,18,.12);
+      border-radius:16px;
+      background: rgba(255,255,255,.45);
+      padding:10px 12px;
+    }
+    .kpi b{display:block; font-size:12px}
+    .kpi span{display:block; margin-top:4px; font-weight:1000}
+
+    .detailsToggle{
+      width:100%;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border:1px solid rgba(47,26,18,.16);
+      background: rgba(255,255,255,.55);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:1000;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      margin-top:10px;
+    }
+    .detailsToggle .arrow{font-size:18px; line-height:1}
+    .detailsWrap{display:none}
+    .detailsWrap.show{display:block}
+
+    .menuBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: var(--goldSoft);
+      border:1px solid rgba(244,181,63,.25);
+      font-size:12px;
+      font-weight:1000;
+      color:#6b4610;
+    }
+
+    .emptyState{
+      padding:18px;
+      border:1px dashed rgba(47,26,18,.18);
+      border-radius:16px;
+      background: rgba(255,255,255,.36);
+      color:var(--muted);
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="row">
+    <div class="brand">
+      <h1>🌮 Menú — Tacos Pally's</h1>
+      <div class="sub" id="statusSub">Pedidos rápidos • Servicio a domicilio</div>
+    </div>
+
+    <div class="topRight">
+      <div class="pill pillStatus" id="openStatusPill">⏳ Revisando horario...</div>
+      <div class="pill" id="cartPill">🛒 <b>0</b> • <span id="pillTotal">$0.00</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <img src="pally_menu_1.png" alt="Menú principal Tacos Pally's">
+    <img src="pally_menu_2.png" alt="Bebidas y contacto Tacos Pally's">
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>
+        <span>Menú</span>
+        <span class="menuBadge">🔥 Tacos Pally's</span>
+      </h2>
+
+      <div class="content">
+        <div id="horarioAviso"></div>
+
+        <div class="searchRow">
+          <input id="q" placeholder="Buscar un producto (ej. taco, quesadilla, tripa, torta, bebida)..."/>
+        </div>
+
+        <div class="tabs" id="tabs"></div>
+
+        <div id="sectionHdr">
+          <div class="sectionTitle" id="sectionTitle">TACOS</div>
+          <div class="sectionSub" id="sectionSub">Elige tus favoritos</div>
+          <div class="divider"></div>
+        </div>
+
+        <div class="items" id="items"></div>
+
+        <div class="note">
+          Puedes agregar notas como <b>sin cebolla</b>, <b>sin cilantro</b>, <b>con salsa aparte</b> o especificar carne en productos combinados.
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h2>
+        Tu pedido
+        <button class="btnGhost" id="btnCambioServicio" title="Servicio fijo">Servicio: <span id="servTxt">Domicilio</span></button>
+      </h2>
+
+      <div class="content">
+        <select id="canal" style="display:none">
+          <option value="domicilio" selected>Envío a domicilio</option>
+        </select>
+
+        <div id="cart"></div>
+
+        <div class="totalRow">
+          <span>Total</span>
+          <strong id="total">$0.00</strong>
+        </div>
+
+        <div class="note" id="checkoutNote">
+          Al dar <b>CONTINUAR</b> te sale el checkout y al final se abre WhatsApp listo para enviar.
+        </div>
+
+        <div class="stickyBar">
+          <div class="left">
+            <span style="opacity:.9">🛒</span>
+            <span class="amount" id="barTotal">$0.00</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+            <button class="btnClear" id="btnClear">Vaciar</button>
+            <button class="stickyBtn" id="btnCheckout">CONTINUAR</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modalHead">
+      <div>
+        <h3 id="mTitle">Producto</h3>
+        <div class="muted" id="mSub" style="font-size:12px;font-weight:900">Configura como lo quieres</div>
+      </div>
+      <button class="closeX" id="mClose" type="button">✕</button>
+    </div>
+
+    <div class="content" id="mBody"></div>
+
+    <div class="footerBtns">
+      <button class="btnLight" id="mCancel" type="button">Cancelar</button>
+      <button class="btnDark" id="mAdd" type="button">Agregar al carrito</button>
+    </div>
+  </div>
+</div>
+
+<div class="stepsBackdrop" id="stepsBackdrop" aria-hidden="true">
+  <div class="steps" role="dialog" aria-modal="true">
+    <div class="stepsHead">
+      <div class="t">
+        <b id="stepTitle">Paso</b>
+        <span id="stepSub">—</span>
+      </div>
+      <button class="closeX" id="stepsClose" type="button">✕</button>
+    </div>
+
+    <div class="stepsBody" id="stepsBody"></div>
+
+    <div class="stepsFoot">
+      <button class="btnLight" id="btnBack" type="button">Regresar</button>
+      <button class="btnDark" id="btnNext" type="button">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/** =========================
+ *  CONFIG ADMIN
+ *  ========================= */
+const TAQUERIA_NOMBRE = "Tacos Pally's";
+const WHATSAPP_TAQ = "5214622708704";
+const TQ_LAT = 20.6760;
+const TQ_LNG = -101.3470;
+const IMG_BASE = "";
+
+/* false = tarifa normal | true = tarifa lluvia */
+const LLUVIA_ACTIVA = false;
+
+/** =========================
+ *  HORARIO
+ *  ========================= */
+const HORARIO = {
+  0: null,
+  1: { open: "16:00", close: "00:30" },
+  2: { open: "16:00", close: "00:30" },
+  3: { open: "16:00", close: "00:30" },
+  4: { open: "16:00", close: "00:30" },
+  5: { open: "16:00", close: "00:30" },
+  6: { open: "16:00", close: "00:30" },
+};
+
+const NOMBRES_DIA = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+
+function hhmmToMinutes(hhmm){
+  const [h,m] = hhmm.split(":").map(Number);
+  return (h * 60) + m;
+}
+function getNowMinutes(d = new Date()){
+  return d.getHours() * 60 + d.getMinutes();
+}
+function formatHour(hhmm){
+  const [h,m] = hhmm.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d.toLocaleTimeString("es-MX", {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+function getHorarioEstado(now = new Date()){
+  const day = now.getDay();
+  const mins = getNowMinutes(now);
+
+  const today = HORARIO[day];
+  const prevDay = (day + 6) % 7;
+  const prev = HORARIO[prevDay];
+
+  if(prev){
+    const prevOpen = hhmmToMinutes(prev.open);
+    const prevClose = hhmmToMinutes(prev.close);
+    const prevCrossesMidnight = prevClose <= prevOpen;
+
+    if(prevCrossesMidnight && mins < prevClose){
+      return {
+        open: true,
+        sourceDay: prevDay,
+        openText: prev.open,
+        closeText: prev.close,
+        statusText: `Abierto ahora • cierra ${formatHour(prev.close)}`
+      };
+    }
+  }
+
+  if(!today){
+    return {
+      open: false,
+      sourceDay: day,
+      openText: null,
+      closeText: null,
+      statusText: `Cerrado hoy`
+    };
+  }
+
+  const openMin = hhmmToMinutes(today.open);
+  const closeMin = hhmmToMinutes(today.close);
+  const crossesMidnight = closeMin <= openMin;
+
+  let isOpen = false;
+  if(crossesMidnight){
+    isOpen = mins >= openMin;
+  }else{
+    isOpen = mins >= openMin && mins < closeMin;
+  }
+
+  if(isOpen){
+    return {
+      open: true,
+      sourceDay: day,
+      openText: today.open,
+      closeText: today.close,
+      statusText: `Abierto ahora • cierra ${formatHour(today.close)}`
+    };
+  }
+
+  return {
+    open: false,
+    sourceDay: day,
+    openText: today.open,
+    closeText: today.close,
+    statusText: `Cerrado ahora • abre ${formatHour(today.open)}`
+  };
+}
+function localAbiertoAhora(){
+  return getHorarioEstado().open;
+}
+function renderHorarioEstado(){
+  const pill = document.getElementById("openStatusPill");
+  const sub = document.getElementById("statusSub");
+  const aviso = document.getElementById("horarioAviso");
+  const btn = document.getElementById("btnCheckout");
+  const note = document.getElementById("checkoutNote");
+
+  const estado = getHorarioEstado();
+  const hoy = NOMBRES_DIA[new Date().getDay()];
+  const lluviaTxt = LLUVIA_ACTIVA ? "Tarifa de lluvia activa." : "Servicio a domicilio disponible.";
+
+  pill.classList.remove("open","closed");
+  pill.classList.add(estado.open ? "open" : "closed");
+  pill.textContent = estado.open ? `🟢 ${estado.statusText}` : `🔴 ${estado.statusText}`;
+
+  sub.textContent = `Pedidos rápidos • ${estado.statusText}`;
+
+  if(estado.open){
+    aviso.innerHTML = `
+      <div class="note">
+        <b>Horario de servicio:</b> lunes a sábado de <b>4:00 p.m.</b> a <b>12:30 a.m.</b>. Domingo <b>cerrado</b>.<br>
+        ${lluviaTxt}
+      </div>
+    `;
+    btn.disabled = false;
+    btn.classList.remove("btnDisabled");
+    note.className = "note";
+    note.innerHTML = `Al dar <b>CONTINUAR</b> te sale el checkout y al final se abre WhatsApp listo para enviar.`;
+  }else{
+    aviso.innerHTML = `
+      <div class="note noteClosed">
+        <b>En este momento no estamos recibiendo pedidos.</b><br>
+        Hoy es <b>${hoy}</b>. ${estado.statusText}.<br>
+        Horario: lunes a sábado de <b>4:00 p.m.</b> a <b>12:30 a.m.</b>. Domingo <b>cerrado</b>.<br>
+        ${lluviaTxt}
+      </div>
+    `;
+    btn.disabled = true;
+    btn.classList.add("btnDisabled");
+    note.className = "note noteClosed";
+    note.innerHTML = `Por ahora el local está <b>cerrado</b>. Los pedidos solo se pueden hacer cuando el negocio esté abierto.`;
+  }
+}
+
+/** =========================
+ *  TARIFAS ENVÍO
+ *  ========================= */
+const TARIFAS = [
+  {from:0,   to:3.1, precio:50, lluvia:65},
+  {from:3.1, to:4.1, precio:55, lluvia:75},
+  {from:4.1, to:5.1, precio:60, lluvia:85},
+  {from:5.1, to:6.1, precio:65, lluvia:95},
+  {from:6.1, to:7.1, precio:70, lluvia:105},
+  {from:7.1, to:8.1, precio:75, lluvia:115},
+  {from:8.1, to:9.1, precio:80, lluvia:125},
+];
+function getTarifa(km, lluvia=false){
+  const k = Number(km);
+  const row = TARIFAS.find(r => k >= r.from && k < r.to) || null;
+  if(!row) return {ok:false, precio:0, limiteKm: 9};
+  return {ok:true, precio: lluvia ? row.lluvia : row.precio};
+}
+const lluvia = LLUVIA_ACTIVA;
+
+/** =========================
+ *  CATALOGO Tacos Pally's
+ *  ========================= */
+const catalogo = [
+  {id:"taco_pastor",    cat:"TACOS", name:"Taco de Pastor", price:15, desc:"Pastor bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"taco_bistec",    cat:"TACOS", name:"Taco de Bistec", price:15, desc:"Bistec clásico.", mods:true, img:"pally_menu_1.png"},
+  {id:"taco_chorizo",   cat:"TACOS", name:"Taco de Chorizo", price:15, desc:"Chorizo doradito.", mods:true, img:"pally_menu_1.png"},
+  {id:"taco_costilla",  cat:"TACOS", name:"Taco de Costilla", price:15, desc:"Costilla jugosa.", mods:true, img:"pally_menu_1.png"},
+  {id:"taco_maciza",    cat:"TACOS", name:"Taco de Maciza", price:15, desc:"Maciza bien servida.", mods:true, img:"pally_menu_1.png"},
+  {id:"taco_cabeza",    cat:"TACOS", name:"Taco de Cabeza", price:15, desc:"Cabeza suave.", mods:true, img:"pally_menu_1.png"},
+  {id:"taco_lengua",    cat:"TACOS", name:"Taco de Lengua", price:15, desc:"Lengua suave y jugosa.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"quesa_pastor",   cat:"QUESADILLAS", name:"Quesadilla de Pastor", price:28, desc:"Con queso y pastor.", mods:true, img:"pally_menu_1.png"},
+  {id:"quesa_bistec",   cat:"QUESADILLAS", name:"Quesadilla de Bistec", price:28, desc:"Con queso y bistec.", mods:true, img:"pally_menu_1.png"},
+  {id:"quesa_chorizo",  cat:"QUESADILLAS", name:"Quesadilla de Chorizo", price:28, desc:"Con queso y chorizo.", mods:true, img:"pally_menu_1.png"},
+  {id:"quesa_costilla", cat:"QUESADILLAS", name:"Quesadilla de Costilla", price:28, desc:"Con queso y costilla.", mods:true, img:"pally_menu_1.png"},
+  {id:"quesa_maciza",   cat:"QUESADILLAS", name:"Quesadilla de Maciza", price:28, desc:"Con queso y maciza.", mods:true, img:"pally_menu_1.png"},
+  {id:"quesa_cabeza",   cat:"QUESADILLAS", name:"Quesadilla de Cabeza", price:28, desc:"Con queso y cabeza.", mods:true, img:"pally_menu_1.png"},
+  {id:"quesa_lengua",   cat:"QUESADILLAS", name:"Quesadilla de Lengua", price:28, desc:"Con queso y lengua.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"volcan_pastor",   cat:"VOLCANES", name:"Volcán de Pastor", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"volcan_bistec",   cat:"VOLCANES", name:"Volcán de Bistec", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"volcan_chorizo",  cat:"VOLCANES", name:"Volcán de Chorizo", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"volcan_costilla", cat:"VOLCANES", name:"Volcán de Costilla", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"volcan_maciza",   cat:"VOLCANES", name:"Volcán de Maciza", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"volcan_cabeza",   cat:"VOLCANES", name:"Volcán de Cabeza", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+  {id:"volcan_lengua",   cat:"VOLCANES", name:"Volcán de Lengua", price:20, desc:"Crujiente y bien servido.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"torta_pastor",   cat:"TORTAS", name:"Torta de Pastor", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+  {id:"torta_bistec",   cat:"TORTAS", name:"Torta de Bistec", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+  {id:"torta_chorizo",  cat:"TORTAS", name:"Torta de Chorizo", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+  {id:"torta_costilla", cat:"TORTAS", name:"Torta de Costilla", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+  {id:"torta_maciza",   cat:"TORTAS", name:"Torta de Maciza", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+  {id:"torta_cabeza",   cat:"TORTAS", name:"Torta de Cabeza", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+  {id:"torta_lengua",   cat:"TORTAS", name:"Torta de Lengua", price:35, desc:"Pan + carne + complementos.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"potro_pastor",   cat:"POTROS", name:"Potro de Pastor", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+  {id:"potro_bistec",   cat:"POTROS", name:"Potro de Bistec", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+  {id:"potro_chorizo",  cat:"POTROS", name:"Potro de Chorizo", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+  {id:"potro_costilla", cat:"POTROS", name:"Potro de Costilla", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+  {id:"potro_maciza",   cat:"POTROS", name:"Potro de Maciza", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+  {id:"potro_cabeza",   cat:"POTROS", name:"Potro de Cabeza", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+  {id:"potro_lengua",   cat:"POTROS", name:"Potro de Lengua", price:75, desc:"Mega burro.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"charola_carne", cat:"CHAROLAS", name:"Charola de Carne", price:100, desc:"Ideal para compartir.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"tripa_taco",        cat:"TRIPA", name:"Taco de Tripa", price:19, desc:"Tripa doradita.", mods:true, img:"pally_menu_1.png"},
+  {id:"tripa_quesadilla",  cat:"TRIPA", name:"Quesadilla de Tripa", price:36, desc:"Queso + tripa.", mods:true, img:"pally_menu_1.png"},
+  {id:"tripa_volcan",      cat:"TRIPA", name:"Volcán de Tripa", price:25, desc:"Crujiente y doradito.", mods:true, img:"pally_menu_1.png"},
+  {id:"tripa_torta",       cat:"TRIPA", name:"Torta de Tripa", price:50, desc:"Pan + tripa.", mods:true, img:"pally_menu_1.png"},
+
+  {id:"beb_refresco",  cat:"BEBIDAS", name:"Refresco", price:28, desc:"Refresco individual.", mods:false, img:"pally_menu_2.png"},
+  {id:"beb_agua_1l",   cat:"BEBIDAS", name:"Agua del Día 1L", price:30, desc:"Agua fresca del día.", mods:false, img:"pally_menu_2.png"},
+  {id:"beb_agua_500",  cat:"BEBIDAS", name:"Agua del Día 500 ml", price:20, desc:"Agua fresca del día.", mods:false, img:"pally_menu_2.png"},
+];
+
+const CATS = ["TACOS","QUESADILLAS","VOLCANES","TORTAS","POTROS","CHAROLAS","TRIPA","BEBIDAS"];
+
+const CAT_META = {
+  "TACOS": "Pastor, bistec, chorizo, costilla, maciza, cabeza y lengua",
+  "QUESADILLAS": "Quesadillas bien servidas",
+  "VOLCANES": "Crujientes, dorados y llenos de sabor",
+  "TORTAS": "Tortas taqueras bien reportadas",
+  "POTROS": "Mega burros para buen antojo",
+  "CHAROLAS": "Ideal para compartir",
+  "TRIPA": "Sección especial de tripa",
+  "BEBIDAS": "Refrescos y aguas del día"
+};
+
+/** =========================
+ *  MODIFICADORES
+ *  ========================= */
+const MODS = {
+  conSin: {
+    title:"Preparación",
+    type:"multi",
+    required:false,
+    options:["Con todo","Sin cebolla","Sin cilantro","Sin salsa","Salsa aparte"]
+  }
+};
+function modsPara(item){
+  if(!item.mods) return [];
+  return ["conSin"];
+}
+
+/** =========================
+ *  HELPERS
+ *  ========================= */
+function money(n){ return "$" + Number(n||0).toFixed(2); }
+function escapeHtml(s){ return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+function onlyDigits(s){ return String(s || "").replace(/\D/g,""); }
+function modsToText(mods){
+  const parts = [];
+  for(const k of Object.keys(mods||{})){
+    const g = MODS[k];
+    if(!g) continue;
+    const val = mods[k];
+    if(Array.isArray(val) && val.length) parts.push(`${g.title}: ${val.join(", ")}`);
+    if(typeof val==="string" && val) parts.push(`${g.title}: ${val}`);
+  }
+  return parts.join(" • ");
+}
+function buildKey(item, mods, note){ return item.id + "|" + JSON.stringify(mods) + "|" + (note||""); }
+function validateRequired(item, mods){
+  const keys = modsPara(item);
+  for(const k of keys){
+    const g = MODS[k];
+    if(!g || !g.required) continue;
+    const v = mods[k];
+    if(g.type==="single" && !v) return `${g.title} es obligatorio.`;
+    if(g.type==="multi" && (!v || !v.length)) return `${g.title} es obligatorio.`;
+  }
+  return null;
+}
+
+/** =========================
+ *  UI MENU
+ *  ========================= */
+const tabs = document.getElementById("tabs");
+const itemsBox = document.getElementById("items");
+const sectionTitle = document.getElementById("sectionTitle");
+const sectionSub = document.getElementById("sectionSub");
+const q = document.getElementById("q");
+let activeCat = CATS[0];
+
+function renderTabs(){
+  tabs.innerHTML = "";
+  CATS.forEach(c=>{
+    const el = document.createElement("div");
+    el.className = "tab" + (c===activeCat ? " active":"");
+    el.textContent = c;
+    el.addEventListener("click", ()=>{
+      activeCat = c;
+      renderTabs();
+      renderItems();
+    }, {passive:true});
+    tabs.appendChild(el);
+  });
+}
+function renderItems(){
+  sectionTitle.textContent = activeCat;
+  sectionSub.textContent = CAT_META[activeCat] || "Explora el menú";
+
+  const term = (q.value||"").trim().toLowerCase();
+  const list = catalogo.filter(x=>{
+    const inCat = x.cat===activeCat;
+    const inSearch = !term || (x.name.toLowerCase().includes(term) || (x.desc||"").toLowerCase().includes(term));
+    return inCat && inSearch;
+  });
+
+  itemsBox.innerHTML = "";
+  list.forEach(it=>{
+    const card = document.createElement("div");
+    card.className = "prod";
+    card.innerHTML = `
+      <div class="prodLeft">
+        <h3 class="prodName">${escapeHtml(it.name)}</h3>
+        <p class="prodDesc">${escapeHtml(it.desc || "")}</p>
+        <div class="price">MXN <b>${money(it.price)}</b></div>
+      </div>
+      <div class="prodRight">
+        <div class="prodImg"><img src="${IMG_BASE + it.img}" alt="${escapeHtml(it.name)}" loading="lazy"></div>
+        <button class="btnAdd" type="button">Agregar</button>
+      </div>
+    `;
+    card.querySelector("button").addEventListener("click", ()=> onAddClicked(it), {passive:true});
+    itemsBox.appendChild(card);
+  });
+
+  if(list.length===0){
+    itemsBox.innerHTML = `<div class="emptyState">No hay resultados en esta categoría.</div>`;
+  }
+}
+q.addEventListener("input", renderItems);
+
+/** =========================
+ *  CARRITO
+ *  ========================= */
+let cart = [];
+const cartBox = document.getElementById("cart");
+const totalEl = document.getElementById("total");
+const cartPill = document.getElementById("cartPill");
+const barTotal = document.getElementById("barTotal");
+const servTxt = document.getElementById("servTxt");
+
+function cartCount(){ return cart.reduce((a,x)=>a + x.qty, 0); }
+function cartSubTotal(){ return cart.reduce((a,x)=>a + x.qty * x.basePrice, 0); }
+
+let envioPrecio = 0;
+let envioKm = 0;
+
+function cartTotal(){ return cartSubTotal() + envioPrecio; }
+
+function renderCart(){
+  const count = cartCount();
+  cartPill.innerHTML = `🛒 <b>${count}</b> • <span id="pillTotal">${money(cartTotal())}</span>`;
+  totalEl.textContent = money(cartTotal());
+  barTotal.textContent = money(cartTotal());
+  servTxt.textContent = "Domicilio";
+
+  if(cart.length===0){
+    cartBox.innerHTML = `<div class="emptyState">Aún no agregas nada 😄</div>`;
+    return;
+  }
+
+  cartBox.innerHTML = "";
+  cart.forEach((line, idx)=>{
+    const wrap = document.createElement("div");
+    wrap.className = "cartLine";
+    const lineTotal = line.qty * line.basePrice;
+    wrap.innerHTML = `
+      <div style="min-width:0">
+        <div style="font-weight:1000;font-size:14px">${escapeHtml(line.name)}
+          <span class="muted" style="font-weight:1000">(${money(line.basePrice)})</span>
+        </div>
+        <div class="muted" style="font-size:12px; margin-top:4px; line-height:1.25; font-weight:900">
+          ${escapeHtml(modsToText(line.mods) || "")}
+        </div>
+        ${line.note ? `<div class="muted" style="font-size:12px; margin-top:4px; font-weight:900">Nota: ${escapeHtml(line.note)}</div>` : ``}
+      </div>
+      <div style="text-align:right">
+        <div class="qtyRow">
+          <button class="mini" type="button" data-act="dec">−</button>
+          <div style="min-width:24px; text-align:center; font-weight:1000">${line.qty}</div>
+          <button class="mini" type="button" data-act="inc">+</button>
+        </div>
+        <div style="margin-top:6px; font-weight:1000">${money(lineTotal)}</div>
+        <button class="mini" type="button" data-act="del" style="margin-top:8px;width:100%;height:34px;border-radius:12px;font-weight:1000">✕</button>
+      </div>
+    `;
+    wrap.querySelector('[data-act="dec"]').addEventListener("click", ()=>{
+      line.qty = Math.max(1, line.qty - 1);
+      renderCart();
+    }, {passive:true});
+
+    wrap.querySelector('[data-act="inc"]').addEventListener("click", ()=>{
+      line.qty += 1;
+      renderCart();
+    }, {passive:true});
+
+    wrap.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      cart.splice(idx,1);
+      renderCart();
+    }, {passive:true});
+
+    cartBox.appendChild(wrap);
+  });
+}
+
+/** =========================
+ *  MODAL PRODUCTO
+ *  ========================= */
+const backdrop = document.getElementById("backdrop");
+const mTitle = document.getElementById("mTitle");
+const mBody  = document.getElementById("mBody");
+const mClose = document.getElementById("mClose");
+const mCancel= document.getElementById("mCancel");
+const mAdd   = document.getElementById("mAdd");
+
+let currentItem = null;
+let draft = null;
+
+function openModal(item){
+  currentItem = item;
+  draft = {mods:{}, note:"", qty:1};
+
+  mTitle.textContent = `${item.name} — ${money(item.price)}`;
+  mBody.innerHTML = "";
+
+  const qtyBox = document.createElement("div");
+  qtyBox.className = "optGroup";
+  qtyBox.innerHTML = `
+    <div class="optTitle">
+      <b>Cantidad</b>
+      <span>elige cuántos vas a agregar</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; margin-top:12px;">
+      <button type="button" class="mini" id="qtyMinus" style="width:42px;height:42px;font-size:22px;">−</button>
+      <div id="qtyValue" style="min-width:42px;text-align:center;font-size:22px;font-weight:1000;">1</div>
+      <button type="button" class="mini" id="qtyPlus" style="width:42px;height:42px;font-size:22px;">+</button>
+    </div>
+  `;
+  mBody.appendChild(qtyBox);
+
+  const keys = modsPara(item);
+  if(keys.length){
+    keys.forEach(k=>{
+      const g = MODS[k];
+      const box = document.createElement("div");
+      box.className = "optGroup";
+      box.innerHTML = `
+        <div class="optTitle">
+          <b>${g.title}${g.required ? " *":""}</b>
+          <span>${g.type==="single" ? "elige 1" : "elige las que quieras"}</span>
+        </div>
+        <div class="optList" data-k="${k}"></div>
+      `;
+      const list = box.querySelector(".optList");
+
+      g.options.forEach(opt=>{
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "optBtn";
+        btn.textContent = opt;
+
+        btn.addEventListener("pointerdown", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          toggleOpt(k, opt, btn);
+        }, {passive:false});
+
+        list.appendChild(btn);
+      });
+
+      mBody.appendChild(box);
+    });
+  }
+
+  const n = document.createElement("div");
+  n.className = "optGroup";
+  n.innerHTML = `
+    <div class="optTitle">
+      <b>Nota (opcional)</b>
+      <span>ej. “bien dorado” / “sin salsa” / “extra servilletas”</span>
+    </div>
+    <div style="margin-top:10px">
+      <input id="noteProd" maxlength="180" placeholder="Escribe una nota para este producto..."/>
+    </div>
+  `;
+  mBody.appendChild(n);
+
+  backdrop.style.display = "flex";
+  backdrop.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+
+  setTimeout(()=> {
+    const inp = document.getElementById("noteProd");
+    if(inp) inp.oninput = ()=> draft.note = inp.value.trim();
+
+    const qtyValue = document.getElementById("qtyValue");
+    const qtyMinus = document.getElementById("qtyMinus");
+    const qtyPlus = document.getElementById("qtyPlus");
+
+    function refreshQty(){
+      if(qtyValue) qtyValue.textContent = draft.qty;
+    }
+
+    if(qtyMinus){
+      qtyMinus.addEventListener("click", ()=>{
+        draft.qty = Math.max(1, draft.qty - 1);
+        refreshQty();
+      });
+    }
+
+    if(qtyPlus){
+      qtyPlus.addEventListener("click", ()=>{
+        draft.qty += 1;
+        refreshQty();
+      });
+    }
+
+    refreshQty();
+  }, 0);
+}
+function closeModal(){
+  backdrop.style.display = "none";
+  backdrop.setAttribute("aria-hidden","true");
+  currentItem = null;
+  draft = null;
+  document.body.style.overflow = "";
+}
+function toggleOpt(k, opt, el){
+  const g = MODS[k];
+  if(g.type==="single"){
+    draft.mods[k] = opt;
+    el.parentElement.querySelectorAll(".optBtn").forEach(x=>x.classList.remove("active"));
+    el.classList.add("active");
+  }else{
+    draft.mods[k] = draft.mods[k] || [];
+    const arr = draft.mods[k];
+    const i = arr.indexOf(opt);
+    if(i>=0){
+      arr.splice(i,1);
+      el.classList.remove("active");
+    }else{
+      arr.push(opt);
+      el.classList.add("active");
+    }
+  }
+}
+function addLine(item, mods, note, qty = 1){
+  const key = buildKey(item, mods, note);
+  const existing = cart.find(x=>x.key===key);
+
+  if(existing){
+    existing.qty += qty;
+  }else{
+    cart.push({
+      key,
+      id:item.id,
+      name:item.name,
+      basePrice:item.price,
+      qty:qty,
+      mods,
+      note: note || ""
+    });
+  }
+
+  renderCart();
+}
+function onAddClicked(item){
+  openModal(item);
+}
+
+mClose.addEventListener("click", closeModal, {passive:true});
+mCancel.addEventListener("click", closeModal, {passive:true});
+backdrop.addEventListener("pointerdown", (e)=>{
+  if(e.target===backdrop){
+    e.preventDefault();
+    closeModal();
+  }
+}, {passive:false});
+mAdd.addEventListener("click", ()=>{
+  if(!currentItem || !draft) return;
+
+  const err = validateRequired(currentItem, draft.mods);
+  if(err){
+    alert(err);
+    return;
+  }
+
+  addLine(currentItem, draft.mods, draft.note, Number(draft.qty || 1));
+  closeModal();
+}, {passive:true});
+
+/** =========================
+ *  CHECKOUT + MAPA
+ *  ========================= */
+const stepsBackdrop = document.getElementById("stepsBackdrop");
+const stepsClose = document.getElementById("stepsClose");
+const stepsBody = document.getElementById("stepsBody");
+const stepTitle = document.getElementById("stepTitle");
+const stepSub = document.getElementById("stepSub");
+const btnBack = document.getElementById("btnBack");
+const btnNext = document.getElementById("btnNext");
+
+let step = 1;
+
+const form = {
+  nombre: "",
+  tel: "",
+  calle: "",
+  noext: "",
+  col: "",
+  ciudad: "Irapuato",
+  cp: "",
+  estado: "Guanajuato",
+  refs: "",
+  lat: null,
+  lng: null,
+  metodo: "efectivo",
+  pagareCon: "",
+  notas: ""
+};
+
+let showAddrDetails = true;
+let map = null, marker = null, mapReady = false;
+
+function openSteps(startAt){
+  if(!localAbiertoAhora()){
+    alert("En este momento el local está cerrado. Solo se pueden hacer pedidos dentro del horario de servicio.");
+    return;
+  }
+  step = (typeof startAt==="number") ? startAt : 1;
+  stepsBackdrop.style.display = "flex";
+  stepsBackdrop.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+  renderStep();
+}
+function closeSteps(){
+  stepsBackdrop.style.display = "none";
+  stepsBackdrop.setAttribute("aria-hidden","true");
+  document.body.style.overflow = "";
+  destroyMap();
+}
+stepsClose.addEventListener("click", closeSteps, {passive:true});
+stepsBackdrop.addEventListener("pointerdown", (e)=>{
+  if(e.target===stepsBackdrop){
+    e.preventDefault();
+    closeSteps();
+  }
+}, {passive:false});
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+async function reverseGeocode(lat,lng){
+  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+  const res = await fetch(url, { headers: { "Accept":"application/json" } });
+  if(!res.ok) throw new Error("No se pudo obtener dirección");
+  return res.json();
+}
+function pickAddrParts(addr){
+  const road = addr.road || addr.pedestrian || addr.footway || addr.path || "";
+  const house = addr.house_number || "";
+  const suburb = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || "";
+  const city = addr.city || addr.town || addr.village || addr.municipality || "";
+  const state = addr.state || "";
+  const postcode = addr.postcode || "";
+  return {road, house, suburb, city, state, postcode};
+}
+
+function destroyMap(){
+  try{
+    if(map){ map.off(); map.remove(); }
+  }catch(e){}
+  map = null;
+  marker = null;
+  mapReady = false;
+}
+function ensureMapInit(){
+  const el = document.getElementById("miniMap");
+  if(!el) return;
+
+  if(mapReady){
+    setTimeout(()=> map && map.invalidateSize(true), 80);
+    return;
+  }
+
+  el.innerHTML = "";
+  const centerLat = (form.lat ?? TQ_LAT);
+  const centerLng = (form.lng ?? TQ_LNG);
+
+  map = L.map('miniMap', { zoomControl:true, attributionControl:false }).setView([centerLat, centerLng], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
+
+  marker = L.marker([centerLat, centerLng], { draggable:true }).addTo(map);
+
+  marker.on('dragend', async ()=>{
+    const p = marker.getLatLng();
+    await setDomFromLatLng(p.lat, p.lng, true);
+  });
+
+  map.on('click', async (e)=>{
+    marker.setLatLng(e.latlng);
+    await setDomFromLatLng(e.latlng.lat, e.latlng.lng, true);
+  });
+
+  setTimeout(()=> map.invalidateSize(true), 140);
+  mapReady = true;
+}
+async function setDomFromLatLng(lat,lng, recompute=true){
+  form.lat = lat;
+  form.lng = lng;
+
+  try{
+    const data = await reverseGeocode(lat,lng);
+    const addr = data.address || {};
+    const parts = pickAddrParts(addr);
+
+    form.calle = (parts.road || form.calle || "");
+    if(parts.house) form.noext = parts.house;
+    form.col = (parts.suburb || form.col || "");
+    form.ciudad = (parts.city || form.ciudad || "Irapuato");
+    form.estado = (parts.state || form.estado || "Guanajuato");
+    form.cp = (parts.postcode || form.cp || "");
+
+    const f = (id,val)=>{
+      const el=document.getElementById(id);
+      if(el) el.value = val || "";
+    };
+    f("s_calle", form.calle);
+    f("s_noext", form.noext);
+    f("s_col", form.col);
+    f("s_ciudad", form.ciudad);
+    f("s_estado", form.estado);
+    f("s_cp", form.cp);
+  }catch(err){}
+
+  if(recompute) await recomputeEnvio();
+}
+async function recomputeEnvio(){
+  if(form.lat==null || form.lng==null){
+    envioPrecio = 0;
+    envioKm = 0;
+    renderCart();
+    return;
+  }
+
+  envioKm = haversineKm(TQ_LAT, TQ_LNG, Number(form.lat), Number(form.lng));
+  envioKm = Math.round(envioKm*10)/10;
+
+  const r = getTarifa(envioKm, lluvia);
+  envioPrecio = r.ok ? r.precio : 0;
+
+  const envioTxt = document.getElementById("envioTxt");
+  const totalEstimadoTxt = document.getElementById("totalEstimadoTxt");
+
+  if(envioTxt) envioTxt.textContent = r.ok ? money(envioPrecio) : `Fuera de rango (0–9 km)`;
+  if(totalEstimadoTxt) totalEstimadoTxt.textContent = money(cartSubTotal() + envioPrecio);
+
+  renderCart();
+}
+
+function renderStep(){
+  const subTotal = cartSubTotal();
+  const total = cartTotal();
+
+  if(step===1){
+    stepTitle.textContent = "Paso 1 de 3";
+    stepSub.textContent = "Datos personales";
+    btnBack.style.display = "none";
+    btnNext.textContent = "CONTINUAR";
+
+    stepsBody.innerHTML = `
+      <div class="stepRow">
+        <div>
+          <label>* Nombre</label>
+          <input id="s_nombre" maxlength="80" value="${escapeHtml(form.nombre)}" placeholder="Ej. Marciano Pérez">
+        </div>
+        <div>
+          <label>* Número de celular</label>
+          <input id="s_tel" inputmode="numeric" maxlength="15" value="${escapeHtml(form.tel)}" placeholder="Ej. 4621234567">
+        </div>
+      </div>
+
+      <div class="note">
+        Servicio: <b>Domicilio</b><br>
+        Subtotal: <b>${money(subTotal)}</b><br>
+        Tarifa aplicada por admin: <b>${lluvia ? "Lluvia" : "Normal"}</b>
+      </div>
+    `;
+    setTimeout(()=>{
+      const a = document.getElementById("s_nombre");
+      const b = document.getElementById("s_tel");
+
+      if(a) a.oninput = e=> form.nombre = e.target.value;
+      if(b) b.oninput = e=> form.tel = onlyDigits(e.target.value);
+      if(b) b.value = form.tel;
+    },0);
+    return;
+  }
+
+  if(step===2){
+    btnBack.style.display = "inline-block";
+    btnNext.textContent = "CONTINUAR";
+    stepTitle.textContent = "Paso 2 de 3";
+    stepSub.textContent = "Elige tu ubicación";
+
+    stepsBody.innerHTML = `
+      <div class="note" style="margin-top:0">Toca el mapa para poner tu pin o arrástralo. Con eso calculamos el envío.</div>
+
+      <div class="mapWrap"><div id="miniMap"></div></div>
+
+      <div class="mapBar">
+        <button class="btnLight" type="button" id="btnMiUbicacion">📍 Usar mi ubicación</button>
+        <button class="btnLight" type="button" id="btnCentrarTq">🏁 Centrar taquería</button>
+      </div>
+
+      <div class="kpiRow">
+        <div class="kpi"><b>Envío ${lluvia ? "(lluvia)" : ""}</b><span id="envioTxt">${money(envioPrecio)}</span></div>
+        <div class="kpi"><b>Total (estimado)</b><span id="totalEstimadoTxt">${money(total)}</span></div>
+      </div>
+
+      <button class="detailsToggle" id="btnAddrToggle" type="button" aria-expanded="${showAddrDetails ? "true":"false"}">
+        <span>Detalles de la dirección</span>
+        <span class="arrow" id="addrArrow">${showAddrDetails ? "▲" : "▼"}</span>
+      </button>
+
+      <div class="detailsWrap ${showAddrDetails ? "show":""}" id="addrDetails">
+        <div class="optGroup" style="margin-top:10px">
+          <div class="optTitle"><b>Domicilio</b><span>puedes corregirlo</span></div>
+
+          <div class="stepRow" style="margin-top:10px">
+            <div><label>* Calle</label><input id="s_calle" value="${escapeHtml(form.calle)}" placeholder="Ej. Calle Unión"></div>
+            <div><label>* No. Exterior</label><input id="s_noext" value="${escapeHtml(form.noext)}" placeholder="Ej. 678"></div>
+          </div>
+
+          <div class="stepRow">
+            <div><label>* Colonia</label><input id="s_col" value="${escapeHtml(form.col)}" placeholder="Ej. Colonia"></div>
+            <div><label>* CP</label><input id="s_cp" inputmode="numeric" maxlength="5" value="${escapeHtml(form.cp)}" placeholder="Ej. 36580"></div>
+          </div>
+
+          <div class="stepRow">
+            <div><label>* Ciudad</label><input id="s_ciudad" value="${escapeHtml(form.ciudad)}"></div>
+            <div><label>* Estado</label><input id="s_estado" value="${escapeHtml(form.estado)}"></div>
+          </div>
+
+          <label>* Referencias</label>
+          <textarea id="s_refs" maxlength="300" placeholder="Entre calles, color de la casa, etc.">${escapeHtml(form.refs)}</textarea>
+        </div>
+      </div>
+    `;
+
+    setTimeout(async ()=>{
+      destroyMap();
+      ensureMapInit();
+
+      const link = (id, key, digitsOnly = false)=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener("input", ()=>{
+          form[key] = digitsOnly ? onlyDigits(el.value) : el.value;
+          if(digitsOnly) el.value = form[key];
+        });
+      };
+      link("s_calle","calle");
+      link("s_noext","noext");
+      link("s_col","col");
+      link("s_cp","cp", true);
+      link("s_ciudad","ciudad");
+      link("s_estado","estado");
+      link("s_refs","refs");
+
+      const btnToggle = document.getElementById("btnAddrToggle");
+      const wrap = document.getElementById("addrDetails");
+      const arrow = document.getElementById("addrArrow");
+      if(btnToggle && wrap && arrow){
+        btnToggle.addEventListener("click", ()=>{
+          showAddrDetails = !showAddrDetails;
+          wrap.classList.toggle("show", showAddrDetails);
+          arrow.textContent = showAddrDetails ? "▲" : "▼";
+          btnToggle.setAttribute("aria-expanded", showAddrDetails ? "true":"false");
+          setTimeout(()=> map && map.invalidateSize(true), 120);
+        }, {passive:true});
+      }
+
+      const btnMi = document.getElementById("btnMiUbicacion");
+      if(btnMi){
+        btnMi.addEventListener("click", ()=>{
+          if(!navigator.geolocation){
+            alert("Tu navegador no soporta ubicación.");
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(async (pos)=>{
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            marker.setLatLng([lat,lng]);
+            map.setView([lat,lng], 16, {animate:true});
+            await setDomFromLatLng(lat,lng,true);
+          }, ()=>{
+            alert("No se pudo obtener tu ubicación. Revisa permisos.");
+          }, { enableHighAccuracy:true, timeout:12000, maximumAge:0 });
+        }, {passive:true});
+      }
+
+      const btnC = document.getElementById("btnCentrarTq");
+      if(btnC){
+        btnC.addEventListener("click", ()=>{
+          marker.setLatLng([TQ_LAT,TQ_LNG]);
+          map.setView([TQ_LAT,TQ_LNG], 14, {animate:true});
+        }, {passive:true});
+      }
+
+      if(form.lat==null || form.lng==null){
+        marker.setLatLng([TQ_LAT,TQ_LNG]);
+        map.setView([TQ_LAT,TQ_LNG], 14);
+        await recomputeEnvio();
+      }else{
+        marker.setLatLng([form.lat, form.lng]);
+        map.setView([form.lat, form.lng], 16);
+        await recomputeEnvio();
+      }
+
+      setTimeout(()=> map && map.invalidateSize(true), 160);
+    }, 0);
+
+    return;
+  }
+
+  btnBack.style.display = "inline-block";
+  btnNext.textContent = "ENVIAR PEDIDO";
+  stepTitle.textContent = "Paso 3 de 3";
+  stepSub.textContent = "Pago y enviar pedido";
+
+  stepsBody.innerHTML = `
+    <div class="kpiRow">
+      <div class="kpi"><b>Subtotal</b><span>${money(cartSubTotal())}</span></div>
+      <div class="kpi"><b>Envío ${lluvia ? "(lluvia)" : ""}</b><span>${money(envioPrecio)}</span></div>
+    </div>
+
+    <div class="stepRow" style="margin-top:10px">
+      <div>
+        <label>Método de pago</label>
+        <select id="s_metodo">
+          <option value="efectivo" ${form.metodo==="efectivo"?"selected":""}>Efectivo</option>
+        </select>
+
+        <label>Si pagas en efectivo: ¿Pagarás con cuánto?</label>
+        <input id="s_pagare" inputmode="decimal" value="${escapeHtml(form.pagareCon)}" placeholder="Ej. 500">
+      </div>
+      <div>
+        <div class="note">
+          Total a pagar: <b>${money(cartTotal())}</b><br>
+          Tarifa aplicada: <b>${lluvia ? "Lluvia" : "Normal"}</b><br>
+          Al enviar, se abrirá WhatsApp con el mensaje listo.
+        </div>
+      </div>
+    </div>
+
+    <label>Notas / Indicaciones</label>
+    <textarea id="s_notas" maxlength="300" placeholder="Ej. bien dorado / sin cebolla / salsa aparte">${escapeHtml(form.notas)}</textarea>
+  `;
+
+  setTimeout(()=>{
+    const m = document.getElementById("s_metodo");
+    const p = document.getElementById("s_pagare");
+    const n = document.getElementById("s_notas");
+    if(m) m.onchange = e=> form.metodo = e.target.value;
+    if(p) p.oninput  = e=> form.pagareCon = e.target.value.replace(/[^\d.]/g,"");
+    if(n) n.oninput  = e=> form.notas = e.target.value;
+  },0);
+}
+
+function stepValidate(){
+  if(!localAbiertoAhora()) return "En este momento el local está cerrado. Solo se pueden hacer pedidos dentro del horario de servicio.";
+
+  if(step===1){
+    if(!form.nombre.trim()) return "Pon tu nombre.";
+    if(!form.tel.trim()) return "Pon tu celular.";
+    if(onlyDigits(form.tel).length < 10) return "Pon un celular válido de 10 dígitos.";
+  }
+  if(step===2){
+    if(form.lat==null || form.lng==null) return "Elige tu ubicación en el mapa (o usa “mi ubicación”).";
+    if(!form.calle.trim()) return "Falta la calle.";
+    if(!form.noext.trim()) return "Falta el número exterior.";
+    if(!form.col.trim()) return "Falta la colonia.";
+    if(!form.cp.trim()) return "Falta el CP.";
+    if(onlyDigits(form.cp).length < 5) return "El CP debe tener 5 dígitos.";
+    if(!form.refs.trim()) return "Faltan referencias.";
+    const r = getTarifa(envioKm, lluvia);
+    if(!r.ok) return "Tu domicilio está fuera del rango de envío (0–9 km).";
+  }
+  if(step===3){
+    const p = form.pagareCon.trim();
+    if(p && isNaN(Number(p))) return "En 'Pagaré con' pon solo número (ej. 500).";
+  }
+  return null;
+}
+
+function cleanWA(text){
+  return (text || "")
+    .replace(/\uFFFD/g, "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function buildWhatsAppText(){
+  const sub = cartSubTotal();
+  const total = cartTotal();
+  const orderNo = String(Date.now()).slice(-6);
+  const telLimpio = onlyDigits(form.tel);
+
+  const lines = [];
+  lines.push(`*${TAQUERIA_NOMBRE}*`);
+  lines.push(`Hola, mi nombre es *${form.nombre}*, este es mi pedido:`);
+  lines.push(``);
+  lines.push(`Número de pedido: *${orderNo}*`);
+  lines.push(`Servicio: *Domicilio*`);
+  lines.push(`Contacto: *+52${telLimpio}*`);
+  lines.push(`Tarifa de envío: *${lluvia ? "Lluvia" : "Normal"}*`);
+
+  const dir = [
+    `Calle: ${form.calle} ${form.noext}`,
+    `Colonia: ${form.col}`,
+    `Ciudad: ${form.ciudad}`,
+    `CP: ${form.cp}`,
+    `Estado: ${form.estado}`,
+    `Referencias: ${form.refs}`,
+    `Ubicación: ${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`
+  ].join("\n");
+
+  lines.push(``);
+  lines.push(`Domicilio para la entrega:`);
+  lines.push(dir);
+  lines.push(``);
+  lines.push(`Envío: *${money(envioPrecio)}*`);
+
+  lines.push(``);
+  lines.push(`--------------------------`);
+  cart.forEach(x=>{
+    lines.push(`- ${x.qty} x ${x.name} (${money(x.basePrice)})`);
+    const mt = modsToText(x.mods);
+    if(mt) lines.push(`  • ${mt}`);
+    if(x.note) lines.push(`  • Nota: ${x.note}`);
+  });
+  lines.push(`--------------------------`);
+  lines.push(`Subtotal: ${money(sub)}`);
+  lines.push(`Envío: ${money(envioPrecio)}`);
+  lines.push(`Total: *${money(total)}*`);
+
+  if(form.metodo==="efectivo"){
+    lines.push(``);
+    if(form.pagareCon.trim()){
+      lines.push(`Pagaré con: *$${Number(form.pagareCon).toFixed(2)}* en efectivo`);
+    }else{
+      lines.push(`Método de pago: *Efectivo*`);
+    }
+  }
+
+  if(form.notas.trim()){
+    lines.push(``);
+    lines.push(`Indicaciones: ${form.notas}`);
+  }
+
+  lines.push(``);
+  lines.push(`Teléfono del local: *462 270 8704*`);
+  lines.push(`Gracias por tu pedido 🌮`);
+  return lines.join("\n");
+}
+
+/** =========================
+ *  BOTONES
+ *  ========================= */
+document.getElementById("btnCheckout").addEventListener("click", ()=>{
+  if(!localAbiertoAhora()){
+    alert("En este momento el local está cerrado. Solo se pueden hacer pedidos dentro del horario de servicio.");
+    return;
+  }
+  if(cart.length===0){
+    alert("Agrega algo al carrito primero 😄");
+    return;
+  }
+  openSteps(1);
+}, {passive:true});
+
+document.getElementById("btnClear").addEventListener("click", ()=>{
+  if(confirm("¿Vaciar carrito?")){
+    cart = [];
+    envioPrecio = 0;
+    envioKm = 0;
+    renderCart();
+  }
+}, {passive:true});
+
+document.getElementById("btnBack").addEventListener("click", ()=>{
+  if(step>1){
+    step--;
+    renderStep();
+  }
+}, {passive:true});
+
+document.getElementById("btnNext").addEventListener("click", async ()=>{
+  const err = stepValidate();
+  if(err){
+    alert(err);
+    return;
+  }
+
+  if(step===1){
+    step = 2;
+    renderStep();
+    return;
+  }
+
+  if(step===2){
+    await recomputeEnvio();
+    const r = getTarifa(envioKm, lluvia);
+    if(!r.ok){
+      alert("Tu domicilio está fuera del rango de envío (0–9 km).");
+      return;
+    }
+    step = 3;
+    renderStep();
+    return;
+  }
+
+  if(!localAbiertoAhora()){
+    alert("En este momento el local está cerrado. No se puede enviar el pedido.");
+    closeSteps();
+    return;
+  }
+
+  const text = cleanWA(buildWhatsAppText());
+  const url = `https://wa.me/${WHATSAPP_TAQ}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+  closeSteps();
+}, {passive:true});
+
+/** =========================
+ *  INIT
+ *  ========================= */
+renderTabs();
+renderItems();
+renderCart();
+renderHorarioEstado();
+setInterval(renderHorarioEstado, 30000);
+</script>
+
+</body>
+</html>
