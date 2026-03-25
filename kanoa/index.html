@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -10,384 +9,456 @@
 
   <style>
     :root{
-      --bg:#f3e7d4;
-      --paper:#fbf2e2;
-      --paper2:#fffaf1;
-      --card:#fff7ea;
-      --ink:#3b2a1f;
-      --muted:#6e5646;
-      --line:rgba(59,42,31,.14);
+      --bg:#eef3e1;
+      --paper:#f8fbf1;
+      --paper2:#ffffff;
+      --card:#ffffff;
+      --ink:#1f241a;
+      --muted:#64705c;
+      --line:rgba(96,126,74,.18);
 
-      --brand:#3b2a1f;
-      --gold1:#d69a2b;
-      --gold2:#b77712;
-      --goldSoft:rgba(214,154,43,.16);
-      --green:#1f6b2a;
-      --red:#b42318;
+      --brand:#95b96a;
+      --brand-dark:#6f9348;
+      --brand-soft:#e6f0d4;
+      --brand-soft-2:#d8e8ba;
+      --gold:#c7a95d;
+      --accent:#88b55b;
+      --green:#456b2d;
+      --red:#b84a3d;
 
-      --shadow: 0 18px 50px rgba(32,24,16,.16);
-      --shadow-soft: 0 10px 28px rgba(32,24,16,.12);
-      --r:20px;
+      --shadow:0 18px 40px rgba(82,104,58,.12);
+      --shadow-soft:0 8px 20px rgba(82,104,58,.08);
+      --r:22px;
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:
-        radial-gradient(1200px 520px at 10% -10%, rgba(201,138,30,.22), transparent 60%),
-        radial-gradient(1200px 520px at 90% 0%, rgba(59,42,31,.10), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0)),
-        var(--bg);
+      font-family: "Segoe UI", ui-sans-serif, system-ui, -apple-system, Arial, sans-serif;
       color:var(--ink);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+      background:
+        radial-gradient(700px 300px at 0% 0%, rgba(149,185,106,.18), transparent 60%),
+        radial-gradient(700px 300px at 100% 0%, rgba(149,185,106,.12), transparent 60%),
+        linear-gradient(180deg, #f6faef 0%, #eef4e1 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
     }
 
     header{
-      position: sticky; top: 0; z-index: 40;
-      background: linear-gradient(180deg, rgba(59,42,31,.95), rgba(59,42,31,.88));
-      color:#fff;
-      padding:12px 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.25);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(10px);
+      position:sticky;
+      top:0;
+      z-index:40;
+      background:rgba(248,251,241,.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+      box-shadow:0 6px 18px rgba(82,104,58,.06);
     }
     header .row{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      max-width:1200px; margin:0 auto;
+      max-width:1320px;
+      margin:0 auto;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
       flex-wrap:wrap;
     }
-    header .brand{
-      display:flex; flex-direction:column; line-height:1.05; min-width:0;
+    .brand{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:3px;
     }
     header h1{
       margin:0;
-      font-size:16px;
-      letter-spacing:.2px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size:28px;
+      color:#6d8d45;
+      font-weight:700;
+      letter-spacing:.5px;
     }
     header .sub{
-      font-size:12px; opacity:.92; margin-top:3px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
     }
 
     .topRight{
       display:flex;
-      gap:8px;
+      gap:10px;
       align-items:center;
       flex-wrap:wrap;
-      justify-content:flex-end;
     }
-
     .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      background: rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.18);
-      padding:8px 10px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-      user-select:none;
+      padding:10px 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      font-size:13px;
+      font-weight:900;
+      color:var(--green);
       white-space:nowrap;
     }
-    .pill b{font-size:13px}
+    .pill b{font-size:14px}
     .pillStatus.open{
-      background: rgba(31,107,42,.22);
-      border-color: rgba(255,255,255,.20);
+      background:#edf7e5;
+      color:#3f6b22;
     }
     .pillStatus.closed{
-      background: rgba(180,35,24,.24);
-      border-color: rgba(255,255,255,.20);
+      background:#fff0ee;
+      color:#a13f33;
     }
 
     .wrap{
-      max-width:1200px;
+      max-width:1320px;
       margin:0 auto;
-      padding:14px;
+      padding:18px;
       display:grid;
-      gap:14px;
+      gap:18px;
     }
+
+    .hero{
+      background:
+        linear-gradient(90deg, rgba(160,198,110,.92), rgba(180,211,126,.92));
+      border:1px solid rgba(96,126,74,.14);
+      border-radius:30px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      min-height:260px;
+      position:relative;
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      align-items:stretch;
+    }
+    .hero::before,
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:160px;
+      height:160px;
+      border:2px solid rgba(69,107,45,.20);
+      border-radius:50%;
+      pointer-events:none;
+    }
+    .hero::before{left:-70px; top:-35px}
+    .hero::after{right:-70px; bottom:-45px}
+
+    .heroLeft{
+      padding:28px 26px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:12px;
+      color:#24301c;
+    }
+    .heroKicker{
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      color:#486631;
+    }
+    .heroTitle{
+      margin:0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size:58px;
+      line-height:.92;
+      color:#6d8d45;
+      font-weight:700;
+    }
+    .heroText{
+      margin:0;
+      max-width:620px;
+      font-size:15px;
+      line-height:1.55;
+      color:#2e3a25;
+      font-weight:600;
+    }
+    .heroChips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:4px;
+    }
+    .heroChip{
+      background:rgba(255,255,255,.58);
+      border:1px solid rgba(69,107,45,.14);
+      color:#365125;
+      border-radius:999px;
+      padding:9px 14px;
+      font-size:12px;
+      font-weight:900;
+      box-shadow:var(--shadow-soft);
+    }
+    .heroRight{
+      background:rgba(255,255,255,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+    }
+    .hero img{
+      width:100%;
+      height:100%;
+      max-height:260px;
+      object-fit:contain;
+      display:block;
+      filter:drop-shadow(0 14px 28px rgba(0,0,0,.12));
+    }
+
     .grid{
       display:grid;
-      grid-template-columns: 1.45fr .95fr;
-      gap:14px;
+      grid-template-columns:1.35fr .92fr;
+      gap:18px;
       align-items:start;
     }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
+    @media (max-width:1080px){
+      .hero{
+        grid-template-columns:1fr;
+      }
+      .heroRight{
+        min-height:200px;
+      }
+      .grid{
+        grid-template-columns:1fr;
+      }
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.44), rgba(255,255,255,.18)), var(--paper);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(249,252,243,.92));
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
     .card h2{
       margin:0;
-      padding:14px 16px 12px;
-      font-size:15px;
+      padding:16px 18px 14px;
       border-bottom:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,0));
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .content{padding:14px}
-
-    .hero{
-      border-radius: 24px;
-      border:1px solid rgba(59,42,31,.14);
-      overflow:hidden;
-      box-shadow: 0 25px 70px rgba(32,24,16,.18);
-      background:
-        radial-gradient(420px 160px at 10% 0%, rgba(214,154,43,.22), transparent 60%),
-        radial-gradient(420px 180px at 90% 0%, rgba(255,255,255,.14), transparent 65%),
-        #1a1510;
-      min-height: 230px;
       display:flex;
+      justify-content:space-between;
       align-items:center;
-      justify-content:center;
+      gap:12px;
+      background:linear-gradient(180deg, rgba(223,237,196,.45), rgba(255,255,255,0));
+      font-size:18px;
+      color:#345123;
     }
-    .hero img{
-      width:100%;
-      height:230px;
-      object-fit: cover;
-      object-position:center;
-      display:block;
-    }
+    .content{padding:16px}
 
-    @media (max-width: 920px){
-      .hero{
-        min-height: 210px;
-        padding:10px;
-      }
-      .hero img{
-        height:210px;
-        object-fit: contain;
-        background:#1a1510;
-      }
-    }
-
-    @media (max-width: 600px){
-      .hero{
-        min-height: 180px;
-        padding:8px;
-      }
-      .hero img{
-        height:180px;
-        object-fit: contain;
-        background:#1a1510;
-      }
+    .menuBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:var(--brand-soft);
+      color:#49682f;
+      border:1px solid rgba(96,126,74,.18);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:1000;
     }
 
     .searchRow{
-      display:flex; gap:10px; align-items:center; margin-top:6px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top:6px;
+      margin-bottom:10px;
     }
     .searchRow input{
       flex:1;
-      padding:13px 14px;
-      border-radius: 16px;
-      border:1px solid rgba(59,42,31,.16);
-      background: rgba(255,255,255,.68);
-      outline:none;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--ink);
+      border-radius:18px;
+      padding:14px 16px;
       font-size:14px;
-      color: var(--ink);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
+      outline:none;
+      box-shadow:var(--shadow-soft);
     }
 
     .tabs{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin: 14px 0 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:14px 0 14px;
     }
     .tab{
-      border:1px solid rgba(59,42,31,.18);
-      background: rgba(255,255,255,.58);
-      padding:10px 14px;
-      border-radius: 999px;
-      font-weight:900;
-      font-size:13px;
+      border:1px solid rgba(96,126,74,.16);
+      background:#fff;
+      color:#55753a;
+      padding:10px 15px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:1000;
       cursor:pointer;
+      box-shadow:var(--shadow-soft);
+      transition:.15s ease;
       user-select:none;
-      letter-spacing:.2px;
-      box-shadow: 0 10px 22px rgba(32,24,16,.08);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease;
+      -webkit-tap-highlight-color:transparent;
     }
-    .tab:active{transform:translateY(1px)}
+    .tab:hover{transform:translateY(-1px)}
     .tab.active{
-      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,247,230,.92));
-      border-color: rgba(201,138,30,.50);
-      box-shadow: 0 0 0 3px rgba(201,138,30,.14), 0 10px 22px rgba(32,24,16,.10);
-      color:#4a2f11;
+      background:linear-gradient(180deg, #bfd89a, #a9ca7a);
+      color:#26341d;
+      border-color:rgba(96,126,74,.26);
     }
 
+    .sectionHeader{
+      background:linear-gradient(180deg, rgba(184,214,136,.28), rgba(255,255,255,0));
+      border:1px solid rgba(96,126,74,.12);
+      border-radius:24px;
+      padding:18px 18px 16px;
+      margin-bottom:14px;
+    }
     .sectionTitle{
-      margin: 12px 0 6px;
-      font-size: 42px;
-      letter-spacing: .8px;
-      font-weight: 1000;
-      color: rgba(59,42,31,.96);
+      margin:0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size:42px;
       line-height:1;
+      color:#6d8d45;
+      letter-spacing:.8px;
+      text-transform:uppercase;
     }
     .sectionSub{
-      font-size:13px;
-      font-weight:900;
+      margin-top:8px;
       color:var(--muted);
-      margin-bottom:10px;
+      font-size:13px;
+      font-weight:800;
     }
     .divider{
-      height: 4px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(201,138,30,.65), rgba(59,42,31,.20));
-      margin: 8px 0 18px;
-    }
-    @media (max-width: 620px){
-      .sectionTitle{font-size:32px}
+      margin-top:12px;
+      height:3px;
+      width:140px;
+      border-radius:999px;
+      background:linear-gradient(90deg, #9dc56d, rgba(157,197,109,0));
     }
 
     .items{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns:repeat(2, minmax(0,1fr));
       gap:14px;
     }
-    @media (max-width: 720px){
-      .items{grid-template-columns:1fr}
+    @media (max-width:760px){
+      .items{
+        grid-template-columns:1fr;
+      }
+      .sectionTitle{font-size:34px}
+      .heroTitle{font-size:44px}
     }
 
     .prod{
-      background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(255,255,255,.20));
-      border:1px solid rgba(59,42,31,.14);
-      border-radius: 20px;
+      border:1px solid rgba(96,126,74,.16);
+      border-radius:24px;
       overflow:hidden;
+      background:
+        linear-gradient(180deg, rgba(244,250,234,.95), rgba(255,255,255,.98));
+      box-shadow:var(--shadow-soft);
       display:grid;
-      grid-template-columns: 1fr 1.1fr;
-      min-height: 182px;
-      box-shadow: 0 18px 50px rgba(32,24,16,.09);
-      transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease;
+      grid-template-columns:1fr 1fr;
+      min-height:198px;
+      transition:.15s ease;
     }
     .prod:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 22px 54px rgba(32,24,16,.13);
-      border-color: rgba(201,138,30,.26);
+      transform:translateY(-2px);
+      box-shadow:0 18px 30px rgba(82,104,58,.14);
     }
-
     .prodLeft{
-      padding:14px 14px 12px;
-      display:flex; flex-direction:column; gap:8px;
-      background: rgba(255,255,255,.25);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:9px;
       min-width:0;
     }
-
     .prodName{
-      font-weight:1000;
-      font-size: 22px;
       margin:0;
-      white-space: normal;
-      overflow: visible;
-      text-overflow: clip;
-      line-height:1.12;
-      word-break: break-word;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size:28px;
+      line-height:1.02;
+      color:#1f241a;
+      word-break:break-word;
     }
-
     .prodDesc{
       margin:0;
-      color: var(--muted);
-      font-weight:700;
-      line-height:1.25;
       font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+      font-weight:700;
     }
-
     .price{
       margin-top:auto;
+      color:#5b7d39;
+      font-size:13px;
       font-weight:1000;
-      color: var(--green);
-      font-size: 14px;
-      letter-spacing:.2px;
     }
     .price b{
       display:block;
-      font-size: 32px;
-      letter-spacing:.2px;
-      line-height:1;
       margin-top:4px;
+      font-size:32px;
+      line-height:1;
+      color:#1f241a;
     }
 
     .prodRight{
-      position:relative;
       padding:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.34));
-      display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;
+      background:linear-gradient(180deg, rgba(216,232,186,.38), rgba(255,255,255,.48));
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
     }
     .prodImg{
-      width: 100%;
-      height: 96px;
-      border-radius: 18px;
+      width:100%;
+      height:104px;
+      border-radius:18px;
       overflow:hidden;
-      background: #0b1220;
-      box-shadow: 0 18px 40px rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.10);
+      background:#edf4df;
+      border:1px solid rgba(96,126,74,.14);
+      box-shadow:var(--shadow-soft);
     }
     .prodImg img{
-      width:100%; height:100%; object-fit: cover; display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
     }
 
     .btnAdd, .stickyBtn{
-      border:none; cursor:pointer;
-      padding: 11px 24px;
-      border-radius: 999px;
-      font-weight: 1000;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:11px 22px;
+      font-size:14px;
+      font-weight:1000;
       color:#fff;
-      background: linear-gradient(180deg, var(--gold1), var(--gold2));
-      box-shadow: 0 12px 26px rgba(201,138,30,.30);
-      font-size: 15px;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      transition: transform .06s ease, filter .12s ease;
+      background:linear-gradient(180deg, #86ae56, #6c9143);
+      box-shadow:0 12px 20px rgba(104,145,67,.22);
+      transition:.15s ease;
     }
     .btnAdd:hover,.stickyBtn:hover{filter:brightness(1.04)}
-    .btnAdd:active,.stickyBtn:active{transform: translateY(1px)}
-    .btnAdd:focus,.stickyBtn:focus{outline: 3px solid rgba(201,138,30,.26)}
     .btnDisabled{
-      background: linear-gradient(180deg, #9a9a9a, #6f6f6f) !important;
-      box-shadow:none !important;
-      cursor:not-allowed !important;
+      background:linear-gradient(180deg,#acb4a4,#8e9687)!important;
+      box-shadow:none!important;
+      cursor:not-allowed!important;
       opacity:.85;
     }
 
     .btnGhost{
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.10);
-      color:#fff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 1000;
+      border:1px solid rgba(96,126,74,.16);
+      background:#fff;
+      color:#486631;
+      padding:10px 12px;
+      border-radius:14px;
+      font-size:12px;
+      font-weight:1000;
       cursor:default;
       pointer-events:none;
-    }
-
-    .cartLine{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
-      border-bottom:1px dashed rgba(59,42,31,.16);
-      padding:12px 0;
-    }
-    .cartLine:last-child{border-bottom:none}
-    .muted{color: var(--muted)}
-    .qtyRow{display:flex; gap:6px; align-items:center}
-    .mini{
-      width:30px; height:30px;
-      border-radius:10px;
-      border:1px solid rgba(59,42,31,.18);
-      background: rgba(255,255,255,.75);
-      cursor:pointer;
-      font-weight:1000;
-      color: var(--ink);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
     }
 
     label{
@@ -395,232 +466,309 @@
       font-size:12px;
       font-weight:1000;
       margin:10px 0 6px;
-      color: rgba(59,42,31,.90)
+      color:#4f6640;
     }
     input, textarea, select{
       width:100%;
-      padding:12px 12px;
-      border:1px solid rgba(59,42,31,.16);
-      border-radius:14px;
+      padding:13px 13px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
       font-size:14px;
       outline:none;
-      background: rgba(255,255,255,.72);
-      color: var(--ink);
+      color:var(--ink);
+      box-shadow:var(--shadow-soft);
     }
     textarea{min-height:90px; resize:vertical}
 
+    .note{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(96,126,74,.15);
+      background:rgba(232,243,212,.62);
+      color:#4c6140;
+      font-size:12px;
+      line-height:1.5;
+      font-weight:800;
+    }
+    .noteWarn{
+      background:#fff5df;
+      color:#8a6326;
+      border-color:rgba(199,169,93,.30);
+    }
+    .noteClosed{
+      background:#fff1ef;
+      color:#98473e;
+      border-color:rgba(184,74,61,.24);
+    }
+
+    .cartLine{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px 0;
+      border-bottom:1px dashed rgba(96,126,74,.18);
+    }
+    .cartLine:last-child{border-bottom:none}
+    .muted{color:var(--muted)}
+    .qtyRow{
+      display:flex;
+      gap:6px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .mini{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      border:1px solid rgba(96,126,74,.18);
+      background:#fff;
+      cursor:pointer;
+      font-weight:1000;
+      color:#486631;
+    }
+
     .totalRow{
-      display:flex; justify-content:space-between; align-items:center;
-      padding-top:14px; margin-top:14px;
-      border-top:1px solid rgba(59,42,31,.16);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding-top:14px;
+      margin-top:14px;
+      border-top:1px solid rgba(96,126,74,.16);
       font-size:14px;
-      font-weight:900;
+      font-weight:1000;
+      color:#4f6640;
     }
     .totalRow strong{
-      font-size:22px;
-      color:#3f2b12;
+      font-size:26px;
+      color:#253119;
+      font-family: Georgia, "Times New Roman", serif;
     }
 
     .stickyBar{
-      position: sticky;
-      bottom: 12px;
-      z-index: 25;
-      margin-top: 14px;
-      background: linear-gradient(180deg, rgba(59,42,31,.96), rgba(59,42,31,.90));
+      position:sticky;
+      bottom:12px;
+      z-index:15;
+      margin-top:14px;
+      border-radius:20px;
+      background:linear-gradient(180deg, #7ea553, #6c9143);
       color:#fff;
-      border-radius: 16px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.24);
-      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 16px 28px rgba(82,104,58,.22);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:12px;
+    }
+    .stickyBar .left{
       display:flex;
       align-items:center;
-      justify-content:space-between;
       gap:10px;
-      padding: 12px;
-      flex-wrap:wrap;
+      font-weight:1000;
     }
-    .stickyBar .left{display:flex; align-items:center; gap:10px; font-weight:1000;}
-    .stickyBar .amount{font-size:20px; letter-spacing:.2px;}
-    .stickyBtn{min-width: 160px;}
+    .stickyBar .amount{
+      font-size:22px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
     .btnClear{
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.20);
+      background:rgba(255,255,255,.10);
       color:#fff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 1000;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:1000;
       cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+    }
+
+    .emptyState{
+      padding:18px;
+      border:1px dashed rgba(96,126,74,.18);
+      border-radius:18px;
+      background:rgba(244,250,234,.7);
+      color:var(--muted);
+      font-weight:900;
     }
 
     .backdrop, .stepsBackdrop{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.58);
+      position:fixed;
+      inset:0;
+      background:rgba(19,29,12,.46);
       display:none;
       align-items:center;
       justify-content:center;
       padding:16px;
       z-index:60;
-      touch-action:none;
     }
     .modal, .steps{
       width:min(820px, 100%);
-      background: var(--paper);
-      border-radius:20px;
+      background:linear-gradient(180deg, rgba(250,252,246,.98), rgba(245,249,237,.98));
+      border-radius:24px;
       overflow:hidden;
-      border:1px solid rgba(59,42,31,.16);
-      box-shadow: 0 40px 100px rgba(0,0,0,.30);
-      pointer-events:auto;
+      border:1px solid rgba(96,126,74,.18);
+      box-shadow:0 30px 70px rgba(40,54,26,.24);
     }
     .modalHead, .stepsHead{
-      padding:14px 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,0));
-      border-bottom:1px solid rgba(59,42,31,.14);
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:15px 16px;
+      background:linear-gradient(180deg, rgba(216,232,186,.44), rgba(255,255,255,0));
+      border-bottom:1px solid rgba(96,126,74,.16);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
     }
-    .modalHead h3{margin:0; font-size:15px}
+    .modalHead h3,.stepsHead b{
+      margin:0;
+      color:#3d5927;
+    }
     .closeX{
-      border:1px solid rgba(59,42,31,.14);
-      background: rgba(255,255,255,.65);
+      width:40px;
+      height:40px;
       border-radius:12px;
-      width:40px; height:40px;
-      cursor:pointer;
+      border:1px solid rgba(96,126,74,.18);
+      background:#fff;
+      color:#4c6a34;
       font-weight:1000;
-      color: var(--ink);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      cursor:pointer;
     }
 
     .optGroup{
-      border:1px solid rgba(59,42,31,.12);
-      border-radius:16px;
-      padding:12px 12px;
+      border:1px solid rgba(96,126,74,.14);
+      border-radius:18px;
+      padding:12px;
       margin-top:10px;
-      background: rgba(255,255,255,.38);
+      background:rgba(255,255,255,.72);
     }
     .optTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
       flex-wrap:wrap;
     }
     .optTitle b{font-size:13px}
-    .optTitle span{font-size:12px; color:var(--muted); font-weight:800}
-    .optList{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .optTitle span{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+    .optList{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
     .optBtn{
-      border:1px solid rgba(59,42,31,.16);
-      background: rgba(255,255,255,.70);
+      border:1px solid rgba(96,126,74,.16);
+      background:#fff;
+      color:#4e6b36;
       padding:8px 10px;
       border-radius:999px;
       font-size:13px;
-      cursor:pointer;
-      user-select:none;
       font-weight:900;
-      color: var(--ink);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      cursor:pointer;
     }
     .optBtn.active{
-      border-color: rgba(201,138,30,.60);
-      box-shadow:0 0 0 3px rgba(201,138,30,.16);
-      background: rgba(255,250,238,.95);
+      background:#dff0bf;
+      border-color:#9bbf6d;
+      box-shadow:0 0 0 3px rgba(155,191,109,.16);
     }
 
-    .footerBtns{
+    .footerBtns, .stepsFoot{
       display:flex;
       gap:10px;
       padding:14px 16px;
-      border-top:1px solid rgba(59,42,31,.14);
-      background: rgba(255,255,255,.25);
+      border-top:1px solid rgba(96,126,74,.16);
+      background:rgba(255,255,255,.32);
     }
-    .footerBtns button{flex:1}
-
+    .footerBtns button,.stepsFoot button{flex:1}
     .btnDark{
-      border:none; cursor:pointer;
+      border:none;
+      border-radius:14px;
       padding:12px 14px;
-      border-radius: 12px;
+      cursor:pointer;
       font-weight:1000;
       color:#fff;
-      background: linear-gradient(180deg, rgba(59,42,31,.94), rgba(59,42,31,.88));
-      box-shadow: 0 14px 30px rgba(0,0,0,.18);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      background:linear-gradient(180deg, #7ea553, #6c9143);
+      box-shadow:0 12px 20px rgba(104,145,67,.20);
     }
     .btnLight{
-      border:1px solid rgba(59,42,31,.16);
-      background: rgba(255,255,255,.72);
-      color: var(--ink);
+      border:1px solid rgba(96,126,74,.18);
+      border-radius:14px;
       padding:12px 14px;
-      border-radius: 12px;
-      font-weight:1000;
       cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
-    .note{
-      font-size:12px;
-      color: var(--muted);
-      font-weight:800;
-      line-height:1.4;
-      background: rgba(255,255,255,.42);
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(59,42,31,.12);
-      margin-top:12px;
-    }
-    .noteWarn{
-      color:#7a2e00;
-      background: rgba(255,235,205,.75);
-      border-color: rgba(201,138,30,.35);
-    }
-    .noteClosed{
-      color:#7a0f0f;
-      background: rgba(255,232,232,.90);
-      border-color: rgba(180,35,24,.25);
+      font-weight:1000;
+      color:#486631;
+      background:#fff;
     }
 
     .steps{
       width:min(760px, 100%);
-      max-height: 86vh;
+      max-height:86vh;
       display:flex;
       flex-direction:column;
     }
-    .stepsHead .t{display:flex; flex-direction:column; gap:4px;}
-    .stepsHead .t b{font-size:16px}
-    .stepsHead .t span{font-size:12px; color:var(--muted); font-weight:900}
+    .stepsHead .t{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .stepsHead .t b{
+      font-size:16px;
+      font-weight:1000;
+    }
+    .stepsHead .t span{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:900;
+    }
     .stepsBody{
       padding:14px 16px;
       overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      flex: 1 1 auto;
+      flex:1 1 auto;
     }
     .stepsFoot{
-      display:flex; gap:10px;
-      padding:14px 16px;
-      border-top:1px solid rgba(59,42,31,.14);
-      background: rgba(255,255,255,.25);
-      flex: 0 0 auto;
-      position: sticky;
-      bottom: 0;
-      padding-bottom: calc(14px + env(safe-area-inset-bottom));
-      z-index:2;
+      flex:0 0 auto;
+      position:sticky;
+      bottom:0;
+      padding-bottom:calc(14px + env(safe-area-inset-bottom));
     }
-    .stepsFoot button{flex:1}
 
-    .stepRow{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    @media (max-width:520px){ .stepRow{grid-template-columns:1fr} }
+    .stepRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width:540px){
+      .stepRow{grid-template-columns:1fr}
+    }
 
     .mapWrap{
-      border:1px solid rgba(59,42,31,.16);
-      border-radius:16px;
+      border:1px solid rgba(96,126,74,.16);
+      border-radius:18px;
       overflow:hidden;
       background:#fff;
-      box-shadow: 0 10px 26px rgba(0,0,0,.08);
+      box-shadow:var(--shadow-soft);
       margin-top:10px;
     }
-    #miniMap{width:100%; height:150px; background:#eee; touch-action: pan-x pan-y;}
-
-    .mapBar{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
-    .mapBar .btnLight{flex:1; min-width: 170px;}
+    #miniMap{
+      width:100%;
+      height:150px;
+      background:#eee;
+    }
+    .mapBar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .mapBar .btnLight{
+      flex:1;
+      min-width:170px;
+    }
 
     .kpiRow{
       display:grid;
@@ -629,52 +777,41 @@
       margin-top:10px;
     }
     .kpi{
-      border:1px solid rgba(59,42,31,.12);
-      border-radius:16px;
-      background: rgba(255,255,255,.45);
-      padding:10px 12px;
+      border:1px solid rgba(96,126,74,.14);
+      border-radius:18px;
+      background:rgba(237,247,229,.75);
+      padding:12px;
     }
-    .kpi b{display:block; font-size:12px}
-    .kpi span{display:block; margin-top:4px; font-weight:1000}
+    .kpi b{
+      display:block;
+      font-size:12px;
+      color:#4d6640;
+    }
+    .kpi span{
+      display:block;
+      margin-top:5px;
+      font-size:18px;
+      font-weight:1000;
+      color:#29401b;
+    }
 
     .detailsToggle{
       width:100%;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border:1px solid rgba(59,42,31,.16);
-      background: rgba(255,255,255,.55);
-      padding:10px 12px;
-      border-radius:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      border:1px solid rgba(96,126,74,.16);
+      border-radius:16px;
+      background:#fff;
+      color:#486631;
       font-weight:1000;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      padding:11px 12px;
       margin-top:10px;
+      cursor:pointer;
     }
-    .detailsToggle .arrow{font-size:18px; line-height:1}
     .detailsWrap{display:none}
     .detailsWrap.show{display:block}
-
-    .menuBadge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background: var(--goldSoft);
-      border:1px solid rgba(201,138,30,.20);
-      font-size:12px;
-      font-weight:1000;
-      color:#6b4610;
-    }
-
-    .emptyState{
-      padding:18px;
-      border:1px dashed rgba(59,42,31,.18);
-      border-radius:16px;
-      background: rgba(255,255,255,.36);
-      color:var(--muted);
-      font-weight:900;
-    }
   </style>
 </head>
 
@@ -682,7 +819,7 @@
 <header>
   <div class="row">
     <div class="brand">
-      <h1>🥢 Menú — Kanoa</h1>
+      <h1>Kanoa</h1>
       <div class="sub" id="statusSub">Poke • Sushi • Burritos • Ramen</div>
     </div>
 
@@ -694,9 +831,26 @@
 </header>
 
 <div class="wrap">
-  <div class="hero">
-    <img src="portadagdp.png" alt="Menú Kanoa">
-  </div>
+  <section class="hero">
+    <div class="heroLeft">
+      <div class="heroKicker">Menú digital</div>
+      <h2 class="heroTitle">Kanoa</h2>
+      <p class="heroText">
+        Un menú más fresco, elegante y visual. Explora entradas, pokes, burritos, empanizados, burgers y ramen con una experiencia más cercana al estilo de la imagen.
+      </p>
+      <div class="heroChips">
+        <div class="heroChip">Entradas</div>
+        <div class="heroChip">Pokes</div>
+        <div class="heroChip">Burritos</div>
+        <div class="heroChip">Empanizados</div>
+        <div class="heroChip">Ramen</div>
+      </div>
+    </div>
+
+    <div class="heroRight">
+      <img src="portadagdp.png" alt="Menú Kanoa">
+    </div>
+  </section>
 
   <div class="grid">
     <section class="card">
@@ -714,7 +868,7 @@
 
         <div class="tabs" id="tabs"></div>
 
-        <div id="sectionHdr">
+        <div class="sectionHeader">
           <div class="sectionTitle" id="sectionTitle">ENTRADAS</div>
           <div class="sectionSub" id="sectionSub">Comienza con algo fresco y diferente</div>
           <div class="divider"></div>
@@ -723,7 +877,7 @@
         <div class="items" id="items"></div>
 
         <div class="note">
-          Tip: si quieres personalizar tu orden, usa la nota del producto. Ejemplo: <b>sin cebolla crujiente</b>, <b>extra salsa</b> o <b>sin picante</b>.
+          Tip: si quieres personalizar tu orden, usa la nota del producto. Ejemplo: <b>sin picante</b>, <b>extra salsa</b> o <b>sin cebolla crujiente</b>.
         </div>
       </div>
     </section>
@@ -747,12 +901,12 @@
         </div>
 
         <div class="note" id="checkoutNote">
-          Al dar <b>CONTINUAR</b> te sale el checkout y al final se abre WhatsApp listo para enviar.
+          Al dar <b>CONTINUAR</b> se abrirá el checkout y al final WhatsApp con el pedido listo.
         </div>
 
         <div class="stickyBar">
           <div class="left">
-            <span style="opacity:.9">🛒</span>
+            <span>🛒</span>
             <span class="amount" id="barTotal">$0.00</span>
           </div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
@@ -805,23 +959,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/** =========================
- *  CONFIG ADMIN
- *  ========================= */
 const TAQUERIA_NOMBRE = "Kanoa";
 const WHATSAPP_TAQ = "5214622527782";
 const TQ_LAT = 20.6752891;
 const TQ_LNG = -101.3569277;
 const IMG_BASE = "";
-
-/* ADMIN:
-   false = tarifa normal
-   true  = tarifa de lluvia */
 const LLUVIA_ACTIVA = false;
 
-/** =========================
- *  HORARIO
- *  ========================= */
 const HORARIO = {
   0: null,
   1: { open: "16:00", close: "00:30" },
@@ -845,15 +989,11 @@ function formatHour(hhmm){
   const [h,m] = hhmm.split(":").map(Number);
   const d = new Date();
   d.setHours(h, m, 0, 0);
-  return d.toLocaleTimeString("es-MX", {
-    hour: "numeric",
-    minute: "2-digit"
-  });
+  return d.toLocaleTimeString("es-MX", { hour:"numeric", minute:"2-digit" });
 }
 function getHorarioEstado(now = new Date()){
   const day = now.getDay();
   const mins = getNowMinutes(now);
-
   const today = HORARIO[day];
   const prevDay = (day + 6) % 7;
   const prev = HORARIO[prevDay];
@@ -865,23 +1005,17 @@ function getHorarioEstado(now = new Date()){
 
     if(prevCrossesMidnight && mins < prevClose){
       return {
-        open: true,
-        sourceDay: prevDay,
-        openText: prev.open,
-        closeText: prev.close,
-        statusText: `Abierto ahora • cierra ${formatHour(prev.close)}`
+        open:true,
+        sourceDay:prevDay,
+        openText:prev.open,
+        closeText:prev.close,
+        statusText:`Abierto ahora • cierra ${formatHour(prev.close)}`
       };
     }
   }
 
   if(!today){
-    return {
-      open: false,
-      sourceDay: day,
-      openText: null,
-      closeText: null,
-      statusText: `Cerrado hoy`
-    };
+    return { open:false, sourceDay:day, openText:null, closeText:null, statusText:`Cerrado hoy` };
   }
 
   const openMin = hhmmToMinutes(today.open);
@@ -897,20 +1031,20 @@ function getHorarioEstado(now = new Date()){
 
   if(isOpen){
     return {
-      open: true,
-      sourceDay: day,
-      openText: today.open,
-      closeText: today.close,
-      statusText: `Abierto ahora • cierra ${formatHour(today.close)}`
+      open:true,
+      sourceDay:day,
+      openText:today.open,
+      closeText:today.close,
+      statusText:`Abierto ahora • cierra ${formatHour(today.close)}`
     };
   }
 
   return {
-    open: false,
-    sourceDay: day,
-    openText: today.open,
-    closeText: today.close,
-    statusText: `Cerrado ahora • abre ${formatHour(today.open)}`
+    open:false,
+    sourceDay:day,
+    openText:today.open,
+    closeText:today.close,
+    statusText:`Cerrado ahora • abre ${formatHour(today.open)}`
   };
 }
 function localAbiertoAhora(){
@@ -930,7 +1064,6 @@ function renderHorarioEstado(){
   pill.classList.remove("open","closed");
   pill.classList.add(estado.open ? "open" : "closed");
   pill.textContent = estado.open ? `🟢 ${estado.statusText}` : `🔴 ${estado.statusText}`;
-
   sub.textContent = `Poke • Sushi • Burritos • ${estado.statusText}`;
 
   if(estado.open){
@@ -943,7 +1076,7 @@ function renderHorarioEstado(){
     btn.disabled = false;
     btn.classList.remove("btnDisabled");
     note.className = "note";
-    note.innerHTML = `Al dar <b>CONTINUAR</b> te sale el checkout y al final se abre WhatsApp listo para enviar.`;
+    note.innerHTML = `Al dar <b>CONTINUAR</b> se abrirá el checkout y al final WhatsApp con el pedido listo.`;
   }else{
     aviso.innerHTML = `
       <div class="note noteClosed">
@@ -960,9 +1093,6 @@ function renderHorarioEstado(){
   }
 }
 
-/** =========================
- *  TARIFAS
- *  ========================= */
 const TARIFAS = [
   {from:0,   to:3.1, precio:50, lluvia:65},
   {from:3.1, to:4.1, precio:55, lluvia:75},
@@ -975,443 +1105,68 @@ const TARIFAS = [
 function getTarifa(km, lluvia=false){
   const k = Number(km);
   const row = TARIFAS.find(r => k >= r.from && k < r.to) || null;
-  if(!row) return {ok:false, precio:0, limiteKm: 9};
+  if(!row) return {ok:false, precio:0, limiteKm:9};
   return {ok:true, precio: lluvia ? row.lluvia : row.precio};
 }
 const lluvia = LLUVIA_ACTIVA;
 
-/** =========================
- *  CATALOGO
- *  ========================= */
 const catalogo = [
-  {
-    id:"entrada_tacos_kanoa_tempura",
-    cat:"ENTRADAS",
-    name:"Tacos Kanoa Tempura (2 pzas)",
-    price:145,
-    desc:"Rellenos con arroz, salsa volcán, salmón o atún, aguacate y tampico.",
-    mods:false,
-    img:"kanoa_entradas.png"
-  },
-  {
-    id:"entrada_tostada_atun_sellado",
-    cat:"ENTRADAS",
-    name:"Tostada de Atún Sellado (2 pzas)",
-    price:125,
-    desc:"Lámina frita de wonton con salsa chipotle, atún sellado, wakame y salsa agridulce.",
-    mods:false,
-    img:"kanoa_entradas.png"
-  },
-  {
-    id:"entrada_tostada_pollo_teriyaki",
-    cat:"ENTRADAS",
-    name:"Tostada de Pollo Teriyaki (2 pzas)",
-    price:125,
-    desc:"Lámina frita de wonton con salsa de perejil, pollo bañado en teriyaki y ponzu.",
-    mods:false,
-    img:"kanoa_entradas.png"
-  },
+  {id:"entrada_tacos_kanoa_tempura", cat:"ENTRADAS", name:"Tacos Kanoa Tempura", price:145, desc:"2 piezas. Rellenos con arroz, salsa volcán, salmón o atún, aguacate y tampico.", mods:false, img:"kanoa_entradas.png"},
+  {id:"entrada_tostada_atun_sellado", cat:"ENTRADAS", name:"Tostada de Atún Sellado", price:125, desc:"2 piezas. Wonton con salsa chipotle, atún sellado, wakame y salsa agridulce.", mods:false, img:"kanoa_entradas.png"},
+  {id:"entrada_tostada_pollo_teriyaki", cat:"ENTRADAS", name:"Tostada de Pollo Teriyaki", price:125, desc:"2 piezas. Wonton con salsa de perejil, pollo bañado en teriyaki y ponzu.", mods:false, img:"kanoa_entradas.png"},
 
-  {
-    id:"kids_poke",
-    cat:"KIDS",
-    name:"Kids Poke",
-    price:100,
-    desc:"Base de arroz con pollo empanizado o camarón, 1 topping, 1 crujiente y salsa ponzu.",
-    mods:false,
-    img:"kanoa_kids.png"
-  },
+  {id:"kids_poke", cat:"KIDS", name:"Kids Poke", price:100, desc:"Base de arroz con pollo empanizado o camarón, 1 topping, 1 crujiente y salsa ponzu.", mods:false, img:"kanoa_kids.png"},
 
-  {
-    id:"poke_kanoa_salad_chico",
-    cat:"POKES",
-    name:"Kanoa Salad Chico",
-    price:145,
-    desc:"Base mix de lechugas, proteína de atún y toppings frescos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_kanoa_salad_mediano",
-    cat:"POKES",
-    name:"Kanoa Salad Mediano",
-    price:175,
-    desc:"Base mix de lechugas, proteína de atún y toppings frescos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_kanoa_salad_grande",
-    cat:"POKES",
-    name:"Kanoa Salad Grande",
-    price:205,
-    desc:"Base mix de lechugas, proteína de atún y toppings frescos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
+  {id:"poke_kanoa_salad", cat:"POKES", name:"Kanoa Salad", price:145, desc:"Base mix de lechugas. Fresco, ligero y con el estilo de la casa.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_chicken_poke", cat:"POKES", name:"Chicken Poke", price:145, desc:"Base arroz. Bowl con pollo y toppings al estilo Kanoa.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_frutos_mar", cat:"POKES", name:"Frutos del Mar", price:160, desc:"Base arroz con mezcla de atún, salmón y camarón.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_sweet_pork", cat:"POKES", name:"Sweet Pork", price:145, desc:"Base arroz con pork y combinación dulce-salada.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_camaron_tempura", cat:"POKES", name:"Camarón Tempura", price:160, desc:"Base arroz con camarón tempura y toppings frescos.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_chicken_tempura", cat:"POKES", name:"Chicken Tempura", price:160, desc:"Base arroz con pollo tempura.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_keto", cat:"POKES", name:"Poke Keto", price:150, desc:"Base de lechuga, jícama y pepino. Opción más ligera.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_sweet", cat:"POKES", name:"Sweet", price:145, desc:"Base arroz con toque dulce y balanceado.", mods:true, img:"kanoa_poke.png"},
+  {id:"poke_mix_rice", cat:"POKES", name:"Mix Rice", price:160, desc:"Arroz frito acompañado de vegetales y proteína mixta.", mods:false, img:"kanoa_poke.png"},
 
-  {
-    id:"poke_chicken_poke_chico",
-    cat:"POKES",
-    name:"Chicken Poke Chico",
-    price:145,
-    desc:"Base arroz con pollo y toppings clásicos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_chicken_poke_mediano",
-    cat:"POKES",
-    name:"Chicken Poke Mediano",
-    price:175,
-    desc:"Base arroz con pollo y toppings clásicos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_chicken_poke_grande",
-    cat:"POKES",
-    name:"Chicken Poke Grande",
-    price:205,
-    desc:"Base arroz con pollo y toppings clásicos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
+  {id:"burrito_kanoa", cat:"BURRITOS", name:"Kanoa Burrito", price:170, desc:"Alga, arroz gohan, camarón, salmón, philadelphia, aguacate y manchego.", mods:false, img:"kanoa_burrito.png"},
 
-  {
-    id:"poke_frutos_mar_chico",
-    cat:"POKES",
-    name:"Frutos del Mar Chico",
-    price:160,
-    desc:"Base arroz con atún, salmón y camarón.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_frutos_mar_mediano",
-    cat:"POKES",
-    name:"Frutos del Mar Mediano",
-    price:185,
-    desc:"Base arroz con atún, salmón y camarón.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_frutos_mar_grande",
-    cat:"POKES",
-    name:"Frutos del Mar Grande",
-    price:210,
-    desc:"Base arroz con atún, salmón y camarón.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
+  {id:"emp_burrito", cat:"EMPANIZADOS", name:"Burrito Empanizado", price:170, desc:"Versión empanizada del burrito Kanoa.", mods:false, img:"kanoa_empanizado.png"},
+  {id:"emp_spicy_tuna", cat:"EMPANIZADOS", name:"Spicy Tuna", price:170, desc:"Atún picante, zanahoria, mango, philadelphia, cebollín y cebolla crujiente.", mods:false, img:"kanoa_empanizado.png"},
+  {id:"emp_salmon", cat:"EMPANIZADOS", name:"Salmón", price:170, desc:"Salmón, masago, lechuga, pepino, aguacate y philadelphia.", mods:false, img:"kanoa_empanizado.png"},
+  {id:"emp_camaron", cat:"EMPANIZADOS", name:"Camarón Empanizado", price:170, desc:"Tampico, philadelphia, aguacate y pepino.", mods:false, img:"kanoa_empanizado.png"},
 
-  {
-    id:"poke_sweet_pork_chico",
-    cat:"POKES",
-    name:"Sweet Pork Chico",
-    price:145,
-    desc:"Base arroz con pork y toppings dulces-salados.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_sweet_pork_mediano",
-    cat:"POKES",
-    name:"Sweet Pork Mediano",
-    price:175,
-    desc:"Base arroz con pork y toppings dulces-salados.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_sweet_pork_grande",
-    cat:"POKES",
-    name:"Sweet Pork Grande",
-    price:205,
-    desc:"Base arroz con pork y toppings dulces-salados.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
+  {id:"burger_salmon", cat:"BURGERS", name:"Kanoa Burger Salmón", price:170, desc:"Tapa de arroz empanizada con salmón, tampico y seaweed salad.", mods:false, img:"kanoa_burger.png"},
+  {id:"burger_atun", cat:"BURGERS", name:"Kanoa Burger Atún", price:170, desc:"Spicy tuna, lechuga, champiñón caramelizado, aguacate y chiles toreados.", mods:false, img:"kanoa_burger.png"},
 
-  {
-    id:"poke_camaron_tempura_chico",
-    cat:"POKES",
-    name:"Camarón Tempura Chico",
-    price:160,
-    desc:"Base arroz con camarón tempura y vegetales.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_camaron_tempura_mediano",
-    cat:"POKES",
-    name:"Camarón Tempura Mediano",
-    price:180,
-    desc:"Base arroz con camarón tempura y vegetales.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_camaron_tempura_grande",
-    cat:"POKES",
-    name:"Camarón Tempura Grande",
-    price:210,
-    desc:"Base arroz con camarón tempura y vegetales.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
+  {id:"ramen_kanoa", cat:"RAMEN", name:"Ramen", price:170, desc:"Ramen estilo Kanoa. Temporada nov–feb.", mods:false, img:"kanoa_ramen.png"},
 
-  {
-    id:"poke_chicken_tempura_chico",
-    cat:"POKES",
-    name:"Chicken Tempura Chico",
-    price:160,
-    desc:"Base arroz con pollo tempura.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_chicken_tempura_mediano",
-    cat:"POKES",
-    name:"Chicken Tempura Mediano",
-    price:180,
-    desc:"Base arroz con pollo tempura.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_chicken_tempura_grande",
-    cat:"POKES",
-    name:"Chicken Tempura Grande",
-    price:210,
-    desc:"Base arroz con pollo tempura.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
+  {id:"postre_croissant", cat:"POSTRES", name:"Croissant Nutella", price:75, desc:"Croissant relleno de Nutella y tapa Magnum de almendras.", mods:false, img:"kanoa_postre.png"},
 
-  {
-    id:"poke_keto_chico",
-    cat:"POKES",
-    name:"Poke Keto Chico",
-    price:150,
-    desc:"Base de lechugas, jícama y pepino con pollo y tocino.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_keto_mediano",
-    cat:"POKES",
-    name:"Poke Keto Mediano",
-    price:175,
-    desc:"Base de lechugas, jícama y pepino con pollo y tocino.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_keto_grande",
-    cat:"POKES",
-    name:"Poke Keto Grande",
-    price:205,
-    desc:"Base de lechugas, jícama y pepino con pollo y tocino.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-
-  {
-    id:"poke_sweet_chico",
-    cat:"POKES",
-    name:"Sweet Chico",
-    price:145,
-    desc:"Base arroz con atún sellado y toppings frescos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_sweet_mediano",
-    cat:"POKES",
-    name:"Sweet Mediano",
-    price:175,
-    desc:"Base arroz con atún sellado y toppings frescos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-  {
-    id:"poke_sweet_grande",
-    cat:"POKES",
-    name:"Sweet Grande",
-    price:205,
-    desc:"Base arroz con atún sellado y toppings frescos.",
-    mods:true,
-    img:"kanoa_poke.png"
-  },
-
-  {
-    id:"mix_rice",
-    cat:"POKES",
-    name:"Mix Rice",
-    price:160,
-    desc:"Arroz frito acompañado de vegetales, camarón, pollo y tocino.",
-    mods:false,
-    img:"kanoa_poke.png"
-  },
-
-  {
-    id:"burrito_kanoa",
-    cat:"BURRITOS",
-    name:"Kanoa Burrito",
-    price:170,
-    desc:"Hoja de alga con arroz gohan, camarón, salmón, queso philadelphia, aguacate y queso manchego.",
-    mods:false,
-    img:"kanoa_burrito.png"
-  },
-
-  {
-    id:"emp_burrito",
-    cat:"EMPANIZADOS",
-    name:"Burrito Empanizado",
-    price:170,
-    desc:"Hoja de alga con arroz gohan, camarón, salmón, queso philadelphia, aguacate y queso manchego.",
-    mods:false,
-    img:"kanoa_empanizado.png"
-  },
-  {
-    id:"emp_spicy_tuna",
-    cat:"EMPANIZADOS",
-    name:"Spicy Tuna",
-    price:170,
-    desc:"Atún picante, zanahoria, mango, queso philadelphia, cebollín y cebolla crujiente.",
-    mods:false,
-    img:"kanoa_empanizado.png"
-  },
-  {
-    id:"emp_salmon",
-    cat:"EMPANIZADOS",
-    name:"Salmón",
-    price:170,
-    desc:"Salmón, lechuga, pepino, aguacate y queso philadelphia.",
-    mods:false,
-    img:"kanoa_empanizado.png"
-  },
-  {
-    id:"emp_camaron",
-    cat:"EMPANIZADOS",
-    name:"Camarón Empanizado",
-    price:170,
-    desc:"Tampico, queso philadelphia, aguacate y pepino.",
-    mods:false,
-    img:"kanoa_empanizado.png"
-  },
-
-  {
-    id:"burger_salmon",
-    cat:"BURGERS",
-    name:"Kanoa Burger Salmón",
-    price:170,
-    desc:"Tapa de arroz empanizada con salmón, tampico, seaweed salad y chiles toreados.",
-    mods:false,
-    img:"kanoa_burger.png"
-  },
-  {
-    id:"burger_atun",
-    cat:"BURGERS",
-    name:"Kanoa Burger Atún",
-    price:170,
-    desc:"Spicy tuna, lechuga, champiñón caramelizado, aguacate y chiles toreados.",
-    mods:false,
-    img:"kanoa_burger.png"
-  },
-
-  {
-    id:"ramen_kanoa",
-    cat:"RAMEN",
-    name:"Ramen",
-    price:170,
-    desc:"Ramen estilo Kanoa. Temporada nov–feb.",
-    mods:false,
-    img:"kanoa_ramen.png"
-  },
-
-  {
-    id:"postre_croissant",
-    cat:"POSTRES",
-    name:"Croissant Nutella",
-    price:75,
-    desc:"Croissant relleno de Nutella y tapa Magnum de almendras.",
-    mods:false,
-    img:"kanoa_postre.png"
-  },
-
-  {
-    id:"extra_proteina",
-    cat:"EXTRAS",
-    name:"Proteína extra",
-    price:35,
-    desc:"Agrega proteína extra a tu bowl o platillo.",
-    mods:false,
-    img:"kanoa_extra.png"
-  },
-  {
-    id:"extra_proceso",
-    cat:"EXTRAS",
-    name:"Proceso extra",
-    price:30,
-    desc:"Ajuste o preparación adicional.",
-    mods:false,
-    img:"kanoa_extra.png"
-  },
-  {
-    id:"extra_topping",
-    cat:"EXTRAS",
-    name:"Topping extra",
-    price:20,
-    desc:"Agrega topping adicional.",
-    mods:false,
-    img:"kanoa_extra.png"
-  },
-  {
-    id:"extra_crujiente",
-    cat:"EXTRAS",
-    name:"Crujiente extra",
-    price:15,
-    desc:"Agrega crujiente adicional.",
-    mods:false,
-    img:"kanoa_extra.png"
-  },
-  {
-    id:"extra_salsa",
-    cat:"EXTRAS",
-    name:"Salsa extra",
-    price:10,
-    desc:"Agrega salsa adicional.",
-    mods:false,
-    img:"kanoa_extra.png"
-  }
+  {id:"extra_proteina", cat:"EXTRAS", name:"Proteína extra", price:35, desc:"Agrega proteína extra a tu bowl o platillo.", mods:false, img:"kanoa_extra.png"},
+  {id:"extra_topping", cat:"EXTRAS", name:"Topping extra", price:20, desc:"Agrega topping adicional.", mods:false, img:"kanoa_extra.png"},
+  {id:"extra_crujiente", cat:"EXTRAS", name:"Crujiente extra", price:15, desc:"Agrega crujiente adicional.", mods:false, img:"kanoa_extra.png"},
+  {id:"extra_salsa", cat:"EXTRAS", name:"Salsa extra", price:10, desc:"Agrega salsa adicional.", mods:false, img:"kanoa_extra.png"}
 ];
 
 const CATS = ["ENTRADAS","KIDS","POKES","BURRITOS","EMPANIZADOS","BURGERS","RAMEN","POSTRES","EXTRAS"];
 
 const CAT_META = {
-  "ENTRADAS": "Comienza con algo fresco y diferente",
-  "KIDS": "Opciones para los peques",
-  "POKES": "Bowls y combinaciones estilo Kanoa",
-  "BURRITOS": "Especialidad enrollada de la casa",
-  "EMPANIZADOS": "Rollos crujientes y llenos de sabor",
-  "BURGERS": "Burgers de arroz con estilo japonés",
-  "RAMEN": "Una opción caliente y especial",
-  "POSTRES": "Algo dulce para cerrar",
-  "EXTRAS": "Complementos para personalizar tu orden"
+  "ENTRADAS":"Comienza con algo fresco y diferente",
+  "KIDS":"Opciones para los peques",
+  "POKES":"Bowls y combinaciones estilo Kanoa",
+  "BURRITOS":"Especialidad enrollada de la casa",
+  "EMPANIZADOS":"Crujientes, dorados y muy visuales",
+  "BURGERS":"Burgers de arroz con estilo japonés",
+  "RAMEN":"Una opción caliente y especial",
+  "POSTRES":"Algo dulce para cerrar",
+  "EXTRAS":"Complementos para personalizar tu orden"
 };
 
-/** =========================
- *  MODIFICADORES
- *  ========================= */
 const MODS = {
   conSin: {
-    title:"Personalización",
+    title:"Personaliza",
     type:"multi",
     required:false,
-    options:["Sin picante","Sin cebolla crujiente","Sin aguacate","Sin philadelphia","Extra salsa"]
+    options:["Sin cebolla crujiente","Sin picante","Sin salsa","Extra salsa aparte"]
   }
 };
 function modsPara(item){
@@ -1419,9 +1174,6 @@ function modsPara(item){
   return ["conSin"];
 }
 
-/** =========================
- *  HELPERS
- *  ========================= */
 function money(n){ return "$" + Number(n||0).toFixed(2); }
 function escapeHtml(s){ return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 function onlyDigits(s){ return String(s || "").replace(/\D/g,""); }
@@ -1449,9 +1201,6 @@ function validateRequired(item, mods){
   return null;
 }
 
-/** =========================
- *  UI MENU
- *  ========================= */
 const tabs = document.getElementById("tabs");
 const itemsBox = document.getElementById("items");
 const sectionTitle = document.getElementById("sectionTitle");
@@ -1480,7 +1229,7 @@ function renderItems(){
   const term = (q.value||"").trim().toLowerCase();
   const list = catalogo.filter(x=>{
     const inCat = x.cat===activeCat;
-    const inSearch = !term || (x.name.toLowerCase().includes(term) || (x.desc||"").toLowerCase().includes(term));
+    const inSearch = !term || x.name.toLowerCase().includes(term) || (x.desc||"").toLowerCase().includes(term);
     return inCat && inSearch;
   });
 
@@ -1509,9 +1258,6 @@ function renderItems(){
 }
 q.addEventListener("input", renderItems);
 
-/** =========================
- *  CARRITO
- *  ========================= */
 let cart = [];
 const cartBox = document.getElementById("cart");
 const totalEl = document.getElementById("total");
@@ -1568,12 +1314,10 @@ function renderCart(){
       line.qty = Math.max(1, line.qty - 1);
       renderCart();
     }, {passive:true});
-
     wrap.querySelector('[data-act="inc"]').addEventListener("click", ()=>{
       line.qty += 1;
       renderCart();
     }, {passive:true});
-
     wrap.querySelector('[data-act="del"]').addEventListener("click", ()=>{
       cart.splice(idx,1);
       renderCart();
@@ -1583,9 +1327,6 @@ function renderCart(){
   });
 }
 
-/** =========================
- *  MODAL PRODUCTO
- *  ========================= */
 const backdrop = document.getElementById("backdrop");
 const mTitle = document.getElementById("mTitle");
 const mBody  = document.getElementById("mBody");
@@ -1638,13 +1379,11 @@ function openModal(item){
         btn.type = "button";
         btn.className = "optBtn";
         btn.textContent = opt;
-
         btn.addEventListener("pointerdown", (e)=>{
           e.preventDefault();
           e.stopPropagation();
           toggleOpt(k, opt, btn);
         }, {passive:false});
-
         list.appendChild(btn);
       });
 
@@ -1657,7 +1396,7 @@ function openModal(item){
   n.innerHTML = `
     <div class="optTitle">
       <b>Nota (opcional)</b>
-      <span>ej. “sin picante” / “bien dorado” / “extra salsa”</span>
+      <span>ej. “sin picante” / “extra salsa”</span>
     </div>
     <div style="margin-top:10px">
       <input id="noteProd" maxlength="180" placeholder="Escribe una nota para este producto..."/>
@@ -1677,24 +1416,19 @@ function openModal(item){
     const qtyMinus = document.getElementById("qtyMinus");
     const qtyPlus = document.getElementById("qtyPlus");
 
-    function refreshQty(){
-      if(qtyValue) qtyValue.textContent = draft.qty;
-    }
-
+    function refreshQty(){ if(qtyValue) qtyValue.textContent = draft.qty; }
     if(qtyMinus){
       qtyMinus.addEventListener("click", ()=>{
         draft.qty = Math.max(1, draft.qty - 1);
         refreshQty();
       });
     }
-
     if(qtyPlus){
       qtyPlus.addEventListener("click", ()=>{
         draft.qty += 1;
         refreshQty();
       });
     }
-
     refreshQty();
   }, 0);
 }
@@ -1727,6 +1461,14 @@ function toggleOpt(k, opt, el){
 function addLine(item, mods, note, qty = 1){
   const key = buildKey(item, mods, note);
   const existing = cart.find(x=>x.key===key);
+  if(existing){
+    existing.qty += qty;
+  }else{
+    cart.push({
+      key,
+      id:item.id,
+      name:item.name,
+      basePrice:item.price,
 
   if(existing){
     existing.qty += qty;
