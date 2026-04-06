@@ -729,20 +729,6 @@ const SUPABASE_URL = "https://lujroedkbgffobyblbie.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1anJvZWRrYmdmZm9ieWJsYmllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxODkzNDgsImV4cCI6MjA3MDc2NTM0OH0.bSbBZeS59aPSEGPj1YGcmZCyQTfgf3fz9pNDuR2ID7c";
 const ADMIN_PIN = "1234";
 
-try{
-  if (
-    SUPABASE_URL &&
-    SUPABASE_ANON_KEY &&
-    window.supabase &&
-    typeof window.supabase.createClient === "function"
-  ) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    supabaseReady = true;
-  }
-}catch(err){
-  console.error("Error inicializando Supabase:", err);
-  supabaseReady = false;
-}
 
 
 
