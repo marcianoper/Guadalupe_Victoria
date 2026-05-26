@@ -1854,7 +1854,7 @@ async function ensureComandaAbierta(){
   if(!supabaseReady || !mesaActiva) return null;
 
   const { data: existente, error: errFind } = await supabase
-    .from("comandas")
+    .from("comandas_conquistadores")
     .select("*")
     .eq("mesa", mesaActiva)
     .eq("estado", "abierta")
@@ -1870,7 +1870,7 @@ async function ensureComandaAbierta(){
   }
 
   const { data: creada, error: errCreate } = await supabase
-    .from("comandas")
+    .from("comandas_conquistadores")
     .insert([{
       mesa: mesaActiva,
       mesero: meseroNombre || null,
@@ -1903,7 +1903,7 @@ async function cargarComandaDeMesa(mesa){
   setSyncStatus(`Cargando ${mesa}...`, "warn");
 
   const { data: comanda, error: errComanda } = await supabase
-    .from("comandas")
+    .from("comandas_conquistadores")
     .select("*")
     .eq("mesa", mesa)
     .eq("estado", "abierta")
@@ -1938,7 +1938,7 @@ async function cargarComandaDeMesa(mesa){
   }
 
   const { data: items, error: errItems } = await supabase
-    .from("comandas_items")
+    .from("comandas_conquistadores_items")
     .select("*")
     .eq("comanda_id", comanda.id)
     .order("created_at", { ascending: true });
@@ -1997,7 +1997,7 @@ async function syncComandaToSupabase(){
     }
 
     const { error: errUpdate } = await supabase
-      .from("comandas")
+      .from("comandas_conquistadores")
       .update({
         mesa: mesaActiva,
         mesero: meseroNombre || null,
@@ -2009,7 +2009,7 @@ async function syncComandaToSupabase(){
     if(errUpdate) throw errUpdate;
 
     const { error: errDelete } = await supabase
-      .from("comandas_items")
+      .from("comandas_conquistadores_items")
       .delete()
       .eq("comanda_id", comandaId);
 
@@ -2030,7 +2030,7 @@ async function syncComandaToSupabase(){
       }));
 
       const { error: errInsert } = await supabase
-        .from("comandas_items")
+        .from("comandas_conquistadores_items")
         .insert(payload);
 
       if(errInsert) throw errInsert;
