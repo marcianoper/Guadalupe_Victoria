@@ -964,15 +964,15 @@ input:focus, select:focus{
 
         <div class="btnRow">
           <button class="btn btnYellow" id="btnResumen" type="button">Resumen</button>
-          <button class="btn btnBlue" id="btnImprimir" type="button">Imprimir cocina</button>
-          <button class="btn btnLight" id="btnReimprimirTodo" type="button">Reimprimir todo cocina</button>
+          <button class="btn btnBlue" id="btnImprimir" type="button">Imprimir ticket</button>
+          <button class="btn btnLight" id="btnReimprimirTodo" type="button">Reimprimir todo</button>
           <button class="btn btnRed" id="btnCerrarPedido" type="button">Cerrar pedido</button>
         </div>
 
         <div class="noteBox">
           <b>Amarillo = nuevo / pendiente por imprimir.</b><br>
           <b>Gris = ya impreso anteriormente.</b><br>
-          Las bebidas y postres no salen en cocina.
+          Bebidas y aguas frescas sí salen en el ticket final.
         </div>
 
         <div class="noteBox">
@@ -1059,7 +1059,8 @@ input:focus, select:focus{
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
 
-
+let supabase = null;
+let supabaseReady = false;
 
 try{
   if (
@@ -2992,7 +2993,6 @@ function imprimirHtmlTicket(htmlContenido){
    ========================= */
 function getPendientesCocina(){
   return cart
-    .filter(x => x.cocina)
     .map(x => {
       const pendiente = Number(x.qty || 0) - Number(x.sentQty || 0);
       return { ...x, pendiente };
@@ -3112,7 +3112,7 @@ function buildResumenComanda(){
         <div class="it">
           <div class="itn">${escapeHtml(qty)} x ${escapeHtml(l.name)}</div>
           <div class="totalLine"><span>${money(price)} c/u</span><span>${money(sub)}</span></div>
-          <div class="sub">${escapeHtml(l.cat)}${l.cocina ? (pendiente > 0 ? " • NUEVO" : " • YA IMPRESO") : " • EXTRA"}</div>
+          <div class="sub">${escapeHtml(l.cat)}${pendiente > 0 ? " • NUEVO" : " • YA IMPRESO"}</div>
           ${l.note ? `<div class="sub">• ${escapeHtml(l.note)}</div>` : ``}
         </div>
       `;
@@ -3134,7 +3134,6 @@ async function marcarPendientesComoEnviados(){
   let huboCambios = false;
 
   cart.forEach(line => {
-    if(!line.cocina) return;
     const pendiente = Number(line.qty || 0) - Number(line.sentQty || 0);
     if(pendiente > 0){
       line.sentQty = Number(line.qty || 0);
@@ -3152,7 +3151,7 @@ async function imprimirCocina(){
   if(!cart.length) return alert("No hay productos en la comanda.");
 
   const pendientes = getPendientesCocina();
-  if(!pendientes.length) return alert("No hay productos nuevos pendientes para cocina.");
+  if(!pendientes.length) return alert("No hay productos nuevos pendientes para imprimir.");
 
   const html = buildTicketCocinaPendiente();
   imprimirHtmlTicket(html);
@@ -3164,8 +3163,6 @@ async function imprimirCocina(){
 
 function reimprimirTodoCocina(){
   if(!cart.length) return alert("No hay productos en la comanda.");
-  if(!cart.some(x => x.cocina)) return alert("No hay productos de cocina para imprimir.");
-
   const html = buildTicketCocinaCompleto();
   imprimirHtmlTicket(html);
 }
@@ -3272,8 +3269,14 @@ if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
 /* =========================
    INIT
    ========================= */
-if(autoColorInput) autoColorInput.addEventListener("input", actualizarPreviewAuto);
-if(autoPlacasInput) autoPlacasInput.addEventListener("input", actualizarPreviewAuto);
+if(autoColorInput) autoColorInput.addEventListener("input", ()=>{
+  autoColorInput.value = autoColorInput.value.replace(/\s+/g," ").trimStart();
+  actualizarPreviewAuto();
+});
+if(autoPlacasInput) autoPlacasInput.addEventListener("input", ()=>{
+  autoPlacasInput.value = autoPlacasInput.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);
+  actualizarPreviewAuto();
+});
 actualizarPreviewAuto();
 renderPersonas();
 renderCats();
