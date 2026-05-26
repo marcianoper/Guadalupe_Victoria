@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Comandas Cocina</title>
+<title>Comandas Auto Estacionamiento</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -810,8 +810,8 @@ input:focus, select:focus{
 <header>
   <div class="head">
     <div class="brand">
-      <h1>🌮 Comandas Conquistadores</h1>
-      <div class="sub">Menú actualizado: tacos, tortas, quesadillas, volcanes y alambres</div>
+      <h1>🌮 Comandas Auto Estacionamiento</h1>
+      <div class="sub">Pedidos para clientes en carro</div>
     </div>
     <div class="pill" id="pill">0 productos</div>
   </div>
@@ -820,7 +820,7 @@ input:focus, select:focus{
 <div class="wrap">
   <div class="stepDots">
     <div class="stepDot active" id="dot1">1. Mesero</div>
-    <div class="stepDot" id="dot2">2. Ubicación</div>
+    <div class="stepDot" id="dot2">2. Auto</div>
     <div class="stepDot" id="dot3">3. Pedido</div>
     <div class="stepDot" id="dot4">4. Comanda</div>
   </div>
@@ -844,23 +844,22 @@ input:focus, select:focus{
 
       <section class="step" id="step2">
         <div class="noteBox" style="margin-top:0">
-          Elige el destino del pedido: mesa, carrito o para llevar.
+          Este sistema es únicamente para <b>auto en estacionamiento</b>. Captura el color del carro y los últimos dígitos de las placas para identificar correctamente cada pedido.
         </div>
 
         <div class="ubicacionesWrap" style="margin-top:12px">
           <div class="ubicacionSection">
-            <div class="sectionTitle">Mesas</div>
-            <div class="mesasGrid" id="mesasGrid"></div>
-          </div>
+            <div class="sectionTitle">Auto estacionamiento</div>
 
-          <div class="ubicacionSection">
-            <div class="sectionTitle">Carrito</div>
-            <div class="destinosGrid" id="carritosGrid"></div>
-          </div>
+            <label>Color del carro</label>
+            <input id="autoColor" placeholder="Ej. Blanco, rojo, gris" autocomplete="off">
 
-          <div class="ubicacionSection">
-            <div class="sectionTitle">Para llevar</div>
-            <div class="destinosGrid" id="llevarGrid"></div>
+            <label style="margin-top:12px">Últimos dígitos de placas</label>
+            <input id="autoPlacas" placeholder="Ej. 482" autocomplete="off" inputmode="text" maxlength="8">
+
+            <div class="noteBox" id="autoPreview">
+              🚗 Pendiente: captura color y últimos dígitos de placas.
+            </div>
           </div>
         </div>
       </section>
@@ -873,13 +872,13 @@ input:focus, select:focus{
               <span id="meseroView">—</span>
             </div>
             <div class="resumeBox">
-              <b>Ubicación</b>
+              <b>Auto</b>
               <span id="mesaView">—</span>
             </div>
           </div>
 
           <div class="btnRow" style="margin-top:10px">
-            <button class="btn btnLight" id="btnCambiarMesaPaso3" type="button">Cambiar ubicación</button>
+            <button class="btn btnLight" id="btnCambiarMesaPaso3" type="button">Cambiar auto</button>
           </div>
 
           <label style="margin-top:12px">Plato</label>
@@ -902,13 +901,13 @@ input:focus, select:focus{
             <span id="meseroView4">—</span>
           </div>
           <div class="resumeBox">
-            <b>Ubicación</b>
+            <b>Auto</b>
             <span id="mesaView4">—</span>
           </div>
         </div>
 
         <div class="btnRow" style="margin-top:10px">
-          <button class="btn btnLight" id="btnCambiarMesaPaso4" type="button">Cambiar ubicación</button>
+          <button class="btn btnLight" id="btnCambiarMesaPaso4" type="button">Cambiar auto</button>
         </div>
 
         <div class="btnRow">
@@ -1652,12 +1651,15 @@ const steps = {
 
 const titles = {
   1: ["Paso 1 — Mesero","Primero selecciona quién está tomando el pedido."],
-  2: ["Paso 2 — Elegir ubicación","Toca la mesa, carrito o para llevar."],
+  2: ["Paso 2 — Auto estacionamiento","Captura color del carro y últimos dígitos de placas."],
   3: ["Paso 3 — Capturar pedido","Elige plato y agrega productos sin bajar hasta la comanda."],
   4: ["Paso 4 — Revisar e imprimir","Confirma la comanda y manda a imprimir cocina."],
 };
 
 const meseroInput = document.getElementById("mesero");
+const autoColorInput = document.getElementById("autoColor");
+const autoPlacasInput = document.getElementById("autoPlacas");
+const autoPreview = document.getElementById("autoPreview");
 const mesasGrid = document.getElementById("mesasGrid");
 const carritosGrid = document.getElementById("carritosGrid");
 const llevarGrid = document.getElementById("llevarGrid");
@@ -1725,6 +1727,23 @@ function updateHeaderPill(){
   pill.textContent = `${totalProductos()} productos`;
 }
 
+function construirReferenciaAuto(){
+  const color = String(autoColorInput?.value || "").trim();
+  const placas = String(autoPlacasInput?.value || "").trim().toUpperCase();
+  if(!color || !placas) return "";
+  return `AUTO ESTACIONAMIENTO — ${color.toUpperCase()} — PLACAS ${placas}`;
+}
+
+function actualizarPreviewAuto(){
+  const ref = construirReferenciaAuto();
+  if(autoPreview){
+    autoPreview.innerHTML = ref
+      ? `🚗 <b>${escapeHtml(ref)}</b>`
+      : `🚗 Pendiente: captura color y últimos dígitos de placas.`;
+  }
+  return ref;
+}
+
 function updateResumeViews(){
   meseroView.textContent = meseroNombre || "—";
   mesaView.textContent = mesaActiva || "—";
@@ -1736,7 +1755,7 @@ function updateContinueButton(){
   fixedContinue.style.display = "block";
 
   if(currentStep === 1){
-    mainContinueBtn.textContent = "Continuar a ubicación";
+    mainContinueBtn.textContent = "Continuar a auto";
     mainContinueBtn.className = "btn btnBlue";
     return;
   }
@@ -1913,7 +1932,7 @@ async function cargarComandaDeMesa(mesa){
 
   if(errComanda){
     console.error(errComanda);
-    setSyncStatus("Error al cargar comanda de la ubicación", "bad");
+    setSyncStatus("Error al cargar comanda de la auto", "bad");
     alert("No se pudo cargar la comanda.");
     return;
   }
@@ -2054,70 +2073,17 @@ async function syncComandaToSupabase(){
    ========================= */
 function selectUbicacion(ubicacion){
   mesaActiva = ubicacion;
-  renderMesas();
-  renderCarritos();
-  renderParaLlevar();
   updateResumeViews();
 
   cargarComandaDeMesa(mesaActiva).catch(err=>{
     console.error(err);
-    setSyncStatus("No se pudo cargar la ubicación desde Supabase", "bad");
+    setSyncStatus("No se pudo cargar el auto desde Supabase", "bad");
   });
 }
 
-function renderMesas(){
-  mesasGrid.innerHTML = "";
-  MESAS.forEach(mesa=>{
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "mesaBtn" + (mesaActiva===mesa ? " active":"");
-    btn.innerHTML = `
-      <div class="mesaCard">
-        <div class="mesaTop"></div>
-        <div class="mesaLegs"><span></span><span></span></div>
-        <div class="mesaText">${mesa}</div>
-      </div>
-    `;
-    btn.onclick = ()=> selectUbicacion(mesa);
-    mesasGrid.appendChild(btn);
-  });
-}
-
-function renderCarritos(){
-  carritosGrid.innerHTML = "";
-  CARRITOS.forEach(nombre=>{
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "destinoBtn" + (mesaActiva===nombre ? " active":"");
-    btn.innerHTML = `
-      <div class="destinoCard">
-        <div class="destinoIcon">🛒</div>
-        <div class="destinoName">${escapeHtml(nombre)}</div>
-        <div class="destinoDesc">Clientes sentados afuera</div>
-      </div>
-    `;
-    btn.onclick = ()=> selectUbicacion(nombre);
-    carritosGrid.appendChild(btn);
-  });
-}
-
-function renderParaLlevar(){
-  llevarGrid.innerHTML = "";
-  PARA_LLEVAR.forEach(nombre=>{
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "destinoBtn" + (mesaActiva===nombre ? " active":"");
-    btn.innerHTML = `
-      <div class="destinoCard">
-        <div class="destinoIcon">🥡</div>
-        <div class="destinoName">${escapeHtml(nombre)}</div>
-        <div class="destinoDesc">Pedido sin mesa</div>
-      </div>
-    `;
-    btn.onclick = ()=> selectUbicacion(nombre);
-    llevarGrid.appendChild(btn);
-  });
-}
+function renderMesas(){}
+function renderCarritos(){}
+function renderParaLlevar(){}
 
 function renderPersonas(){
   personasBox.innerHTML = "";
@@ -3045,12 +3011,21 @@ function handleMainContinue(e){
   }
 
   if(currentStep === 2){
-    if(!mesaActiva){
-      alert("Selecciona una ubicación.");
+    const referenciaAuto = actualizarPreviewAuto();
+
+    if(!referenciaAuto){
+      alert("Captura el color del carro y los últimos dígitos de las placas.");
       return false;
     }
 
+    mesaActiva = referenciaAuto;
     updateResumeViews();
+
+    cargarComandaDeMesa(mesaActiva).catch(err=>{
+      console.error(err);
+      setSyncStatus("No se pudo cargar el auto desde Supabase", "bad");
+    });
+
     goToStep(3);
     return false;
   }
@@ -3106,9 +3081,9 @@ document.getElementById("btnReimprimirTodo").onclick = reimprimirTodoCocina;
 /* =========================
    INIT
    ========================= */
-renderMesas();
-renderCarritos();
-renderParaLlevar();
+if(autoColorInput) autoColorInput.addEventListener("input", actualizarPreviewAuto);
+if(autoPlacasInput) autoPlacasInput.addEventListener("input", actualizarPreviewAuto);
+actualizarPreviewAuto();
 renderPersonas();
 renderCats();
 renderItems();
