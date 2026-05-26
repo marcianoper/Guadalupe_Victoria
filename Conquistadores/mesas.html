@@ -797,6 +797,45 @@ input:focus, select:focus{
   transform:translateY(0) scale(1);
 }
 
+.pedidosAbiertosBox{
+  margin-top:14px;
+  display:grid;
+  gap:10px;
+}
+.openOrderCard{
+  width:100%;
+  border:none;
+  cursor:pointer;
+  border-radius:18px;
+  padding:12px 14px;
+  text-align:left;
+  background:linear-gradient(180deg,#ffffff,#eef6ff);
+  border:2px solid rgba(21,101,192,.16);
+  box-shadow:0 8px 18px rgba(21,101,192,.08);
+}
+.openOrderCard strong{
+  display:block;
+  font-size:18px;
+  color:#0b3d6e;
+}
+.openOrderCard span{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+}
+.openOrderCard.active{
+  border-color:var(--red);
+  background:linear-gradient(180deg,#fff1f1,#ffe2e2);
+}
+.totalLine{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:900;
+}
+
 .print-area{display:none}
 
 @page{
@@ -860,6 +899,11 @@ input:focus, select:focus{
             <div class="noteBox" id="autoPreview">
               🚗 Pendiente: captura color y últimos dígitos de placas.
             </div>
+
+            <div class="btnRow">
+              <button class="btn btnLight" id="btnVerPedidosAbiertos" type="button">Ver pedidos abiertos</button>
+            </div>
+            <div class="pedidosAbiertosBox" id="pedidosAbiertosBox"></div>
           </div>
         </div>
       </section>
@@ -922,6 +966,7 @@ input:focus, select:focus{
           <button class="btn btnYellow" id="btnResumen" type="button">Resumen</button>
           <button class="btn btnBlue" id="btnImprimir" type="button">Imprimir cocina</button>
           <button class="btn btnLight" id="btnReimprimirTodo" type="button">Reimprimir todo cocina</button>
+          <button class="btn btnRed" id="btnCerrarPedido" type="button">Cerrar pedido</button>
         </div>
 
         <div class="noteBox">
@@ -1660,6 +1705,8 @@ const meseroInput = document.getElementById("mesero");
 const autoColorInput = document.getElementById("autoColor");
 const autoPlacasInput = document.getElementById("autoPlacas");
 const autoPreview = document.getElementById("autoPreview");
+const btnVerPedidosAbiertos = document.getElementById("btnVerPedidosAbiertos");
+const pedidosAbiertosBox = document.getElementById("pedidosAbiertosBox");
 const mesasGrid = document.getElementById("mesasGrid");
 const carritosGrid = document.getElementById("carritosGrid");
 const llevarGrid = document.getElementById("llevarGrid");
@@ -1707,6 +1754,14 @@ function totalProductos(){
   return cart.reduce((a,x)=>a + Number(x.qty || 0), 0);
 }
 
+function money(n){
+  return `$${Number(n || 0).toFixed(2)}`;
+}
+
+function totalComanda(){
+  return cart.reduce((sum, line)=> sum + (Number(line.qty || 0) * Number(line.price || 0)), 0);
+}
+
 function makeKey(itemOrLine, persona, note){
   return [itemOrLine.id, persona, note || ""].join("|");
 }
@@ -1742,6 +1797,16 @@ function actualizarPreviewAuto(){
       : `🚗 Pendiente: captura color y últimos dígitos de placas.`;
   }
   return ref;
+}
+
+function setAutoInputsFromReferencia(ref){
+  const txt = String(ref || "");
+  const match = txt.match(/COLOR:\s*(.*?)\s*[—-]\s*PLACAS:\s*(.*)$/i);
+  if(match){
+    if(autoColorInput) autoColorInput.value = match[1].trim();
+    if(autoPlacasInput) autoPlacasInput.value = match[2].trim();
+  }
+  actualizarPreviewAuto();
 }
 
 function updateResumeViews(){
@@ -2066,6 +2131,94 @@ async function syncComandaToSupabase(){
       await syncComandaToSupabase();
     }
   }
+}
+
+async function cargarPedidosAbiertos(){
+  if(!pedidosAbiertosBox) return;
+
+  if(!supabaseReady){
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Supabase no está conectado.</div>`;
+    return;
+  }
+
+  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando pedidos abiertos...</div>`;
+
+  const { data, error } = await supabase
+    .from("comandas_conquistadores")
+    .select("id, mesa, mesero, total_productos, updated_at, created_at")
+    .eq("estado", "abierta")
+    .order("updated_at", { ascending:false });
+
+  if(error){
+    console.error(error);
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar los pedidos abiertos.</div>`;
+    return;
+  }
+
+  const pedidos = (data || []).filter(x => String(x.mesa || "").toUpperCase().includes("COLOR:"));
+
+  if(!pedidos.length){
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay carros con pedido abierto.</div>`;
+    return;
+  }
+
+  pedidosAbiertosBox.innerHTML = pedidos.map(p=>`
+    <button type="button" class="openOrderCard ${p.mesa === mesaActiva ? "active" : ""}" data-auto-ref="${escapeHtml(p.mesa)}">
+      <strong>🚗 ${escapeHtml(p.mesa)}</strong>
+      <span>${Number(p.total_productos || 0)} productos • Mesero: ${escapeHtml(p.mesero || "—")}</span>
+    </button>
+  `).join("");
+
+  pedidosAbiertosBox.querySelectorAll("[data-auto-ref]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const ref = btn.getAttribute("data-auto-ref") || "";
+      await abrirPedidoAbierto(ref);
+    };
+  });
+}
+
+async function abrirPedidoAbierto(ref){
+  if(!ref) return;
+  mesaActiva = ref;
+  setAutoInputsFromReferencia(ref);
+  updateResumeViews();
+  await cargarComandaDeMesa(mesaActiva);
+  goToStep(3);
+}
+
+async function cerrarPedidoActual(){
+  if(!supabaseReady || !comandaIdActual){
+    alert("No hay pedido abierto para cerrar.");
+    return;
+  }
+
+  const ok = confirm(`¿Cerrar el pedido de ${mesaActiva}? Ya no aparecerá en pedidos abiertos.`);
+  if(!ok) return;
+
+  const { error } = await supabase
+    .from("comandas_conquistadores")
+    .update({ estado:"cerrada", updated_at:new Date().toISOString() })
+    .eq("id", comandaIdActual);
+
+  if(error){
+    console.error(error);
+    alert("No se pudo cerrar el pedido.");
+    return;
+  }
+
+  cart = [];
+  comandaIdActual = null;
+  mesaActiva = "";
+  if(autoColorInput) autoColorInput.value = "";
+  if(autoPlacasInput) autoPlacasInput.value = "";
+  actualizarPreviewAuto();
+  updateHeaderPill();
+  updateResumeViews();
+  renderCart();
+  renderItems();
+  setSyncStatus("Pedido cerrado", "ok");
+  goToStep(2);
+  cargarPedidosAbiertos();
 }
 
 /* =========================
@@ -2849,12 +3002,13 @@ function getPendientesCocina(){
 
 function buildTicketCocinaPendiente(){
   const pendientes = getPendientesCocina();
+  let total = 0;
 
   let html = `
     <div class="ticket">
-      <div class="c b lg">COMANDA COCINA</div>
+      <div class="c b lg">COMANDA</div>
       <div class="c b">${escapeHtml(mesaActiva)}</div>
-      <div class="small c">Solo nuevos</div>
+      <div class="small c">Solo nuevos • Mesero: ${escapeHtml(meseroNombre || "—")}</div>
       <div class="hr"></div>
   `;
 
@@ -2865,9 +3019,14 @@ function buildTicketCocinaPendiente(){
     html += `<div class="g">${escapeHtml(persona)}</div>`;
 
     lines.forEach(l=>{
+      const qty = Number(l.pendiente || 0);
+      const price = Number(l.price || 0);
+      const sub = qty * price;
+      total += sub;
       html += `
         <div class="it">
-          <div class="itn">${escapeHtml(l.pendiente)} x ${escapeHtml(l.name)}</div>
+          <div class="itn">${escapeHtml(qty)} x ${escapeHtml(l.name)}</div>
+          <div class="totalLine"><span>${money(price)} c/u</span><span>${money(sub)}</span></div>
           ${l.note ? `<div class="sub">• ${escapeHtml(l.note)}</div>` : ``}
         </div>
       `;
@@ -2876,28 +3035,40 @@ function buildTicketCocinaPendiente(){
     html += `<div class="hr"></div>`;
   });
 
-  return html + `</div>`;
+  html += `
+      <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
+        <span>TOTAL NUEVO</span><span>${money(total)}</span>
+      </div>
+    </div>
+  `;
+  return html;
 }
 
 function buildTicketCocinaCompleto(){
+  let total = 0;
   let html = `
     <div class="ticket">
       <div class="c b lg">REIMPRESIÓN</div>
       <div class="c b">${escapeHtml(mesaActiva)}</div>
-      <div class="small c">Toda la cocina</div>
+      <div class="small c">Toda la comanda • Mesero: ${escapeHtml(meseroNombre || "—")}</div>
       <div class="hr"></div>
   `;
 
   PLATOS.forEach(persona=>{
-    const lines = cart.filter(x => x.persona===persona && x.cocina);
+    const lines = cart.filter(x => x.persona===persona);
     if(!lines.length) return;
 
     html += `<div class="g">${escapeHtml(persona)}</div>`;
 
     lines.forEach(l=>{
+      const qty = Number(l.qty || 0);
+      const price = Number(l.price || 0);
+      const sub = qty * price;
+      total += sub;
       html += `
         <div class="it">
-          <div class="itn">${escapeHtml(l.qty)} x ${escapeHtml(l.name)}</div>
+          <div class="itn">${escapeHtml(qty)} x ${escapeHtml(l.name)}</div>
+          <div class="totalLine"><span>${money(price)} c/u</span><span>${money(sub)}</span></div>
           ${l.note ? `<div class="sub">• ${escapeHtml(l.note)}</div>` : ``}
         </div>
       `;
@@ -2906,10 +3077,17 @@ function buildTicketCocinaCompleto(){
     html += `<div class="hr"></div>`;
   });
 
-  return html + `</div>`;
+  html += `
+      <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
+        <span>TOTAL</span><span>${money(total)}</span>
+      </div>
+    </div>
+  `;
+  return html;
 }
 
 function buildResumenComanda(){
+  let total = 0;
   let html = `
     <div class="ticket">
       <div class="c b lg">RESUMEN</div>
@@ -2926,9 +3104,14 @@ function buildResumenComanda(){
 
     lines.forEach(l=>{
       const pendiente = l.cocina ? Math.max(0, Number(l.qty||0) - Number(l.sentQty||0)) : 0;
+      const qty = Number(l.qty || 0);
+      const price = Number(l.price || 0);
+      const sub = qty * price;
+      total += sub;
       html += `
         <div class="it">
-          <div class="itn">${escapeHtml(l.qty)} x ${escapeHtml(l.name)}</div>
+          <div class="itn">${escapeHtml(qty)} x ${escapeHtml(l.name)}</div>
+          <div class="totalLine"><span>${money(price)} c/u</span><span>${money(sub)}</span></div>
           <div class="sub">${escapeHtml(l.cat)}${l.cocina ? (pendiente > 0 ? " • NUEVO" : " • YA IMPRESO") : " • EXTRA"}</div>
           ${l.note ? `<div class="sub">• ${escapeHtml(l.note)}</div>` : ``}
         </div>
@@ -2938,7 +3121,13 @@ function buildResumenComanda(){
     html += `<div class="hr"></div>`;
   });
 
-  return html + `</div>`;
+  html += `
+      <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
+        <span>TOTAL</span><span>${money(total)}</span>
+      </div>
+    </div>
+  `;
+  return html;
 }
 
 async function marcarPendientesComoEnviados(){
@@ -3077,6 +3266,8 @@ document.getElementById("collapseAll").onclick = ()=>{
 document.getElementById("btnResumen").onclick = verResumen;
 document.getElementById("btnImprimir").onclick = imprimirCocina;
 document.getElementById("btnReimprimirTodo").onclick = reimprimirTodoCocina;
+document.getElementById("btnCerrarPedido").onclick = cerrarPedidoActual;
+if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
 
 /* =========================
    INIT
@@ -3094,6 +3285,7 @@ updateContinueButton();
 
 if(supabaseReady){
   setSyncStatus("Supabase conectado. Listo para guardar comandas.", "ok");
+  cargarPedidosAbiertos();
 }else{
   setSyncStatus("Supabase pendiente de configurar", "warn");
 }
