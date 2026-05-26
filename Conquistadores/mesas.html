@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Comandas Auto Estacionamiento</title>
+<title>Comandas Conquistadores</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -810,7 +810,7 @@ input:focus, select:focus{
 <header>
   <div class="head">
     <div class="brand">
-      <h1>🌮 Comandas Auto Estacionamiento</h1>
+      <h1>🌮 Comandas Conquistadores</h1>
       <div class="sub">Pedidos para clientes en carro</div>
     </div>
     <div class="pill" id="pill">0 productos</div>
@@ -844,7 +844,7 @@ input:focus, select:focus{
 
       <section class="step" id="step2">
         <div class="noteBox" style="margin-top:0">
-          Este sistema es únicamente para <b>auto en estacionamiento</b>. Captura el color del carro y los últimos dígitos de las placas para identificar correctamente cada pedido.
+          Captura únicamente el <b>color del carro</b> y los <b>últimos dígitos de placas</b>. En el ticket saldrá así: <b>COLOR: BLANCO — PLACAS: 482</b>.
         </div>
 
         <div class="ubicacionesWrap" style="margin-top:12px">
@@ -1651,7 +1651,7 @@ const steps = {
 
 const titles = {
   1: ["Paso 1 — Mesero","Primero selecciona quién está tomando el pedido."],
-  2: ["Paso 2 — Auto estacionamiento","Captura color del carro y últimos dígitos de placas."],
+  2: ["Paso 2 — Datos del carro","Captura color del carro y últimos dígitos de placas."],
   3: ["Paso 3 — Capturar pedido","Elige plato y agrega productos sin bajar hasta la comanda."],
   4: ["Paso 4 — Revisar e imprimir","Confirma la comanda y manda a imprimir cocina."],
 };
@@ -1731,7 +1731,7 @@ function construirReferenciaAuto(){
   const color = String(autoColorInput?.value || "").trim();
   const placas = String(autoPlacasInput?.value || "").trim().toUpperCase();
   if(!color || !placas) return "";
-  return `AUTO ESTACIONAMIENTO — ${color.toUpperCase()} — PLACAS ${placas}`;
+  return `COLOR: ${color.toUpperCase()} — PLACAS: ${placas}`;
 }
 
 function actualizarPreviewAuto(){
