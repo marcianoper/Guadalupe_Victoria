@@ -906,6 +906,11 @@ input:focus, select:focus{
   color:var(--muted);
 }
 
+.quickTopCorte{position:fixed;top:12px;right:12px;z-index:45;border:none;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:1000;cursor:pointer;color:#5a3b00;background:linear-gradient(180deg,var(--yellow),var(--yellow-dark));box-shadow:0 10px 24px rgba(2,6,23,.18)}
+.cortePanel{position:fixed;top:62px;right:12px;width:min(430px,calc(100vw - 24px));max-height:calc(100vh - 84px);overflow:auto;z-index:44;display:none;background:rgba(255,255,255,.98);backdrop-filter:blur(10px);border:1px solid rgba(21,101,192,.16);border-radius:20px;padding:12px;box-shadow:0 26px 70px rgba(2,6,23,.22)}
+.cortePanel.show{display:grid;gap:10px}.authBox{display:grid;gap:10px}.inlineNotice{margin-top:10px;padding:10px 12px;border-radius:14px;font-size:13px;font-weight:900;display:none}.inlineNotice.show{display:block}.inlineNotice.ok{background:#edf9ef;color:#1f6a24;border:1px solid rgba(46,125,50,.22)}.inlineNotice.warn{background:#fff7e8;color:#8a5a00;border:1px solid rgba(251,192,45,.35)}.inlineNotice.bad{background:#fff1f1;color:#8e1d1d;border:1px solid rgba(198,40,40,.25)}
+.paymentSelector{margin-top:14px;padding:12px;border-radius:18px;background:linear-gradient(180deg,rgba(21,101,192,.05),rgba(251,192,45,.08));border:1px solid rgba(21,101,192,.14)}.paymentSelectorTitle{font-size:12px;font-weight:1000;color:#355070;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}.paymentGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:640px){.paymentGrid{grid-template-columns:1fr}}.payBtn{border:2px solid rgba(21,101,192,.14);border-radius:16px;padding:12px 10px;background:#fff;cursor:pointer;font-weight:1000;color:#0b4f93;text-align:center}.payBtn.active{background:linear-gradient(180deg,var(--green),var(--green-dark));color:#fff;border-color:var(--green-dark)}.closeHint{margin-top:8px;font-size:12px;color:var(--muted);font-weight:800}
+
 .print-area{display:none}
 
 @page{
@@ -925,6 +930,9 @@ input:focus, select:focus{
     <div class="pill" id="pill">0 productos</div>
   </div>
 </header>
+
+<button class="quickTopCorte" id="btnCorteCaja" type="button">💰 Corte</button>
+<div class="cortePanel" id="corteCajaBox"></div>
 
 <div class="wrap">
   <div class="stepDots">
@@ -972,10 +980,8 @@ input:focus, select:focus{
 
             <div class="btnRow">
               <button class="btn btnLight" id="btnVerPedidosAbiertos" type="button">Ver pedidos abiertos</button>
-              <button class="btn btnYellow" id="btnCorteCaja" type="button">Corte de caja</button>
             </div>
             <div class="pedidosAbiertosBox" id="pedidosAbiertosBox"></div>
-            <div class="corteBox" id="corteCajaBox"></div>
           </div>
         </div>
       </section>
@@ -1034,11 +1040,23 @@ input:focus, select:focus{
 
         <div class="comandaCompacta" id="cart"></div>
 
+        <div class="paymentSelector">
+          <div class="paymentSelectorTitle">Método de pago para cerrar</div>
+          <div class="paymentGrid" id="paymentGrid">
+            <button type="button" class="payBtn active" data-pay="EFECTIVO">💵 Efectivo</button>
+            <button type="button" class="payBtn" data-pay="TARJETA">💳 Tarjeta</button>
+            <button type="button" class="payBtn" data-pay="TRANSFERENCIA">📲 Transferencia</button>
+          </div>
+          <div class="closeHint" id="closeHint">Selecciona el método y presiona “Cerrar pedido”.</div>
+        </div>
+
+        <div class="inlineNotice" id="mainNotice"></div>
+
         <div class="btnRow">
           <button class="btn btnYellow" id="btnResumen" type="button">Resumen</button>
           <button class="btn btnBlue" id="btnImprimir" type="button">Imprimir ticket</button>
           <button class="btn btnLight" id="btnReimprimirTodo" type="button">Reimprimir todo</button>
-          <button class="btn btnRed" id="btnCerrarPedido" type="button">Cerrar pedido</button>
+          <button class="btn btnRed" id="btnCerrarPedido" type="button">Cerrar pedido y guardar pago</button>
         </div>
 
         <div class="noteBox">
@@ -1141,7 +1159,8 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const CLAVE_CORTE_CAJA = "4321";
 const METODOS_PAGO = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
 
-
+let supabase = null;
+let supabaseReady = false;
 
 try{
   if (
@@ -1764,6 +1783,7 @@ const openGroups = new Set();
 let toastTimer = null;
 
 let comandaIdActual = null;
+let metodoPagoSeleccionado = "EFECTIVO";
 let syncing = false;
 let syncQueued = false;
 
@@ -1791,6 +1811,9 @@ const btnVerPedidosAbiertos = document.getElementById("btnVerPedidosAbiertos");
 const btnCorteCaja = document.getElementById("btnCorteCaja");
 const pedidosAbiertosBox = document.getElementById("pedidosAbiertosBox");
 const corteCajaBox = document.getElementById("corteCajaBox");
+const paymentGrid = document.getElementById("paymentGrid");
+const mainNotice = document.getElementById("mainNotice");
+const closeHint = document.getElementById("closeHint");
 const mesasGrid = document.getElementById("mesasGrid");
 const carritosGrid = document.getElementById("carritosGrid");
 const llevarGrid = document.getElementById("llevarGrid");
@@ -1930,6 +1953,31 @@ function setSyncStatus(text, type="warn"){
   syncStatus.className = `syncStatus ${type}`;
 }
 
+function showInlineNotice(text, type="warn", target=mainNotice){
+  const el = target || mainNotice;
+  if(!el) return;
+  el.textContent = text;
+  el.className = `inlineNotice show ${type}`;
+  clearTimeout(el._timer);
+  el._timer = setTimeout(()=>{
+    el.className = "inlineNotice";
+    el.textContent = "";
+  }, 2600);
+}
+
+function selectPaymentMethod(metodo){
+  metodoPagoSeleccionado = normalizarMetodoPago(metodo);
+  if(metodoPagoSeleccionado === "SIN MÉTODO") metodoPagoSeleccionado = "EFECTIVO";
+  if(paymentGrid){
+    paymentGrid.querySelectorAll("[data-pay]").forEach(btn=>{
+      btn.classList.toggle("active", btn.getAttribute("data-pay") === metodoPagoSeleccionado);
+    });
+  }
+  if(closeHint){
+    closeHint.textContent = `Método seleccionado: ${metodoPagoSeleccionado}. Al cerrar se guardará para el corte.`;
+  }
+}
+
 function goToStep(n){
   currentStep = Number(n);
 
@@ -1961,7 +2009,7 @@ function goToStep(n){
 
 function regresarASeleccionMesa(){
   if(!meseroNombre){
-    alert("Primero selecciona un mesero.");
+    showInlineNotice("Primero selecciona un mesero.", "warn");
     goToStep(1);
     return;
   }
@@ -2082,7 +2130,7 @@ async function cargarComandaDeMesa(mesa){
   if(errComanda){
     console.error(errComanda);
     setSyncStatus("Error al cargar comanda de la auto", "bad");
-    alert("No se pudo cargar la comanda.");
+    showInlineNotice("No se pudo cargar la comanda.", "bad");
     return;
   }
 
@@ -2114,7 +2162,7 @@ async function cargarComandaDeMesa(mesa){
   if(errItems){
     console.error(errItems);
     setSyncStatus("Error al cargar productos de la comanda", "bad");
-    alert("No se pudieron cargar los productos de la comanda.");
+    showInlineNotice("No se pudieron cargar los productos de la comanda.", "bad");
     return;
   }
 
@@ -2271,31 +2319,38 @@ async function abrirPedidoAbierto(ref){
 }
 
 function pedirMetodoPago(){
-  const texto = [
-    "Selecciona método de pago:",
-    "1 = EFECTIVO",
-    "2 = TARJETA",
-    "3 = TRANSFERENCIA"
-  ].join("\n");
-
-  const respuesta = prompt(texto, "1");
-  if(respuesta === null) return null;
-
-  const r = String(respuesta || "").trim().toUpperCase();
-  if(r === "1" || r === "EFECTIVO" || r === "E") return "EFECTIVO";
-  if(r === "2" || r === "TARJETA" || r === "T") return "TARJETA";
-  if(r === "3" || r === "TRANSFERENCIA" || r === "TR" || r === "TRANS") return "TRANSFERENCIA";
-
-  alert("Método de pago no válido. Usa 1, 2 o 3.");
-  return pedirMetodoPago();
+  return metodoPagoSeleccionado || "EFECTIVO";
 }
 
-function solicitarClaveCorte(){
-  const clave = prompt("Clave de encargado para ver corte de caja:");
-  if(clave === null) return false;
-  if(String(clave).trim() === CLAVE_CORTE_CAJA) return true;
-  alert("Clave incorrecta. Corte no autorizado.");
-  return false;
+function renderCorteAuth(){
+  if(!corteCajaBox) return;
+  corteCajaBox.classList.add("show");
+  corteCajaBox.innerHTML = `
+    <div class="authBox">
+      <div class="noteBox" style="margin-top:0"><b>Corte de caja</b><br>Solo encargado autorizado. Ingresa la clave para ver totales del día.</div>
+      <label>Clave de encargado</label>
+      <input id="corteClaveInput" type="password" inputmode="numeric" placeholder="Clave" autocomplete="off">
+      <div class="btnRow" style="margin-top:0">
+        <button class="btn btnBlue" id="btnAutorizarCorte" type="button">Ver corte</button>
+        <button class="btn btnLight" id="btnCerrarPanelCorte" type="button">Cerrar</button>
+      </div>
+      <div class="inlineNotice" id="corteNotice"></div>
+    </div>`;
+  const input = document.getElementById("corteClaveInput");
+  const btnAuth = document.getElementById("btnAutorizarCorte");
+  const btnClose = document.getElementById("btnCerrarPanelCorte");
+  const notice = document.getElementById("corteNotice");
+  if(input) setTimeout(()=>input.focus(), 50);
+  const autorizar = async ()=>{
+    const clave = String(input?.value || "").trim();
+    if(clave !== CLAVE_CORTE_CAJA){ showInlineNotice("Clave incorrecta. No se autorizó el corte.", "bad", notice); return; }
+    corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">Calculando corte de caja...</div>`;
+    try{ const corte = await obtenerCorteCajaHoy(); renderCorteCaja(corte); }
+    catch(err){ console.error(err); corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudo calcular el corte. Revisa conexión o permisos de Supabase.</div>`; }
+  };
+  if(btnAuth) btnAuth.onclick = autorizar;
+  if(input) input.addEventListener("keydown", e=>{ if(e.key === "Enter") autorizar(); });
+  if(btnClose) btnClose.onclick = ()=>{ corteCajaBox.classList.remove("show"); corteCajaBox.innerHTML = ""; };
 }
 
 function normalizarMetodoPago(metodo){
@@ -2305,55 +2360,22 @@ function normalizarMetodoPago(metodo){
 }
 
 async function cerrarPedidoActual(){
-  if(!supabaseReady || !comandaIdActual){
-    alert("No hay pedido abierto para cerrar.");
-    return;
-  }
-
-  if(!cart.length){
-    alert("No puedes cerrar un pedido sin productos.");
-    return;
-  }
-
+  if(!supabaseReady || !comandaIdActual){ showInlineNotice("No hay pedido abierto para cerrar.", "bad"); return; }
+  if(!cart.length){ showInlineNotice("No puedes cerrar un pedido sin productos.", "bad"); return; }
   const metodoPago = pedirMetodoPago();
-  if(!metodoPago) return;
-
   const totalFinal = totalComanda();
-  const ok = confirm(`¿Cerrar el pedido de ${mesaActiva}?\n\nMétodo: ${metodoPago}\nTotal: ${money(totalFinal)}\n\nYa no aparecerá en pedidos abiertos.`);
-  if(!ok) return;
-
-  const updatePayload = {
-    estado:"cerrada",
-    metodo_pago: metodoPago,
-    total_cerrado: totalFinal,
-    cerrado_at: new Date().toISOString(),
-    updated_at:new Date().toISOString()
-  };
-
-  const { error } = await supabase
-    .from("comandas_conquistadores")
-    .update(updatePayload)
-    .eq("id", comandaIdActual);
-
-  if(error){
-    console.error(error);
-    alert("No se pudo cerrar el pedido. Revisa que existan las columnas metodo_pago, total_cerrado y cerrado_at en Supabase.");
-    return;
-  }
-
-  cart = [];
-  comandaIdActual = null;
-  mesaActiva = "";
+  const btn = document.getElementById("btnCerrarPedido");
+  if(btn){ btn.disabled = true; btn.textContent = `Cerrando ${metodoPago}...`; }
+  const updatePayload = { estado:"cerrada", metodo_pago: metodoPago, total_cerrado: totalFinal, cerrado_at: new Date().toISOString(), updated_at:new Date().toISOString() };
+  const { error } = await supabase.from("comandas_conquistadores").update(updatePayload).eq("id", comandaIdActual);
+  if(btn){ btn.disabled = false; btn.textContent = "Cerrar pedido y guardar pago"; }
+  if(error){ console.error(error); showInlineNotice("No se pudo cerrar. Revisa columnas metodo_pago, total_cerrado y cerrado_at en Supabase.", "bad"); return; }
+  cart = []; comandaIdActual = null; mesaActiva = "";
   if(autoColorInput) autoColorInput.value = "";
   if(autoPlacasInput) autoPlacasInput.value = "";
-  actualizarPreviewAuto();
-  updateHeaderPill();
-  updateResumeViews();
-  renderCart();
-  renderItems();
-  setSyncStatus(`Pedido cerrado: ${metodoPago} ${money(totalFinal)}`, "ok");
-  goToStep(2);
-  cargarPedidosAbiertos();
+  actualizarPreviewAuto(); updateHeaderPill(); updateResumeViews(); renderCart(); renderItems(); selectPaymentMethod("EFECTIVO");
+  setSyncStatus(`Pedido cerrado: ${metodoPago} ${money(totalFinal)}`, "ok"); showToast(`Cerrado: ${metodoPago} ${money(totalFinal)}`);
+  goToStep(2); cargarPedidosAbiertos();
 }
 
 function getTodayRangeLocal(){
@@ -2569,17 +2591,8 @@ function renderCorteCaja(corte){
 
 async function mostrarCorteCaja(){
   if(!corteCajaBox) return;
-  if(!solicitarClaveCorte()) return;
-  corteCajaBox.classList.add("show");
-  corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">Calculando corte de caja...</div>`;
-
-  try{
-    const corte = await obtenerCorteCajaHoy();
-    renderCorteCaja(corte);
-  }catch(err){
-    console.error(err);
-    corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudo calcular el corte. Revisa conexión o permisos de Supabase.</div>`;
-  }
+  if(corteCajaBox.classList.contains("show")){ corteCajaBox.classList.remove("show"); corteCajaBox.innerHTML = ""; return; }
+  renderCorteAuth();
 }
 
 
@@ -2846,8 +2859,7 @@ async function eliminarLineaPorKey(key, askConfirm=true){
   const line = cart[idx];
 
   if(askConfirm){
-    const ok = confirm(`¿Eliminar "${line.name}" de ${line.persona}?`);
-    if(!ok) return;
+    // Sin confirmación emergente para operación rápida en tablet.
   }
 
   cart.splice(idx, 1);
@@ -3131,7 +3143,7 @@ function renderCart(){
       };
 
       if(line.cat === "BEBIDAS" || line.cat === "POSTRES"){
-        alert("Este botón de edición está pensado principalmente para cambiar indicaciones como: sin verdura, solo cebolla, etc.");
+        showInlineNotice("Edición disponible para cambiar indicaciones como sin verdura, solo cebolla, etc.", "warn");
         return;
       }
 
@@ -3341,7 +3353,7 @@ function imprimirHtmlTicket(htmlContenido){
   const win = window.open("", "_blank");
 
   if(!win){
-    alert("El navegador bloqueó la ventana de impresión. Activa ventanas emergentes e inténtalo otra vez.");
+    showInlineNotice("El navegador bloqueó la impresión. Revisa permisos de impresión/ventanas.", "bad");
     return;
   }
 
@@ -3510,10 +3522,10 @@ async function marcarPendientesComoEnviados(){
 }
 
 async function imprimirCocina(){
-  if(!cart.length) return alert("No hay productos en la comanda.");
+  if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
 
   const pendientes = getPendientesCocina();
-  if(!pendientes.length) return alert("No hay productos nuevos pendientes para imprimir.");
+  if(!pendientes.length){ showInlineNotice("No hay productos nuevos pendientes para imprimir.", "warn"); return; }
 
   const html = buildTicketCocinaPendiente();
   imprimirHtmlTicket(html);
@@ -3524,13 +3536,13 @@ async function imprimirCocina(){
 }
 
 function reimprimirTodoCocina(){
-  if(!cart.length) return alert("No hay productos en la comanda.");
+  if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
   const html = buildTicketCocinaCompleto();
   imprimirHtmlTicket(html);
 }
 
 function verResumen(){
-  if(!cart.length) return alert("No hay productos en la comanda.");
+  if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
   const html = buildResumenComanda();
   imprimirHtmlTicket(html);
 }
@@ -3548,7 +3560,7 @@ function handleMainContinue(e){
       : String(meseroInput.value || "").trim();
 
     if(!nombre){
-      alert("Selecciona un mesero.");
+      showInlineNotice("Selecciona un mesero para continuar.", "warn");
       return false;
     }
 
@@ -3562,7 +3574,7 @@ function handleMainContinue(e){
     const referenciaAuto = actualizarPreviewAuto();
 
     if(!referenciaAuto){
-      alert("Captura el color del carro y los últimos dígitos de las placas.");
+      showInlineNotice("Captura color del carro y últimos dígitos de placas.", "warn");
       return false;
     }
 
@@ -3580,7 +3592,7 @@ function handleMainContinue(e){
 
   if(currentStep === 3){
     if(!cart.length){
-      alert("Agrega al menos un producto.");
+      showInlineNotice("Agrega al menos un producto antes de revisar comanda.", "warn");
       return false;
     }
 
@@ -3626,6 +3638,7 @@ document.getElementById("btnResumen").onclick = verResumen;
 document.getElementById("btnImprimir").onclick = imprimirCocina;
 document.getElementById("btnReimprimirTodo").onclick = reimprimirTodoCocina;
 document.getElementById("btnCerrarPedido").onclick = cerrarPedidoActual;
+if(paymentGrid){ paymentGrid.querySelectorAll("[data-pay]").forEach(btn=>{ btn.onclick = ()=> selectPaymentMethod(btn.getAttribute("data-pay")); }); }
 if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
 if(btnCorteCaja) btnCorteCaja.onclick = mostrarCorteCaja;
 
