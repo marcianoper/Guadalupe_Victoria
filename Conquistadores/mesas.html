@@ -835,6 +835,18 @@ input:focus, select:focus{
   gap:8px;
   font-weight:900;
 }
+.paymentPill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  padding:4px 8px;
+  font-size:11px;
+  font-weight:1000;
+  background:#eef6ff;
+  color:#0b4f93;
+  border:1px solid rgba(21,101,192,.18);
+}
 
 .corteBox{
   margin-top:14px;
@@ -1119,6 +1131,18 @@ input:focus, select:focus{
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
 
+/* =========================
+   CONFIG OPERACIÓN
+   =========================
+   Cambia esta clave por la del encargado/cajero autorizado.
+   Nota: esta es protección básica de interfaz. Para seguridad real, lo ideal
+   es manejar usuarios/RLS de Supabase con autenticación.
+*/
+const CLAVE_CORTE_CAJA = "4321";
+const METODOS_PAGO = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
+
+let supabase = null;
+let supabaseReady = false;
 
 try{
   if (
@@ -2247,23 +2271,74 @@ async function abrirPedidoAbierto(ref){
   goToStep(3);
 }
 
+function pedirMetodoPago(){
+  const texto = [
+    "Selecciona método de pago:",
+    "1 = EFECTIVO",
+    "2 = TARJETA",
+    "3 = TRANSFERENCIA"
+  ].join("\n");
+
+  const respuesta = prompt(texto, "1");
+  if(respuesta === null) return null;
+
+  const r = String(respuesta || "").trim().toUpperCase();
+  if(r === "1" || r === "EFECTIVO" || r === "E") return "EFECTIVO";
+  if(r === "2" || r === "TARJETA" || r === "T") return "TARJETA";
+  if(r === "3" || r === "TRANSFERENCIA" || r === "TR" || r === "TRANS") return "TRANSFERENCIA";
+
+  alert("Método de pago no válido. Usa 1, 2 o 3.");
+  return pedirMetodoPago();
+}
+
+function solicitarClaveCorte(){
+  const clave = prompt("Clave de encargado para ver corte de caja:");
+  if(clave === null) return false;
+  if(String(clave).trim() === CLAVE_CORTE_CAJA) return true;
+  alert("Clave incorrecta. Corte no autorizado.");
+  return false;
+}
+
+function normalizarMetodoPago(metodo){
+  const m = String(metodo || "").trim().toUpperCase();
+  if(METODOS_PAGO.includes(m)) return m;
+  return "SIN MÉTODO";
+}
+
 async function cerrarPedidoActual(){
   if(!supabaseReady || !comandaIdActual){
     alert("No hay pedido abierto para cerrar.");
     return;
   }
 
-  const ok = confirm(`¿Cerrar el pedido de ${mesaActiva}? Ya no aparecerá en pedidos abiertos.`);
+  if(!cart.length){
+    alert("No puedes cerrar un pedido sin productos.");
+    return;
+  }
+
+  const metodoPago = pedirMetodoPago();
+  if(!metodoPago) return;
+
+  const totalFinal = totalComanda();
+  const ok = confirm(`¿Cerrar el pedido de ${mesaActiva}?\n\nMétodo: ${metodoPago}\nTotal: ${money(totalFinal)}\n\nYa no aparecerá en pedidos abiertos.`);
   if(!ok) return;
+
+  const updatePayload = {
+    estado:"cerrada",
+    metodo_pago: metodoPago,
+    total_cerrado: totalFinal,
+    cerrado_at: new Date().toISOString(),
+    updated_at:new Date().toISOString()
+  };
 
   const { error } = await supabase
     .from("comandas_conquistadores")
-    .update({ estado:"cerrada", updated_at:new Date().toISOString() })
+    .update(updatePayload)
     .eq("id", comandaIdActual);
 
   if(error){
     console.error(error);
-    alert("No se pudo cerrar el pedido.");
+    alert("No se pudo cerrar el pedido. Revisa que existan las columnas metodo_pago, total_cerrado y cerrado_at en Supabase.");
     return;
   }
 
@@ -2277,7 +2352,7 @@ async function cerrarPedidoActual(){
   updateResumeViews();
   renderCart();
   renderItems();
-  setSyncStatus("Pedido cerrado", "ok");
+  setSyncStatus(`Pedido cerrado: ${metodoPago} ${money(totalFinal)}`, "ok");
   goToStep(2);
   cargarPedidosAbiertos();
 }
@@ -2312,11 +2387,11 @@ async function obtenerCorteCajaHoy(){
 
   const { data: comandas, error: errComandas } = await supabase
     .from("comandas_conquistadores")
-    .select("id, mesa, mesero, total_productos, updated_at, created_at")
+    .select("id, mesa, mesero, total_productos, updated_at, created_at, cerrado_at, metodo_pago, total_cerrado")
     .eq("estado", "cerrada")
-    .gte("updated_at", rango.startIso)
-    .lte("updated_at", rango.endIso)
-    .order("updated_at", { ascending:true });
+    .gte("cerrado_at", rango.startIso)
+    .lte("cerrado_at", rango.endIso)
+    .order("cerrado_at", { ascending:true });
 
   if(errComandas) throw errComandas;
 
@@ -2327,7 +2402,11 @@ async function obtenerCorteCajaHoy(){
       ordenes: [],
       totalOrdenes: 0,
       totalProductos: 0,
-      totalEfectivo: 0
+      totalGeneral: 0,
+      totalEfectivo: 0,
+      totalTarjeta: 0,
+      totalTransferencia: 0,
+      totalSinMetodo: 0
     };
   }
 
@@ -2350,22 +2429,32 @@ async function obtenerCorteCajaHoy(){
 
   const ordenes = (comandas || []).map(c=>{
     const calc = porComanda[c.id] || { total:0, productos:Number(c.total_productos || 0) };
+    const metodo = normalizarMetodoPago(c.metodo_pago);
     return {
       id: c.id,
       mesa: c.mesa || "—",
       mesero: c.mesero || "—",
-      hora: formatHoraMx(c.updated_at || c.created_at),
-      total: Number(calc.total || 0),
-      productos: Number(calc.productos || c.total_productos || 0)
+      hora: formatHoraMx(c.cerrado_at || c.updated_at || c.created_at),
+      total: Number(c.total_cerrado ?? calc.total ?? 0),
+      productos: Number(calc.productos || c.total_productos || 0),
+      metodo_pago: metodo
     };
   });
+
+  const sumaMetodo = (metodo)=> ordenes
+    .filter(o => o.metodo_pago === metodo)
+    .reduce((a,o)=>a + Number(o.total || 0), 0);
 
   return {
     fecha: rango.label,
     ordenes,
     totalOrdenes: ordenes.length,
     totalProductos: ordenes.reduce((a,o)=>a + Number(o.productos || 0), 0),
-    totalEfectivo: ordenes.reduce((a,o)=>a + Number(o.total || 0), 0)
+    totalGeneral: ordenes.reduce((a,o)=>a + Number(o.total || 0), 0),
+    totalEfectivo: sumaMetodo("EFECTIVO"),
+    totalTarjeta: sumaMetodo("TARJETA"),
+    totalTransferencia: sumaMetodo("TRANSFERENCIA"),
+    totalSinMetodo: sumaMetodo("SIN MÉTODO")
   };
 }
 
@@ -2373,8 +2462,8 @@ function buildTicketCorteCaja(corte){
   const rows = (corte.ordenes || []).map(o=>`
     <div class="it">
       <div class="itn">${escapeHtml(o.hora)} • ${escapeHtml(o.mesa)}</div>
-      <div class="totalLine"><span>${Number(o.productos || 0)} prod.</span><span>${money(o.total)}</span></div>
-      <div class="sub">Mesero: ${escapeHtml(o.mesero || "—")}</div>
+      <div class="totalLine"><span>${escapeHtml(o.metodo_pago || "SIN MÉTODO")}</span><span>${money(o.total)}</span></div>
+      <div class="sub">${Number(o.productos || 0)} prod. • Mesero: ${escapeHtml(o.mesero || "—")}</div>
     </div>
   `).join("");
 
@@ -2387,8 +2476,12 @@ function buildTicketCorteCaja(corte){
       <div class="hr"></div>
       <div class="totalLine"><span>ÓRDENES</span><span>${Number(corte.totalOrdenes || 0)}</span></div>
       <div class="totalLine"><span>PRODUCTOS</span><span>${Number(corte.totalProductos || 0)}</span></div>
+      <div class="totalLine"><span>EFECTIVO</span><span>${money(corte.totalEfectivo)}</span></div>
+      <div class="totalLine"><span>TARJETA</span><span>${money(corte.totalTarjeta)}</span></div>
+      <div class="totalLine"><span>TRANSFERENCIA</span><span>${money(corte.totalTransferencia)}</span></div>
+      ${Number(corte.totalSinMetodo || 0) ? `<div class="totalLine"><span>SIN MÉTODO</span><span>${money(corte.totalSinMetodo)}</span></div>` : ``}
       <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
-        <span>EFECTIVO</span><span>${money(corte.totalEfectivo)}</span>
+        <span>TOTAL VENDIDO</span><span>${money(corte.totalGeneral)}</span>
       </div>
     </div>
   `;
@@ -2403,14 +2496,17 @@ function renderCorteCaja(corte){
         <span>${escapeHtml(o.hora)} • ${escapeHtml(o.mesa)}</span>
         <span>${money(o.total)}</span>
       </div>
-      <div class="corteOrderMeta">${Number(o.productos || 0)} productos • Mesero: ${escapeHtml(o.mesero || "—")}</div>
+      <div class="corteOrderMeta">
+        <span class="paymentPill">${escapeHtml(o.metodo_pago || "SIN MÉTODO")}</span>
+        &nbsp;${Number(o.productos || 0)} productos • Mesero: ${escapeHtml(o.mesero || "—")}
+      </div>
     </div>
   `).join("");
 
   corteCajaBox.classList.add("show");
   corteCajaBox.innerHTML = `
     <div class="noteBox" style="margin-top:0">
-      Corte basado en <b>pedidos cerrados de hoy</b>. Si una orden sigue abierta, no entra al corte todavía.
+      Corte autorizado. Solo entran <b>pedidos cerrados de hoy</b>. El efectivo esperado es únicamente lo pagado en efectivo.
     </div>
 
     <div class="corteKpis">
@@ -2419,21 +2515,34 @@ function renderCorteCaja(corte){
         <span>${money(corte.totalEfectivo)}</span>
       </div>
       <div class="corteKpi">
-        <b>Órdenes cerradas</b>
-        <span>${Number(corte.totalOrdenes || 0)}</span>
+        <b>Total vendido</b>
+        <span>${money(corte.totalGeneral)}</span>
       </div>
     </div>
 
     <div class="corteKpis">
       <div class="corteKpi">
+        <b>Tarjeta</b>
+        <span>${money(corte.totalTarjeta)}</span>
+      </div>
+      <div class="corteKpi">
+        <b>Transferencia</b>
+        <span>${money(corte.totalTransferencia)}</span>
+      </div>
+    </div>
+
+    <div class="corteKpis">
+      <div class="corteKpi">
+        <b>Órdenes cerradas</b>
+        <span>${Number(corte.totalOrdenes || 0)}</span>
+      </div>
+      <div class="corteKpi">
         <b>Productos vendidos</b>
         <span>${Number(corte.totalProductos || 0)}</span>
       </div>
-      <div class="corteKpi">
-        <b>Fecha</b>
-        <span>${escapeHtml(corte.fecha)}</span>
-      </div>
     </div>
+
+    ${Number(corte.totalSinMetodo || 0) ? `<div class="noteBox" style="margin-top:0"><b>Atención:</b> hay ${money(corte.totalSinMetodo)} sin método de pago registrado.</div>` : ``}
 
     <div class="btnRow" style="margin-top:0">
       <button class="btn btnBlue" id="btnImprimirCorte" type="button">Imprimir corte</button>
@@ -2461,6 +2570,7 @@ function renderCorteCaja(corte){
 
 async function mostrarCorteCaja(){
   if(!corteCajaBox) return;
+  if(!solicitarClaveCorte()) return;
   corteCajaBox.classList.add("show");
   corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">Calculando corte de caja...</div>`;
 
