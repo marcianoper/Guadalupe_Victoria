@@ -836,6 +836,64 @@ input:focus, select:focus{
   font-weight:900;
 }
 
+.corteBox{
+  margin-top:14px;
+  display:none;
+  gap:10px;
+}
+.corteBox.show{
+  display:grid;
+}
+.corteKpis{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+@media (max-width:640px){
+  .corteKpis{grid-template-columns:1fr}
+}
+.corteKpi{
+  border-radius:18px;
+  padding:14px;
+  background:#fff;
+  border:2px solid rgba(46,125,50,.18);
+  box-shadow:0 8px 18px rgba(46,125,50,.08);
+}
+.corteKpi b{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.corteKpi span{
+  font-size:24px;
+  font-weight:1000;
+  color:var(--green-dark);
+}
+.corteOrders{
+  display:grid;
+  gap:8px;
+}
+.corteOrder{
+  border-radius:14px;
+  padding:10px 12px;
+  background:#fff;
+  border:1px solid rgba(21,101,192,.14);
+}
+.corteOrderTop{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:1000;
+}
+.corteOrderMeta{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+}
+
 .print-area{display:none}
 
 @page{
@@ -902,8 +960,10 @@ input:focus, select:focus{
 
             <div class="btnRow">
               <button class="btn btnLight" id="btnVerPedidosAbiertos" type="button">Ver pedidos abiertos</button>
+              <button class="btn btnYellow" id="btnCorteCaja" type="button">Corte de caja</button>
             </div>
             <div class="pedidosAbiertosBox" id="pedidosAbiertosBox"></div>
+            <div class="corteBox" id="corteCajaBox"></div>
           </div>
         </div>
       </section>
@@ -1705,7 +1765,9 @@ const autoColorInput = document.getElementById("autoColor");
 const autoPlacasInput = document.getElementById("autoPlacas");
 const autoPreview = document.getElementById("autoPreview");
 const btnVerPedidosAbiertos = document.getElementById("btnVerPedidosAbiertos");
+const btnCorteCaja = document.getElementById("btnCorteCaja");
 const pedidosAbiertosBox = document.getElementById("pedidosAbiertosBox");
+const corteCajaBox = document.getElementById("corteCajaBox");
 const mesasGrid = document.getElementById("mesasGrid");
 const carritosGrid = document.getElementById("carritosGrid");
 const llevarGrid = document.getElementById("llevarGrid");
@@ -2219,6 +2281,199 @@ async function cerrarPedidoActual(){
   goToStep(2);
   cargarPedidosAbiertos();
 }
+
+function getTodayRangeLocal(){
+  const start = new Date();
+  start.setHours(0,0,0,0);
+
+  const end = new Date();
+  end.setHours(23,59,59,999);
+
+  return {
+    startIso: start.toISOString(),
+    endIso: end.toISOString(),
+    label: start.toLocaleDateString("es-MX", { year:"numeric", month:"2-digit", day:"2-digit" })
+  };
+}
+
+function formatHoraMx(value){
+  if(!value) return "—";
+  try{
+    return new Date(value).toLocaleTimeString("es-MX", { hour:"2-digit", minute:"2-digit" });
+  }catch(e){
+    return "—";
+  }
+}
+
+async function obtenerCorteCajaHoy(){
+  if(!supabaseReady) throw new Error("Supabase no está conectado.");
+
+  const rango = getTodayRangeLocal();
+
+  const { data: comandas, error: errComandas } = await supabase
+    .from("comandas_conquistadores")
+    .select("id, mesa, mesero, total_productos, updated_at, created_at")
+    .eq("estado", "cerrada")
+    .gte("updated_at", rango.startIso)
+    .lte("updated_at", rango.endIso)
+    .order("updated_at", { ascending:true });
+
+  if(errComandas) throw errComandas;
+
+  const ids = (comandas || []).map(c => c.id);
+  if(!ids.length){
+    return {
+      fecha: rango.label,
+      ordenes: [],
+      totalOrdenes: 0,
+      totalProductos: 0,
+      totalEfectivo: 0
+    };
+  }
+
+  const { data: items, error: errItems } = await supabase
+    .from("comandas_conquistadores_items")
+    .select("comanda_id, qty, precio_unitario")
+    .in("comanda_id", ids);
+
+  if(errItems) throw errItems;
+
+  const porComanda = {};
+  (items || []).forEach(it=>{
+    const id = it.comanda_id;
+    const qty = Number(it.qty || 0);
+    const price = Number(it.precio_unitario || 0);
+    if(!porComanda[id]) porComanda[id] = { total:0, productos:0 };
+    porComanda[id].total += qty * price;
+    porComanda[id].productos += qty;
+  });
+
+  const ordenes = (comandas || []).map(c=>{
+    const calc = porComanda[c.id] || { total:0, productos:Number(c.total_productos || 0) };
+    return {
+      id: c.id,
+      mesa: c.mesa || "—",
+      mesero: c.mesero || "—",
+      hora: formatHoraMx(c.updated_at || c.created_at),
+      total: Number(calc.total || 0),
+      productos: Number(calc.productos || c.total_productos || 0)
+    };
+  });
+
+  return {
+    fecha: rango.label,
+    ordenes,
+    totalOrdenes: ordenes.length,
+    totalProductos: ordenes.reduce((a,o)=>a + Number(o.productos || 0), 0),
+    totalEfectivo: ordenes.reduce((a,o)=>a + Number(o.total || 0), 0)
+  };
+}
+
+function buildTicketCorteCaja(corte){
+  const rows = (corte.ordenes || []).map(o=>`
+    <div class="it">
+      <div class="itn">${escapeHtml(o.hora)} • ${escapeHtml(o.mesa)}</div>
+      <div class="totalLine"><span>${Number(o.productos || 0)} prod.</span><span>${money(o.total)}</span></div>
+      <div class="sub">Mesero: ${escapeHtml(o.mesero || "—")}</div>
+    </div>
+  `).join("");
+
+  return `
+    <div class="ticket">
+      <div class="c b lg">CORTE DE CAJA</div>
+      <div class="small c">${escapeHtml(corte.fecha)}</div>
+      <div class="hr"></div>
+      ${rows || `<div class="c small">Sin pedidos cerrados.</div>`}
+      <div class="hr"></div>
+      <div class="totalLine"><span>ÓRDENES</span><span>${Number(corte.totalOrdenes || 0)}</span></div>
+      <div class="totalLine"><span>PRODUCTOS</span><span>${Number(corte.totalProductos || 0)}</span></div>
+      <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
+        <span>EFECTIVO</span><span>${money(corte.totalEfectivo)}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderCorteCaja(corte){
+  if(!corteCajaBox) return;
+
+  const ordenesHtml = (corte.ordenes || []).map(o=>`
+    <div class="corteOrder">
+      <div class="corteOrderTop">
+        <span>${escapeHtml(o.hora)} • ${escapeHtml(o.mesa)}</span>
+        <span>${money(o.total)}</span>
+      </div>
+      <div class="corteOrderMeta">${Number(o.productos || 0)} productos • Mesero: ${escapeHtml(o.mesero || "—")}</div>
+    </div>
+  `).join("");
+
+  corteCajaBox.classList.add("show");
+  corteCajaBox.innerHTML = `
+    <div class="noteBox" style="margin-top:0">
+      Corte basado en <b>pedidos cerrados de hoy</b>. Si una orden sigue abierta, no entra al corte todavía.
+    </div>
+
+    <div class="corteKpis">
+      <div class="corteKpi">
+        <b>Efectivo esperado</b>
+        <span>${money(corte.totalEfectivo)}</span>
+      </div>
+      <div class="corteKpi">
+        <b>Órdenes cerradas</b>
+        <span>${Number(corte.totalOrdenes || 0)}</span>
+      </div>
+    </div>
+
+    <div class="corteKpis">
+      <div class="corteKpi">
+        <b>Productos vendidos</b>
+        <span>${Number(corte.totalProductos || 0)}</span>
+      </div>
+      <div class="corteKpi">
+        <b>Fecha</b>
+        <span>${escapeHtml(corte.fecha)}</span>
+      </div>
+    </div>
+
+    <div class="btnRow" style="margin-top:0">
+      <button class="btn btnBlue" id="btnImprimirCorte" type="button">Imprimir corte</button>
+      <button class="btn btnLight" id="btnOcultarCorte" type="button">Ocultar corte</button>
+    </div>
+
+    <div class="corteOrders">
+      ${ordenesHtml || `<div class="noteBox" style="margin-top:0">Aún no hay pedidos cerrados hoy.</div>`}
+    </div>
+  `;
+
+  const btnPrint = document.getElementById("btnImprimirCorte");
+  const btnHide = document.getElementById("btnOcultarCorte");
+
+  if(btnPrint){
+    btnPrint.onclick = ()=> imprimirHtmlTicket(buildTicketCorteCaja(corte));
+  }
+  if(btnHide){
+    btnHide.onclick = ()=>{
+      corteCajaBox.classList.remove("show");
+      corteCajaBox.innerHTML = "";
+    };
+  }
+}
+
+async function mostrarCorteCaja(){
+  if(!corteCajaBox) return;
+  corteCajaBox.classList.add("show");
+  corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">Calculando corte de caja...</div>`;
+
+  try{
+    const corte = await obtenerCorteCajaHoy();
+    renderCorteCaja(corte);
+  }catch(err){
+    console.error(err);
+    corteCajaBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudo calcular el corte. Revisa conexión o permisos de Supabase.</div>`;
+  }
+}
+
+
 
 /* =========================
    UI
@@ -3263,6 +3518,7 @@ document.getElementById("btnImprimir").onclick = imprimirCocina;
 document.getElementById("btnReimprimirTodo").onclick = reimprimirTodoCocina;
 document.getElementById("btnCerrarPedido").onclick = cerrarPedidoActual;
 if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
+if(btnCorteCaja) btnCorteCaja.onclick = mostrarCorteCaja;
 
 /* =========================
    INIT
