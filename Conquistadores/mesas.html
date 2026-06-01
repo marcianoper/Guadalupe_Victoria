@@ -971,8 +971,13 @@ input:focus, select:focus{
             <label>Color del carro</label>
             <input id="autoColor" placeholder="Ej. Blanco, rojo, gris" autocomplete="off">
 
-            <label style="margin-top:12px">Últimos dígitos de placas</label>
-            <input id="autoPlacas" placeholder="Ej. 482" autocomplete="off" inputmode="text" maxlength="8">
+            <label style="margin-top:12px">Tipo de vehículo</label>
+<select id="autoTipo">
+  <option value="">Selecciona</option>
+  <option value="COCHE">🚗 Coche</option>
+  <option value="CAMIONETA">🚙 Camioneta</option>
+  <option value="MOTO">🏍️ Moto</option>
+</select>
 
             <div class="noteBox" id="autoPreview">
               🚗 Pendiente: captura color y últimos dígitos de placas.
@@ -1927,11 +1932,13 @@ function updateHeaderPill(){
 
 function construirReferenciaAuto(){
   const color = String(autoColorInput?.value || "").trim();
-  const placas = String(autoPlacasInput?.value || "").trim().toUpperCase();
-  if(!color || !placas) return "";
-  return `COLOR: ${color.toUpperCase()} — PLACAS: ${placas}`;
-}
+  const tipo = String(document.getElementById("autoTipo")?.value || "").trim();
 
+  if(!color || !tipo) return "";
+
+  return `COLOR: ${color.toUpperCase()} — TIPO: ${tipo}`;
+}
+  
 function actualizarPreviewAuto(){
   const ref = construirReferenciaAuto();
   if(autoPreview){
