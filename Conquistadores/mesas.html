@@ -1846,7 +1846,7 @@ const titles = {
 
 const meseroInput = document.getElementById("mesero");
 const autoColorInput = document.getElementById("autoColor");
-const autoPlacasInput = document.getElementById("autoPlacas");
+const autoTipoInput = document.getElementById("autoTipo");
 const autoPreview = document.getElementById("autoPreview");
 const btnVerPedidosAbiertos = document.getElementById("btnVerPedidosAbiertos");
 const btnCorteCaja = document.getElementById("btnCorteCaja");
@@ -1951,11 +1951,13 @@ function actualizarPreviewAuto(){
 
 function setAutoInputsFromReferencia(ref){
   const txt = String(ref || "");
-  const match = txt.match(/COLOR:\s*(.*?)\s*[—-]\s*PLACAS:\s*(.*)$/i);
+  const match = txt.match(/COLOR:\s*(.*?)\s*[—-]\s*TIPO:\s*(.*)$/i);
+
   if(match){
     if(autoColorInput) autoColorInput.value = match[1].trim();
-    if(autoPlacasInput) autoPlacasInput.value = match[2].trim();
+    if(autoTipoInput) autoTipoInput.value = match[2].trim();
   }
+
   actualizarPreviewAuto();
 }
 
