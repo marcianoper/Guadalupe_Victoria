@@ -2417,7 +2417,7 @@ async function cerrarPedidoActual(){
   if(error){ console.error(error); showInlineNotice("No se pudo cerrar. Revisa columnas metodo_pago, total_cerrado y cerrado_at en Supabase.", "bad"); return; }
   cart = []; comandaIdActual = null; mesaActiva = "";
   if(autoColorInput) autoColorInput.value = "";
-  if(autoTipoInput) autoPlacasInput.value = "";
+  if(autoTipoInput) autTipoInput.value = "";
   actualizarPreviewAuto(); updateHeaderPill(); updateResumeViews(); renderCart(); renderItems(); selectPaymentMethod("EFECTIVO");
   setSyncStatus(`Pedido cerrado: ${metodoPago} ${money(totalFinal)}`, "ok"); showToast(`Cerrado: ${metodoPago} ${money(totalFinal)}`);
   goToStep(2); cargarPedidosAbiertos();
