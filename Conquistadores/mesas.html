@@ -3694,8 +3694,8 @@ if(autoColorInput) autoColorInput.addEventListener("input", ()=>{
   autoColorInput.value = autoColorInput.value.replace(/\s+/g," ").trimStart();
   actualizarPreviewAuto();
 });
-if(autoPlacasInput) autoPlacasInput.addEventListener("input", ()=>{
-  autoPlacasInput.value = autoPlacasInput.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);
+if(autoTipoInput) autoTipoInput.addEventListener("change", ()=>{
+  autoTipoInput.value = autoTipoInput.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);
   actualizarPreviewAuto();
 });
 actualizarPreviewAuto();
