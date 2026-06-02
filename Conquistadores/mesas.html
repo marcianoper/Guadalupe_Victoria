@@ -1932,7 +1932,7 @@ function updateHeaderPill(){
 
 function construirReferenciaAuto(){
   const color = String(autoColorInput?.value || "").trim();
-  const tipo = String(document.getElementById("autoTipo")?.value || "").trim();
+  const tipo = String(autoTipoInput?.value || "").trim().toUpperCase();
 
   if(!color || !tipo) return "";
 
