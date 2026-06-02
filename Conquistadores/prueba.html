@@ -829,6 +829,42 @@ input:focus, select:focus{
   border-color:var(--red);
   background:linear-gradient(180deg,#fff1f1,#ffe2e2);
 }
+
+.openOrderMain{
+  width:100%;
+  border:none;
+  background:transparent;
+  padding:0;
+  text-align:left;
+  cursor:pointer;
+}
+.openOrderActionsTitle{
+  margin-top:10px;
+  font-size:12px;
+  font-weight:1000;
+  color:#8e1d1d;
+  text-transform:uppercase;
+  letter-spacing:.2px;
+}
+.openOrderActions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+@media(max-width:640px){.openOrderActions{grid-template-columns:1fr}}
+.closeAccountBtn{
+  border:none;
+  border-radius:14px;
+  padding:10px 8px;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.closeAccountBtn.cash{background:#edf9ef;color:#1f6a24;border:1px solid rgba(46,125,50,.24)}
+.closeAccountBtn.card{background:#eef6ff;color:#0b4f93;border:1px solid rgba(21,101,192,.22)}
+.closeAccountBtn.transfer{background:#fff8dd;color:#7a5100;border:1px solid rgba(251,192,45,.42)}
+.closeAccountBtn:disabled{opacity:.55;cursor:not-allowed}
 .totalLine{
   display:flex;
   justify-content:space-between;
@@ -911,6 +947,7 @@ input:focus, select:focus{
 .cortePanel.show{display:grid;gap:10px}.authBox{display:grid;gap:10px}.inlineNotice{margin-top:10px;padding:10px 12px;border-radius:14px;font-size:13px;font-weight:900;display:none}.inlineNotice.show{display:block}.inlineNotice.ok{background:#edf9ef;color:#1f6a24;border:1px solid rgba(46,125,50,.22)}.inlineNotice.warn{background:#fff7e8;color:#8a5a00;border:1px solid rgba(251,192,45,.35)}.inlineNotice.bad{background:#fff1f1;color:#8e1d1d;border:1px solid rgba(198,40,40,.25)}
 .paymentSelector{margin-top:14px;padding:12px;border-radius:18px;background:linear-gradient(180deg,rgba(21,101,192,.05),rgba(251,192,45,.08));border:1px solid rgba(21,101,192,.14)}.paymentSelectorTitle{font-size:12px;font-weight:1000;color:#355070;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}.paymentGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:640px){.paymentGrid{grid-template-columns:1fr}}.payBtn{border:2px solid rgba(21,101,192,.14);border-radius:16px;padding:12px 10px;background:#fff;cursor:pointer;font-weight:1000;color:#0b4f93;text-align:center}.payBtn.active{background:linear-gradient(180deg,var(--green),var(--green-dark));color:#fff;border-color:var(--green-dark)}.closeHint{margin-top:8px;font-size:12px;color:var(--muted);font-weight:800}
 
+.hiddenField{display:none!important}
 .print-area{display:none}
 
 @page{
@@ -961,24 +998,33 @@ input:focus, select:focus{
 
       <section class="step" id="step2">
         <div class="noteBox" style="margin-top:0">
-          Captura únicamente el <b>color del carro</b> y los <b>últimos dígitos de placas</b>. En el ticket saldrá así: <b>COLOR: BLANCO — PLACAS: 482</b>.
+          Para coche/troca/moto captura el <b>color</b> y el <b>tipo</b>. Si eliges <b>Persona</b>, solo se pedirá el nombre.
         </div>
 
         <div class="ubicacionesWrap" style="margin-top:12px">
           <div class="ubicacionSection">
             <div class="sectionTitle">Auto estacionamiento</div>
 
-            <label>Color del carro</label>
-            <input id="autoColor" placeholder="Ej. Blanco, rojo, gris" autocomplete="off">
+            <div id="autoColorWrap">
+              <label>Color del carro</label>
+              <input id="autoColor" placeholder="Ej. Blanco, rojo, gris" autocomplete="off">
+            </div>
 
-            <label style="margin-top:12px">Tipo de vehículo</label>
-<select id="autoTipo">
-  <option value="">Selecciona</option>
-  <option value="COCHE">🚗 Coche</option>
-  <option value="TROCA">🛻 Troca</option>
-  <option value="MOTO">🏍️ Moto</option>
-  <option value="PERSONA">🧍 Persona</option>
-</select>
+            <div id="autoTipoWrap">
+              <label style="margin-top:12px">Tipo de vehículo</label>
+              <select id="autoTipo">
+                <option value="">Selecciona</option>
+                <option value="COCHE">🚗 Coche</option>
+                <option value="TROCA">🛻 Troca</option>
+                <option value="MOTO">🏍️ Moto</option>
+                <option value="PERSONA">🧍 Persona</option>
+              </select>
+            </div>
+
+            <div id="personaNombreWrap" class="hiddenField">
+              <label style="margin-top:12px">Nombre de la persona</label>
+              <input id="personaNombre" placeholder="Ej. Don José, cliente azul" autocomplete="off">
+            </div>
 
             <div class="noteBox" id="autoPreview">
               🚗 Pendiente: captura color y últimos dígitos de placas.
@@ -1840,7 +1886,7 @@ const steps = {
 
 const titles = {
   1: ["Paso 1 — Mesero","Primero selecciona quién está tomando el pedido."],
-  2: ["Paso 2 — Datos del carro","Captura color del carro y últimos dígitos de placas."],
+  2: ["Paso 2 — Datos del cliente","Captura carro/troca/moto o solo nombre si es persona."],
   3: ["Paso 3 — Capturar pedido","Elige plato y agrega productos sin bajar hasta la comanda."],
   4: ["Paso 4 — Revisar e imprimir","Confirma la comanda y manda a imprimir cocina."],
 };
@@ -1848,6 +1894,10 @@ const titles = {
 const meseroInput = document.getElementById("mesero");
 const autoColorInput = document.getElementById("autoColor");
 const autoTipoInput = document.getElementById("autoTipo");
+const autoColorWrap = document.getElementById("autoColorWrap");
+const autoTipoWrap = document.getElementById("autoTipoWrap");
+const personaNombreWrap = document.getElementById("personaNombreWrap");
+const personaNombreInput = document.getElementById("personaNombre");
 const autoPreview = document.getElementById("autoPreview");
 const btnVerPedidosAbiertos = document.getElementById("btnVerPedidosAbiertos");
 const btnCorteCaja = document.getElementById("btnCorteCaja");
@@ -1956,9 +2006,28 @@ function tipoVehiculoConEmoji(tipo){
   return t ? `${emojis[t] || ""} ${t}`.trim() : "";
 }
 
+function esTipoPersona(){
+  return normalizarTipoVehiculo(autoTipoInput?.value || "") === "PERSONA";
+}
+
+function actualizarCamposPorTipo(){
+  const esPersona = esTipoPersona();
+  if(autoColorWrap) autoColorWrap.classList.toggle("hiddenField", esPersona);
+  if(personaNombreWrap) personaNombreWrap.classList.toggle("hiddenField", !esPersona);
+  return esPersona;
+}
+
 function construirReferenciaAuto(){
+  const tipoNormal = normalizarTipoVehiculo(autoTipoInput?.value || "");
+
+  if(tipoNormal === "PERSONA"){
+    const nombre = String(personaNombreInput?.value || "").trim();
+    if(!nombre) return "";
+    return `🧍 PERSONA: ${nombre.toUpperCase()}`;
+  }
+
   const color = String(autoColorInput?.value || "").trim();
-  const tipo = tipoVehiculoConEmoji(autoTipoInput?.value || "");
+  const tipo = tipoVehiculoConEmoji(tipoNormal);
 
   if(!color || !tipo) return "";
 
@@ -1966,22 +2035,30 @@ function construirReferenciaAuto(){
 }
   
 function actualizarPreviewAuto(){
+  const esPersona = actualizarCamposPorTipo();
   const ref = construirReferenciaAuto();
   if(autoPreview){
     autoPreview.innerHTML = ref
-      ? `🚗 <b>${escapeHtml(ref)}</b>`
-      : `🚗 Pendiente: captura color y últimos dígitos de placas.`;
+      ? `<b>${escapeHtml(ref)}</b>`
+      : (esPersona
+        ? `🧍 Pendiente: escribe el nombre de la persona.`
+        : `🚗 Pendiente: captura color y tipo de vehículo.`);
   }
   return ref;
 }
 
 function setAutoInputsFromReferencia(ref){
   const txt = String(ref || "");
+  const personaMatch = txt.match(/PERSONA:\s*(.*)$/i);
   const match = txt.match(/COLOR:\s*(.*?)\s*[—-]\s*TIPO:\s*(.*)$/i);
 
-  if(match){
+  if(personaMatch){
+    if(autoTipoInput) autoTipoInput.value = "PERSONA";
+    if(personaNombreInput) personaNombreInput.value = personaMatch[1].trim();
+  }else if(match){
     if(autoColorInput) autoColorInput.value = match[1].trim();
     if(autoTipoInput) autoTipoInput.value = normalizarTipoVehiculo(match[2].trim());
+    if(personaNombreInput) personaNombreInput.value = "";
   }
 
   actualizarPreviewAuto();
@@ -2358,7 +2435,10 @@ async function cargarPedidosAbiertos(){
     return;
   }
 
-  const pedidos = (data || []).filter(x => String(x.mesa || "").toUpperCase().includes("COLOR:"));
+  const pedidos = (data || []).filter(x => {
+    const mesaTxt = String(x.mesa || "").toUpperCase();
+    return mesaTxt.includes("COLOR:") || mesaTxt.includes("PERSONA:");
+  });
 
   if(!pedidos.length){
     pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay carros con pedido abierto.</div>`;
@@ -2366,18 +2446,105 @@ async function cargarPedidosAbiertos(){
   }
 
   pedidosAbiertosBox.innerHTML = pedidos.map(p=>`
-    <button type="button" class="openOrderCard ${p.mesa === mesaActiva ? "active" : ""}" data-auto-ref="${escapeHtml(p.mesa)}">
-      <strong>🚗 ${escapeHtml(p.mesa)}</strong>
-      <span>${Number(p.total_productos || 0)} productos • Mesero: ${escapeHtml(p.mesero || "—")}</span>
-    </button>
+    <div class="openOrderCard ${p.mesa === mesaActiva ? "active" : ""}" data-order-id="${escapeHtml(p.id)}" data-auto-ref="${escapeHtml(p.mesa)}">
+      <button type="button" class="openOrderMain" data-open-order="1">
+        <strong>${escapeHtml(p.mesa)}</strong>
+        <span>${Number(p.total_productos || 0)} productos • Mesero: ${escapeHtml(p.mesero || "—")}</span>
+      </button>
+      <div class="openOrderActionsTitle">Cerrar cuenta desde aquí:</div>
+      <div class="openOrderActions">
+        <button type="button" class="closeAccountBtn cash" data-close-pay="EFECTIVO">💵 Cerrar efectivo</button>
+        <button type="button" class="closeAccountBtn card" data-close-pay="TARJETA">💳 Cerrar tarjeta</button>
+        <button type="button" class="closeAccountBtn transfer" data-close-pay="TRANSFERENCIA">📲 Cerrar transferencia</button>
+      </div>
+    </div>
   `).join("");
 
-  pedidosAbiertosBox.querySelectorAll("[data-auto-ref]").forEach(btn=>{
+  pedidosAbiertosBox.querySelectorAll("[data-open-order]").forEach(btn=>{
     btn.onclick = async ()=>{
-      const ref = btn.getAttribute("data-auto-ref") || "";
+      const card = btn.closest(".openOrderCard");
+      const ref = card?.getAttribute("data-auto-ref") || "";
       await abrirPedidoAbierto(ref);
     };
   });
+
+  pedidosAbiertosBox.querySelectorAll("[data-close-pay]").forEach(btn=>{
+    btn.onclick = async (ev)=>{
+      ev.stopPropagation();
+      const card = btn.closest(".openOrderCard");
+      const id = card?.getAttribute("data-order-id") || "";
+      const ref = card?.getAttribute("data-auto-ref") || "";
+      const metodo = btn.getAttribute("data-close-pay") || "EFECTIVO";
+      await cerrarPedidoAbiertoDirecto(id, metodo, ref, btn);
+    };
+  });
+}
+
+async function cerrarPedidoAbiertoDirecto(comandaId, metodoPago, ref, btn){
+  if(!supabaseReady || !comandaId){
+    showInlineNotice("No se encontró el pedido para cerrar.", "bad");
+    return;
+  }
+
+  const metodo = normalizarMetodoPago(metodoPago);
+  const textoOriginal = btn ? btn.textContent : "";
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = "Cerrando...";
+  }
+
+  try{
+    const { data: items, error: errItems } = await supabase
+      .from("comandas_conquistadores_items")
+      .select("qty, precio_unitario")
+      .eq("comanda_id", comandaId);
+
+    if(errItems) throw errItems;
+
+    const totalFinal = (items || []).reduce((sum, it)=>{
+      return sum + (Number(it.qty || 0) * Number(it.precio_unitario || 0));
+    }, 0);
+
+    const { error } = await supabase
+      .from("comandas_conquistadores")
+      .update({
+        estado:"cerrada",
+        metodo_pago: metodo,
+        total_cerrado: totalFinal,
+        cerrado_at: new Date().toISOString(),
+        updated_at:new Date().toISOString()
+      })
+      .eq("id", comandaId);
+
+    if(error) throw error;
+
+    if(String(comandaIdActual || "") === String(comandaId)){
+      cart = [];
+      comandaIdActual = null;
+      mesaActiva = "";
+      if(autoColorInput) autoColorInput.value = "";
+      if(autoTipoInput) autoTipoInput.value = "";
+      if(personaNombreInput) personaNombreInput.value = "";
+      actualizarPreviewAuto();
+      updateHeaderPill();
+      updateResumeViews();
+      renderCart();
+      renderItems();
+      selectPaymentMethod("EFECTIVO");
+    }
+
+    setSyncStatus(`Cuenta cerrada: ${metodo} ${money(totalFinal)}`, "ok");
+    showToast(`Cerrado: ${metodo} ${money(totalFinal)}`);
+    await cargarPedidosAbiertos();
+  }catch(error){
+    console.error(error);
+    showInlineNotice("No se pudo cerrar desde pedidos abiertos. Revisa conexión o columnas de pago en Supabase.", "bad");
+  }finally{
+    if(btn){
+      btn.disabled = false;
+      btn.textContent = textoOriginal;
+    }
+  }
 }
 
 async function abrirPedidoAbierto(ref){
@@ -2443,7 +2610,8 @@ async function cerrarPedidoActual(){
   if(error){ console.error(error); showInlineNotice("No se pudo cerrar. Revisa columnas metodo_pago, total_cerrado y cerrado_at en Supabase.", "bad"); return; }
   cart = []; comandaIdActual = null; mesaActiva = "";
   if(autoColorInput) autoColorInput.value = "";
-  if(autoTipoInput) autoTipoInput.value = "Change";
+  if(autoTipoInput) autoTipoInput.value = "";
+  if(personaNombreInput) personaNombreInput.value = "";
   actualizarPreviewAuto(); updateHeaderPill(); updateResumeViews(); renderCart(); renderItems(); selectPaymentMethod("EFECTIVO");
   setSyncStatus(`Pedido cerrado: ${metodoPago} ${money(totalFinal)}`, "ok"); showToast(`Cerrado: ${metodoPago} ${money(totalFinal)}`);
   goToStep(2); cargarPedidosAbiertos();
@@ -3614,7 +3782,7 @@ function handleMainContinue(e){
     const referenciaAuto = actualizarPreviewAuto();
 
     if(!referenciaAuto){
-      showInlineNotice("Captura color del carro y últimos dígitos de placas.", "warn");
+      showInlineNotice(esTipoPersona() ? "Escribe el nombre de la persona." : "Captura color y tipo de vehículo.", "warn");
       return false;
     }
 
@@ -3690,7 +3858,11 @@ if(autoColorInput) autoColorInput.addEventListener("input", ()=>{
   actualizarPreviewAuto();
 });
 if(autoTipoInput) autoTipoInput.addEventListener("change", ()=>{
-  autoTipoInput.value = autoTipoInput.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);
+  autoTipoInput.value = normalizarTipoVehiculo(autoTipoInput.value);
+  actualizarPreviewAuto();
+});
+if(personaNombreInput) personaNombreInput.addEventListener("input", ()=>{
+  personaNombreInput.value = personaNombreInput.value.replace(/\s+/g," ").trimStart();
   actualizarPreviewAuto();
 });
 actualizarPreviewAuto();
