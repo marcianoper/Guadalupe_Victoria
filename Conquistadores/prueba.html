@@ -1092,23 +1092,12 @@ input:focus, select:focus{
 
         <div class="comandaCompacta" id="cart"></div>
 
-        <div class="paymentSelector">
-          <div class="paymentSelectorTitle">Método de pago para cerrar</div>
-          <div class="paymentGrid" id="paymentGrid">
-            <button type="button" class="payBtn active" data-pay="EFECTIVO">💵 Efectivo</button>
-            <button type="button" class="payBtn" data-pay="TARJETA">💳 Tarjeta</button>
-            <button type="button" class="payBtn" data-pay="TRANSFERENCIA">📲 Transferencia</button>
-          </div>
-          <div class="closeHint" id="closeHint">Selecciona el método y presiona “Cerrar pedido”.</div>
-        </div>
-
         <div class="inlineNotice" id="mainNotice"></div>
 
         <div class="btnRow">
           <button class="btn btnYellow" id="btnResumen" type="button">Resumen</button>
           <button class="btn btnBlue" id="btnImprimir" type="button">Imprimir ticket</button>
           <button class="btn btnLight" id="btnReimprimirTodo" type="button">Reimprimir todo</button>
-          <button class="btn btnRed" id="btnCerrarPedido" type="button">Cerrar pedido y guardar pago</button>
         </div>
 
         <div class="noteBox">
@@ -3782,7 +3771,7 @@ function handleMainContinue(e){
     const referenciaAuto = actualizarPreviewAuto();
 
     if(!referenciaAuto){
-      showInlineNotice(esTipoPersona() ? "Escribe el nombre de la persona." : "Captura color y tipo de vehículo.", "warn");
+      showInlineNotice("Captura color del carro y últimos dígitos de placas.", "warn");
       return false;
     }
 
@@ -3845,7 +3834,8 @@ document.getElementById("collapseAll").onclick = ()=>{
 document.getElementById("btnResumen").onclick = verResumen;
 document.getElementById("btnImprimir").onclick = imprimirCocina;
 document.getElementById("btnReimprimirTodo").onclick = reimprimirTodoCocina;
-document.getElementById("btnCerrarPedido").onclick = cerrarPedidoActual;
+const btnCerrarPedidoEl = document.getElementById("btnCerrarPedido");
+if(btnCerrarPedidoEl) btnCerrarPedidoEl.onclick = cerrarPedidoActual;
 if(paymentGrid){ paymentGrid.querySelectorAll("[data-pay]").forEach(btn=>{ btn.onclick = ()=> selectPaymentMethod(btn.getAttribute("data-pay")); }); }
 if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
 if(btnCorteCaja) btnCorteCaja.onclick = mostrarCorteCaja;
