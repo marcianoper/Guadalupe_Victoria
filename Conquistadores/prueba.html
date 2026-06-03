@@ -3458,7 +3458,39 @@ function imprimirHtmlTicket(htmlContenido){
         }
 
         .toolbar{
-          display:none !important;
+          position:sticky;
+          top:0;
+          z-index:20;
+          display:flex;
+          gap:10px;
+          padding:10px;
+          margin:0 auto 12px;
+          max-width:420px;
+          background:rgba(255,255,255,.96);
+          backdrop-filter:blur(8px);
+          border:1px solid #dbe3ee;
+          border-radius:16px;
+          box-shadow:0 10px 28px rgba(0,0,0,.10);
+        }
+
+        .toolbar button{
+          flex:1;
+          border:none;
+          border-radius:12px;
+          padding:12px 14px;
+          font-size:16px;
+          font-weight:900;
+          cursor:pointer;
+        }
+
+        .btnPrint{
+          background:#1565c0;
+          color:#fff;
+        }
+
+        .btnClose{
+          background:#eef2f7;
+          color:#23384d;
         }
 
         .ticketWrap{
@@ -3520,18 +3552,17 @@ function imprimirHtmlTicket(htmlContenido){
     </head>
     <body>
       <div class="screen">
+        <div class="toolbar">
+          <button class="btnPrint" onclick="window.print()">Imprimir</button>
+          <button class="btnClose" onclick="window.close()">Cerrar</button>
+        </div>
+
         <div class="ticketWrap">
           ${htmlContenido}
         </div>
       </div>
 
       <script>
-        window.addEventListener('afterprint', function(){
-          setTimeout(function(){
-            try{ window.close(); }catch(e){}
-          }, 300);
-        });
-
         window.addEventListener('load', function(){
           setTimeout(function(){
             try{
