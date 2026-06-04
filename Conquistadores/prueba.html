@@ -1153,6 +1153,46 @@ input:focus, select:focus{
   </div>
 </div>
 
+<div class="backdrop" id="carneBackdrop">
+  <div class="modal">
+    <div class="modalHead">
+      <h3 id="carneTitle">Carne por kilo</h3>
+      <button class="closeX" id="btnCerrarCarne" type="button">✕</button>
+    </div>
+    <div class="modalBody">
+      <label>Pedidos rápidos por dinero</label>
+      <div class="quickMods" id="carneMoneyBtns">
+        <button type="button" class="modBtn" data-money="100">$100</button>
+        <button type="button" class="modBtn" data-money="150">$150</button>
+        <button type="button" class="modBtn" data-money="200">$200</button>
+        <button type="button" class="modBtn" data-money="300">$300</button>
+      </div>
+
+      <label style="margin-top:14px">Pedidos rápidos por peso</label>
+      <div class="quickMods" id="carneGramBtns">
+        <button type="button" class="modBtn" data-grams="250">250g</button>
+        <button type="button" class="modBtn" data-grams="500">500g</button>
+        <button type="button" class="modBtn" data-grams="600">600g</button>
+        <button type="button" class="modBtn" data-grams="1000">1kg</button>
+      </div>
+
+      <label style="margin-top:14px">O captura pesos</label>
+      <input id="carnePesosInput" type="number" inputmode="decimal" min="0" step="1" placeholder="Ej. 100">
+
+      <label style="margin-top:14px">O captura gramos</label>
+      <input id="carneGramosInput" type="number" inputmode="decimal" min="0" step="1" placeholder="Ej. 600">
+
+      <div class="noteBox" id="carneResultado">
+        Selecciona una opción o captura pesos/gramos.
+      </div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn btnRed" id="btnCancelarCarne" type="button">Cancelar</button>
+      <button class="btn btnBlue" id="btnGuardarCarne" type="button">Agregar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toastWrap">
   <div class="toast" id="toastMsg">Producto añadido</div>
 </div>
@@ -1644,76 +1684,38 @@ const catalogo = [
     cocina: true
   },
   {
-    id: "kilo_pastor",
+    id: "carne_pastor",
     cat: "CARNE POR KILO",
-    name: "Carne por kilo: Pastor",
+    name: "Pastor",
     price: 480,
-    desc: "Precio por kilo",
+    desc: "Precio por kilo — acepta $ o gramos",
     requiereNota: false,
     cocina: true
   },
-   {
-    id: "medio_kilo_pastor",
-    cat: "CARNE POR KILO",
-    name: "Carne por medio kilo: Pastor",
-    price: 240,
-    desc: "Precio por medio kilo",
-    requiereNota: false,
-    cocina: true
-  },
-  
   {
-    id: "kilo_bistec",
+    id: "carne_bistec",
     cat: "CARNE POR KILO",
-    name: "Carne por kilo: Bistec",
+    name: "Bistec",
     price: 480,
-    desc: "Precio por kilo",
+    desc: "Precio por kilo — acepta $ o gramos",
     requiereNota: false,
     cocina: true
   },
   {
-    id: "medio_kilo_bistec",
+    id: "carne_cabeza",
     cat: "CARNE POR KILO",
-    name: "Carne por medio kilo: Bistec",
-    price: 240,
-    desc: "Precio por medio kilo",
-    requiereNota: false,
-    cocina: true
-  },
-  
-  {
-    id: "kilo_cabeza",
-    cat: "CARNE POR KILO",
-    name: "Carne por kilo: Cabeza",
+    name: "Cabeza",
     price: 480,
-    desc: "Precio por kilo",
+    desc: "Precio por kilo — acepta $ o gramos",
     requiereNota: false,
     cocina: true
   },
   {
-    id: "kilo_cabeza",
+    id: "carne_chorizo",
     cat: "CARNE POR KILO",
-    name: "Carne por medio kilo: Cabeza",
-    price: 240,
-    desc: "Precio por medio kilo",
-    requiereNota: false,
-    cocina: true
-  },
-  {
-    id: "kilo_chorizo",
-    cat: "CARNE POR KILO",
-    name: "Carne por kilo: Chorizo",
+    name: "Chorizo",
     price: 480,
-    desc: "Precio por kilo",
-    requiereNota: false,
-    cocina: true
-  },
-  {
-    id: "medio_kilo_chorizo",
-    cat: "CARNE POR KILO",
-    name: "Carne por medio kilo: Chorizo",
-    price: 240,
-    desc: "Precio por medio kilo",
+    desc: "Precio por kilo — acepta $ o gramos",
     requiereNota: false,
     cocina: true
   },
@@ -1855,6 +1857,8 @@ let activeCat = "TACOS";
 let cart = [];
 let draftItem = null;
 let drinkDraft = null;
+let carneDraft = null;
+let carneCardEl = null;
 let editTarget = null;
 const openGroups = new Set();
 let toastTimer = null;
@@ -1925,6 +1929,17 @@ const drinkModalTitle = document.getElementById("drinkModalTitle");
 const drinkOptions = document.getElementById("drinkOptions");
 const btnCerrarDrinkModal = document.getElementById("btnCerrarDrinkModal");
 const btnCancelarDrinkModal = document.getElementById("btnCancelarDrinkModal");
+
+const carneBackdrop = document.getElementById("carneBackdrop");
+const carneTitle = document.getElementById("carneTitle");
+const carneMoneyBtns = document.getElementById("carneMoneyBtns");
+const carneGramBtns = document.getElementById("carneGramBtns");
+const carnePesosInput = document.getElementById("carnePesosInput");
+const carneGramosInput = document.getElementById("carneGramosInput");
+const carneResultado = document.getElementById("carneResultado");
+const btnCerrarCarne = document.getElementById("btnCerrarCarne");
+const btnCancelarCarne = document.getElementById("btnCancelarCarne");
+const btnGuardarCarne = document.getElementById("btnGuardarCarne");
 
 const mainContinueBtn = document.getElementById("mainContinueBtn");
 const fixedContinue = document.getElementById("fixedContinue");
@@ -2198,6 +2213,75 @@ function cerrarDrinkModal(){
   drinkOptions.innerHTML = "";
   drinkBackdrop.style.display = "none";
   document.body.style.overflow = "";
+}
+
+/* =========================
+   CARNE POR KILO
+   ========================= */
+function esCarnePorKilo(item){
+  return item && item.cat === "CARNE POR KILO";
+}
+
+function formatoGramos(gramos){
+  const g = Math.round(Number(gramos || 0));
+  if(g >= 1000 && g % 1000 === 0) return `${g / 1000}kg`;
+  if(g >= 1000) return `${(g / 1000).toFixed(2).replace(/\.00$/, "")}kg`;
+  return `${g}g`;
+}
+
+function calcularCarneDesdePesos(pesos){
+  const precioKg = Number(carneDraft?.price || 0);
+  const total = Math.round(Number(pesos || 0));
+  const gramos = precioKg > 0 ? Math.round((total / precioKg) * 1000) : 0;
+  return { total, gramos };
+}
+
+function calcularCarneDesdeGramos(gramos){
+  const precioKg = Number(carneDraft?.price || 0);
+  const g = Math.round(Number(gramos || 0));
+  const total = Math.round((precioKg / 1000) * g);
+  return { total, gramos:g };
+}
+
+function actualizarResultadoCarne(total, gramos){
+  if(!carneResultado) return;
+  if(!total || !gramos){
+    carneResultado.innerHTML = "Selecciona una opción o captura pesos/gramos.";
+    return;
+  }
+  carneResultado.innerHTML = `<b>${escapeHtml(carneDraft?.name || "Carne")}</b><br>${formatoGramos(gramos)} — ${money(total)}<br><span style="font-size:12px;color:var(--muted);font-weight:800">Precio base: ${money(carneDraft?.price || 0)} / kg</span>`;
+}
+
+function abrirModalCarne(item, cardEl=null){
+  carneDraft = item;
+  carneCardEl = cardEl;
+  carneTitle.textContent = `${item.name} — carne por kilo`;
+  carnePesosInput.value = "";
+  carneGramosInput.value = "";
+  actualizarResultadoCarne(0, 0);
+  carneBackdrop.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarModalCarne(){
+  carneDraft = null;
+  carneCardEl = null;
+  carneBackdrop.style.display = "none";
+  document.body.style.overflow = "";
+}
+
+function seleccionarCarnePorDinero(pesos){
+  const r = calcularCarneDesdePesos(pesos);
+  carnePesosInput.value = r.total;
+  carneGramosInput.value = r.gramos;
+  actualizarResultadoCarne(r.total, r.gramos);
+}
+
+function seleccionarCarnePorGramos(gramos){
+  const r = calcularCarneDesdeGramos(gramos);
+  carnePesosInput.value = r.total;
+  carneGramosInput.value = r.gramos;
+  actualizarResultadoCarne(r.total, r.gramos);
 }
 
 /* =========================
@@ -2984,6 +3068,11 @@ function abrirCharolaPrecioModal(item, cardEl, sumaRapida=false){
 }
 
 function abrirProducto(item, cardEl, sumaRapida=false){
+  if(esCarnePorKilo(item)){
+    abrirModalCarne(item, cardEl);
+    return;
+  }
+
   if(item.bebidaConPresentacion){
     abrirDrinkModal(item, cardEl, sumaRapida);
     return;
@@ -3409,6 +3498,60 @@ btnGuardarModal.onclick = async ()=>{
 };
 
 /* =========================
+   MODAL CARNE POR KILO
+   ========================= */
+btnCerrarCarne.onclick = cerrarModalCarne;
+btnCancelarCarne.onclick = cerrarModalCarne;
+
+carneBackdrop.addEventListener("click", (e)=>{
+  if(e.target === carneBackdrop) cerrarModalCarne();
+});
+
+carneMoneyBtns.querySelectorAll("[data-money]").forEach(btn=>{
+  btn.onclick = ()=> seleccionarCarnePorDinero(btn.getAttribute("data-money"));
+});
+
+carneGramBtns.querySelectorAll("[data-grams]").forEach(btn=>{
+  btn.onclick = ()=> seleccionarCarnePorGramos(btn.getAttribute("data-grams"));
+});
+
+carnePesosInput.addEventListener("input", ()=>{
+  const r = calcularCarneDesdePesos(carnePesosInput.value);
+  carneGramosInput.value = r.gramos || "";
+  actualizarResultadoCarne(r.total, r.gramos);
+});
+
+carneGramosInput.addEventListener("input", ()=>{
+  const r = calcularCarneDesdeGramos(carneGramosInput.value);
+  carnePesosInput.value = r.total || "";
+  actualizarResultadoCarne(r.total, r.gramos);
+});
+
+btnGuardarCarne.onclick = async ()=>{
+  if(!carneDraft) return;
+  const pesos = Number(carnePesosInput.value || 0);
+  const gramos = Number(carneGramosInput.value || 0);
+
+  if(!pesos || !gramos){
+    actualizarResultadoCarne(0, 0);
+    showToast("Captura pesos o gramos");
+    return;
+  }
+
+  const productoFinal = {
+    ...carneDraft,
+    id: `${carneDraft.id}_${Date.now()}`,
+    name: carneDraft.name,
+    price: pesos,
+    desc: `${formatoGramos(gramos)} — ${money(pesos)}`,
+    cocina: true
+  };
+
+  await agregarLinea(productoFinal, personaActiva, `${formatoGramos(gramos)} — ${money(pesos)}`, carneCardEl);
+  cerrarModalCarne();
+};
+
+/* =========================
    MODAL REFRESCOS
    ========================= */
 btnCerrarDrinkModal.onclick = cerrarDrinkModal;
@@ -3553,8 +3696,8 @@ function imprimirHtmlTicket(htmlContenido){
     <body>
       <div class="screen">
         <div class="toolbar">
-          <button class="btnPrint" onclick="imprimirDoble()">Imprimir</button>
-<button class="btnClose" onclick="window.close()">Cerrar</button>
+          <button class="btnPrint" onclick="window.print()">Imprimir</button>
+          <button class="btnClose" onclick="window.close()">Cerrar</button>
         </div>
 
         <div class="ticketWrap">
@@ -3562,27 +3705,18 @@ function imprimirHtmlTicket(htmlContenido){
         </div>
       </div>
 
-    <script>
-  function imprimirDoble(){
-    try{
-      window.focus();
-      window.print();
-
-      setTimeout(function(){
-        window.focus();
-        window.print();
-      }, 700);
-    }catch(e){
-      console.log('Impresión doble no disponible:', e);
-    }
-  }
-
-  window.addEventListener('load', function(){
-    setTimeout(function(){
-      imprimirDoble();
-    }, 500);
-  });
-<\/script>
+      <script>
+        window.addEventListener('load', function(){
+          setTimeout(function(){
+            try{
+              window.focus();
+              window.print();
+            }catch(e){
+              console.log('Impresión automática no disponible:', e);
+            }
+          }, 500);
+        });
+      <\/script>
     </body>
     </html>
   `;
