@@ -3553,8 +3553,8 @@ function imprimirHtmlTicket(htmlContenido){
     <body>
       <div class="screen">
         <div class="toolbar">
-          <button class="btnPrint" onclick="window.print()">Imprimir</button>
-          <button class="btnClose" onclick="window.close()">Cerrar</button>
+          <button class="btnPrint" onclick="imprimirDoble()">Imprimir</button>
+<button class="btnClose" onclick="window.close()">Cerrar</button>
         </div>
 
         <div class="ticketWrap">
@@ -3562,18 +3562,27 @@ function imprimirHtmlTicket(htmlContenido){
         </div>
       </div>
 
-      <script>
-        window.addEventListener('load', function(){
-          setTimeout(function(){
-            try{
-              window.focus();
-              window.print();
-            }catch(e){
-              console.log('Impresión automática no disponible:', e);
-            }
-          }, 500);
-        });
-      <\/script>
+    <script>
+  function imprimirDoble(){
+    try{
+      window.focus();
+      window.print();
+
+      setTimeout(function(){
+        window.focus();
+        window.print();
+      }, 700);
+    }catch(e){
+      console.log('Impresión doble no disponible:', e);
+    }
+  }
+
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      imprimirDoble();
+    }, 500);
+  });
+<\/script>
     </body>
     </html>
   `;
