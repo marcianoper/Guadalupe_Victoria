@@ -952,6 +952,100 @@ input:focus, select:focus{
 .hiddenField{display:none!important}
 .print-area{display:none}
 
+
+/* =========================
+   MODAL CARNE POR KILO RESPONSIVO
+   ========================= */
+#carneBackdrop{
+  padding:12px;
+}
+
+#carneBackdrop .modal{
+  width:min(94vw, 560px);
+  max-height:92vh;
+  display:flex;
+  flex-direction:column;
+}
+
+#carneBackdrop .modalBody{
+  overflow:auto;
+  max-height:70vh;
+  -webkit-overflow-scrolling:touch;
+}
+
+#carneBackdrop .modalFoot{
+  flex-shrink:0;
+}
+
+#carneBackdrop .quickMods{
+  grid-template-columns:repeat(2, minmax(0,1fr));
+}
+
+#carneBackdrop .modBtn{
+  min-height:52px;
+}
+
+@media (max-width:768px){
+  #carneBackdrop{
+    align-items:flex-end;
+    padding:8px;
+  }
+
+  #carneBackdrop .modal{
+    width:100%;
+    max-height:94vh;
+    border-radius:24px 24px 0 0;
+  }
+
+  #carneBackdrop .modalHead{
+    padding:12px 14px;
+  }
+
+  #carneBackdrop .modalHead h3{
+    font-size:16px;
+    line-height:1.15;
+  }
+
+  #carneBackdrop .modalBody{
+    padding:12px;
+    max-height:calc(94vh - 138px);
+  }
+
+  #carneBackdrop .quickMods{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  #carneBackdrop input{
+    font-size:16px;
+    padding:13px 12px;
+  }
+
+  #carneBackdrop .noteBox{
+    font-size:12px;
+    padding:9px 10px;
+  }
+
+  #carneBackdrop .modalFoot{
+    position:sticky;
+    bottom:0;
+    background:#fff;
+    padding:10px 12px;
+    box-shadow:0 -8px 20px rgba(2,6,23,.08);
+  }
+
+  #carneBackdrop .modalFoot .btn{
+    flex:1;
+    padding:13px 12px;
+  }
+}
+
+@media (max-width:420px){
+  #carneBackdrop .quickMods{
+    grid-template-columns:1fr;
+  }
+}
+
 @page{
   size:58mm auto;
   margin:1mm;
@@ -2123,10 +2217,28 @@ const catalogo = [
     desc: "Agua fresca",
     requiereNota: false,
     cocina: false
+  },
+  {
+    id: "extra_chimichurri",
+    cat: "COMPLEMENTOS",
+    name: "Chimichurri extra",
+    price: 0,
+    desc: "Complemento extra",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "extra_tortillas",
+    cat: "COMPLEMENTOS",
+    name: "Tortillas extras",
+    price: 0,
+    desc: "Complemento extra",
+    requiereNota: false,
+    cocina: true
   }
 ];
 
-const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "ALAMBRES", "CARNE POR KILO", "BEBIDAS", "AGUAS FRESCAS"];
+const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "ALAMBRES", "CARNE POR KILO", "COMPLEMENTOS", "BEBIDAS", "AGUAS FRESCAS"];
 const PLATOS = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
 const MESAS = ["Mesa 1","Mesa 2","Mesa 3","Mesa 4","Mesa 5"];
 const CARRITOS = ["Carrito 1","Carrito 2","Carrito 3","Carrito 4","Carrito 5"];
