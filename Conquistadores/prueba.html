@@ -3947,10 +3947,19 @@ async function imprimirHtmlTicket(htmlContenido){
     </html>
   `;
 
-  // En iPhone/iPad mandamos el ticket a Supabase para que lo imprima la tablet/PC receptora.
-  if(esIOS() && !receptorImpresionActivo){
+  // ✅ BLOQUEO TOTAL DE AIRPRINT EN iPHONE/iPAD
+  // En iOS nunca abrimos ventana, nunca llamamos window.print() y nunca usamos fallback.
+  // Solo mandamos el ticket a Supabase para que lo imprima la tablet/Android/PC receptora.
+  if(esIOS()){
     const enCola = await enviarAColaImpresion(html, "ticket");
-    if(enCola) return true;
+
+    if(enCola){
+      showInlineNotice("✅ Pedido enviado a cocina. La tablet receptora lo imprimirá.", "ok");
+      return true;
+    }
+
+    showInlineNotice("❌ No se pudo enviar a la cola. No se abrió AirPrint para evitar errores en iPhone.", "bad");
+    return false;
   }
 
   // En Android/tablet/PC intentamos imprimir directo con el servidor Flask local.
