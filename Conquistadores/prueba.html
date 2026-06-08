@@ -1241,6 +1241,41 @@ const CLAVE_CORTE_CAJA = "4321";
 const METODOS_PAGO = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
 
 
+/* =========================
+   IMPRESIÓN SILENCIOSA LOCAL
+   =========================
+   Este servidor es el Flask que corre en la computadora conectada
+   a la impresora POS-80. Si falla, la página usa impresión normal.
+*/
+const IMPRESION_SILENCIOSA_URL = "http://192.168.1.84:5050/imprimir";
+const USAR_IMPRESION_SILENCIOSA = true;
+
+async function imprimirSilenciosoHTML(html){
+  if(!USAR_IMPRESION_SILENCIOSA) return false;
+
+  try{
+    const res = await fetch(IMPRESION_SILENCIOSA_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ html })
+    });
+
+    let data = null;
+    try{ data = await res.json(); }catch(_e){}
+
+    if(!res.ok || !data?.ok){
+      throw new Error(data?.error || data?.mensaje || "Error desconocido en impresión local");
+    }
+
+    return true;
+  }catch(err){
+    console.error("No se pudo imprimir silenciosamente:", err);
+    showInlineNotice("No se pudo imprimir silenciosamente. Usaré impresión normal del navegador.", "warn");
+    return false;
+  }
+}
+
+
 try{
   if (
     SUPABASE_URL &&
@@ -2891,7 +2926,7 @@ function renderCorteCaja(corte){
   const btnHide = document.getElementById("btnOcultarCorte");
 
   if(btnPrint){
-    btnPrint.onclick = ()=> imprimirHtmlTicket(buildTicketCorteCaja(corte));
+    btnPrint.onclick = async ()=> { await imprimirHtmlTicket(buildTicketCorteCaja(corte)); };
   }
   if(btnHide){
     btnHide.onclick = ()=>{
@@ -3564,7 +3599,7 @@ drinkBackdrop.addEventListener("click", (e)=>{
 /* =========================
    IMPRESIÓN LIMPIA 58MM
    ========================= */
-function imprimirHtmlTicket(htmlContenido){
+async function imprimirHtmlTicket(htmlContenido){
   const html = `
     <!doctype html>
     <html lang="es">
@@ -3721,16 +3756,23 @@ function imprimirHtmlTicket(htmlContenido){
     </html>
   `;
 
+  const impresoSilencioso = await imprimirSilenciosoHTML(html);
+  if(impresoSilencioso){
+    showInlineNotice("Ticket enviado a la impresora POS-80.", "ok");
+    return true;
+  }
+
   const win = window.open("", "_blank");
 
   if(!win){
     showInlineNotice("El navegador bloqueó la impresión. Revisa permisos de impresión/ventanas.", "bad");
-    return;
+    return false;
   }
 
   win.document.open();
   win.document.write(html);
   win.document.close();
+  return true;
 }
 
 /* =========================
@@ -3899,23 +3941,25 @@ async function imprimirCocina(){
   if(!pendientes.length){ showInlineNotice("No hay productos nuevos pendientes para imprimir.", "warn"); return; }
 
   const html = buildTicketCocinaPendiente();
-  imprimirHtmlTicket(html);
+  const pudoImprimir = await imprimirHtmlTicket(html);
 
-  setTimeout(async ()=>{
-    await marcarPendientesComoEnviados();
-  }, 900);
+  if(pudoImprimir){
+    setTimeout(async ()=>{
+      await marcarPendientesComoEnviados();
+    }, 900);
+  }
 }
 
-function reimprimirTodoCocina(){
+async function reimprimirTodoCocina(){
   if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
   const html = buildTicketCocinaCompleto();
-  imprimirHtmlTicket(html);
+  await imprimirHtmlTicket(html);
 }
 
-function verResumen(){
+async function verResumen(){
   if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
   const html = buildResumenComanda();
-  imprimirHtmlTicket(html);
+  await imprimirHtmlTicket(html);
 }
 
 /* =========================
