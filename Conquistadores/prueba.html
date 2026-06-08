@@ -1344,7 +1344,7 @@ const METODOS_PAGO = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
    Este servidor es el Flask que corre en la computadora conectada
    a la impresora POS-80. Si falla, la página usa impresión normal.
 */
-const IMPRESION_SILENCIOSA_URL = "http://192.168.100.3:5050/imprimir";
+const IMPRESION_SILENCIOSA_URL = "http://192.168.1.84:5050/imprimir";
 const USAR_IMPRESION_SILENCIOSA = true;
 const COPIAS_IMPRESION = 2;
 
@@ -1352,8 +1352,28 @@ function esperar(ms){
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function esUrlLocalInsegura(url){
+  return /^http:\/\//i.test(String(url || ""));
+}
+
+function paginaEstaEnHttps(){
+  return String(window.location.protocol || "") === "https:";
+}
+
+function puedeUsarImpresionLocal(){
+  // Los navegadores bloquean HTTPS -> HTTP por Mixed Content.
+  // Si la página está publicada en HTTPS, NO se debe llamar directo al Flask local por http://192...
+  // En ese caso se manda a cola_impresion y el receptor debe abrir la página desde un origen local HTTP/file.
+  return !(paginaEstaEnHttps() && esUrlLocalInsegura(IMPRESION_SILENCIOSA_URL));
+}
+
 async function imprimirSilenciosoHTML(html, copias = COPIAS_IMPRESION){
   if(!USAR_IMPRESION_SILENCIOSA) return false;
+
+  if(!puedeUsarImpresionLocal()){
+    console.warn("Impresión local bloqueada: página HTTPS intentando llamar a HTTP local", IMPRESION_SILENCIOSA_URL);
+    return false;
+  }
 
   try{
     const totalCopias = Math.max(1, Number(copias || 1));
@@ -1491,6 +1511,12 @@ async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
 
 async function procesarTrabajoImpresion(row){
   if(!receptorImpresionActivo || colaProcesando || !row?.id) return;
+
+  if(!puedeUsarImpresionLocal()){
+    showInlineNotice("Receptor ON, pero esta página HTTPS no puede llamar al servidor local HTTP. Abre el receptor desde el archivo local o desde una página HTTP local.", "warn");
+    return;
+  }
+
   colaProcesando = true;
 
   try{
@@ -4136,7 +4162,21 @@ async function imprimirHtmlTicket(htmlContenido){
     return false;
   }
 
-  // En Android/tablet/PC intentamos imprimir directo con el servidor Flask local.
+  // Si la página está en HTTPS y Flask está en HTTP local, el navegador lo bloquea por Mixed Content.
+  // En ese caso tampoco abrimos impresión normal: mandamos a la cola para que imprima el receptor local.
+  if(!puedeUsarImpresionLocal()){
+    const enCola = await enviarAColaImpresion(html, "ticket");
+
+    if(enCola){
+      showInlineNotice("✅ Pedido enviado a cola de impresión. El receptor local lo imprimirá.", "ok");
+      return true;
+    }
+
+    showInlineNotice("❌ No se pudo enviar a la cola de impresión.", "bad");
+    return false;
+  }
+
+  // En Android/tablet/PC con página local/HTTP intentamos imprimir directo con el servidor Flask local.
   const impresoSilencioso = await imprimirSilenciosoHTML(html);
   if(impresoSilencioso){
     showInlineNotice("Ticket enviado a la impresora POS-80. Se imprimen 2 copias.", "ok");
