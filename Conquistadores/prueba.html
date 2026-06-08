@@ -1332,13 +1332,12 @@ function detalleErrorSupabase(err){
 }
 
 async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
-  if(!supabaseReady || !supabase){
-    const msg = "Supabase no está conectado en este dispositivo. Abre la página en Safari normal y revisa internet.";
-    showInlineNotice("No se pudo mandar a cola: " + msg, "bad");
-    alert("Error cola impresión:
-" + msg);
-    return false;
-  }
+ if(!supabaseReady || !supabase){
+  const msg = "Supabase no está conectado";
+  showInlineNotice("No se pudo mandar a cola: " + msg, "bad");
+  alert("Error cola impresión: ❌\n" + msg);
+  return false;
+}
 
   try{
     const payload = {
