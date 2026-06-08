@@ -1321,9 +1321,22 @@ function actualizarBotonReceptor(){
   btn.classList.toggle("on", receptorImpresionActivo);
 }
 
+function detalleErrorSupabase(err){
+  if(!err) return "Error desconocido";
+  const partes = [];
+  if(err.message) partes.push(err.message);
+  if(err.details) partes.push("Detalles: " + err.details);
+  if(err.hint) partes.push("Hint: " + err.hint);
+  if(err.code) partes.push("Código: " + err.code);
+  return partes.join("\n") || String(err);
+}
+
 async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
   if(!supabaseReady || !supabase){
-    showInlineNotice("No se pudo mandar a cola: Supabase no está conectado.", "bad");
+    const msg = "Supabase no está conectado en este dispositivo. Abre la página en Safari normal y revisa internet.";
+    showInlineNotice("No se pudo mandar a cola: " + msg, "bad");
+    alert("Error cola impresión:
+" + msg);
     return false;
   }
 
@@ -1332,7 +1345,7 @@ async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
       html: htmlCompleto,
       tipo,
       estado: "pendiente",
-      origen_dispositivo: getNombreDispositivo(),
+      origen_dispositivo: getNombreDispositivo() + " | " + (navigator.userAgent || ""),
       origen_device_id: getDeviceId(),
       mesa: mesaActiva || null,
       mesero: meseroNombre || null,
@@ -1340,17 +1353,23 @@ async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
       created_at: new Date().toISOString()
     };
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from(IMPRESION_QUEUE_TABLE)
-      .insert([payload]);
+      .insert(payload)
+      .select("id, estado, created_at")
+      .single();
 
     if(error) throw error;
 
-    showInlineNotice("Ticket enviado a la cola de impresión. La tablet receptora lo imprimirá.", "ok");
+    showInlineNotice("Ticket enviado a la cola de impresión. ID: " + (data?.id || "ok"), "ok");
     return true;
   }catch(err){
     console.error("Error enviando a cola de impresión:", err);
-    showInlineNotice("No se pudo enviar a cola. Revisa que exista la tabla cola_impresion.", "bad");
+    const detalle = detalleErrorSupabase(err);
+    showInlineNotice("No se pudo enviar a cola. Error: " + (err?.message || detalle), "bad");
+    alert("Error Supabase al enviar a cola:
+
+" + detalle);
     return false;
   }
 }
