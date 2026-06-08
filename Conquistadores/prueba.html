@@ -1362,15 +1362,23 @@ async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
 
     showInlineNotice("Ticket enviado a la cola de impresión. ID: " + (data?.id || "ok"), "ok");
     return true;
-  }catch(err){
-    console.error("Error enviando a cola de impresión:", err);
-    const detalle = detalleErrorSupabase(err);
-    showInlineNotice("No se pudo enviar a cola. Error: " + (err?.message || detalle), "bad");
-    alert("Error Supabase al enviar a cola:
+ }catch(err){
+  console.error("Error enviando a cola de impresión:", err);
 
-" + detalle);
-    return false;
-  }
+  const detalle = detalleErrorSupabase(err);
+
+  showInlineNotice(
+    "No se pudo enviar a cola. Error: " +
+    (err?.message || detalle),
+    "bad"
+  );
+
+  alert(
+    "Error Supabase al enviar a cola: ❌\n" +
+    detalle
+  );
+
+  return false;
 }
 
 async function procesarTrabajoImpresion(row){
