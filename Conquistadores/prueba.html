@@ -943,6 +943,8 @@ input:focus, select:focus{
 }
 
 .quickTopCorte{position:fixed;top:12px;right:12px;z-index:45;border:none;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:1000;cursor:pointer;color:#5a3b00;background:linear-gradient(180deg,var(--yellow),var(--yellow-dark));box-shadow:0 10px 24px rgba(2,6,23,.18)}
+.receptorPrintBtn{position:fixed;top:58px;right:12px;z-index:45;border:none;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:1000;cursor:pointer;color:#0b4f93;background:#fff;border:2px solid rgba(21,101,192,.18);box-shadow:0 10px 24px rgba(2,6,23,.14)}
+.receptorPrintBtn.on{color:#fff;background:linear-gradient(180deg,var(--green),var(--green-dark));border-color:var(--green-dark)}
 .cortePanel{position:fixed;top:62px;right:12px;width:min(430px,calc(100vw - 24px));max-height:calc(100vh - 84px);overflow:auto;z-index:44;display:none;background:rgba(255,255,255,.98);backdrop-filter:blur(10px);border:1px solid rgba(21,101,192,.16);border-radius:20px;padding:12px;box-shadow:0 26px 70px rgba(2,6,23,.22)}
 .cortePanel.show{display:grid;gap:10px}.authBox{display:grid;gap:10px}.inlineNotice{margin-top:10px;padding:10px 12px;border-radius:14px;font-size:13px;font-weight:900;display:none}.inlineNotice.show{display:block}.inlineNotice.ok{background:#edf9ef;color:#1f6a24;border:1px solid rgba(46,125,50,.22)}.inlineNotice.warn{background:#fff7e8;color:#8a5a00;border:1px solid rgba(251,192,45,.35)}.inlineNotice.bad{background:#fff1f1;color:#8e1d1d;border:1px solid rgba(198,40,40,.25)}
 .paymentSelector{margin-top:14px;padding:12px;border-radius:18px;background:linear-gradient(180deg,rgba(21,101,192,.05),rgba(251,192,45,.08));border:1px solid rgba(21,101,192,.14)}.paymentSelectorTitle{font-size:12px;font-weight:1000;color:#355070;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}.paymentGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:640px){.paymentGrid{grid-template-columns:1fr}}.payBtn{border:2px solid rgba(21,101,192,.14);border-radius:16px;padding:12px 10px;background:#fff;cursor:pointer;font-weight:1000;color:#0b4f93;text-align:center}.payBtn.active{background:linear-gradient(180deg,var(--green),var(--green-dark));color:#fff;border-color:var(--green-dark)}.closeHint{margin-top:8px;font-size:12px;color:var(--muted);font-weight:800}
@@ -969,6 +971,7 @@ input:focus, select:focus{
 </header>
 
 <button class="quickTopCorte" id="btnCorteCaja" type="button">💰 Corte</button>
+<button class="receptorPrintBtn" id="btnReceptorImpresion" type="button">🖨️ Receptor OFF</button>
 <div class="cortePanel" id="corteCajaBox"></div>
 
 <div class="wrap">
@@ -1272,6 +1275,194 @@ async function imprimirSilenciosoHTML(html){
     console.error("No se pudo imprimir silenciosamente:", err);
     showInlineNotice("No se pudo imprimir silenciosamente. Usaré impresión normal del navegador.", "warn");
     return false;
+  }
+}
+
+
+/* =========================
+   COLA DE IMPRESIÓN SUPABASE
+   =========================
+   Uso:
+   - iPhone/iPad iOS: no imprime directo; manda el ticket a Supabase.
+   - Tablet Android o PC conectada a la impresora: activa "Receptor ON" y escucha la cola.
+*/
+const IMPRESION_QUEUE_TABLE = "cola_impresion";
+const RECEPTOR_IMPRESION_KEY = "vdc_receptor_impresion_activo";
+const DEVICE_ID_KEY = "vdc_device_id";
+
+let receptorImpresionActivo = JSON.parse(localStorage.getItem(RECEPTOR_IMPRESION_KEY) || "false");
+let colaImpresionChannel = null;
+let colaProcesando = false;
+
+function getDeviceId(){
+  let id = localStorage.getItem(DEVICE_ID_KEY);
+  if(!id){
+    id = (crypto?.randomUUID?.() || ("dev_" + Date.now() + "_" + Math.random().toString(16).slice(2)));
+    localStorage.setItem(DEVICE_ID_KEY, id);
+  }
+  return id;
+}
+
+function esIOS(){
+  const ua = navigator.userAgent || "";
+  return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function getNombreDispositivo(){
+  if(esIOS()) return "iPhone/iPad";
+  if(/Android/i.test(navigator.userAgent || "")) return "Android/Tablet";
+  return "PC/Navegador";
+}
+
+function actualizarBotonReceptor(){
+  const btn = document.getElementById("btnReceptorImpresion");
+  if(!btn) return;
+  btn.textContent = receptorImpresionActivo ? "🖨️ Receptor ON" : "🖨️ Receptor OFF";
+  btn.classList.toggle("on", receptorImpresionActivo);
+}
+
+async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
+  if(!supabaseReady || !supabase){
+    showInlineNotice("No se pudo mandar a cola: Supabase no está conectado.", "bad");
+    return false;
+  }
+
+  try{
+    const payload = {
+      html: htmlCompleto,
+      tipo,
+      estado: "pendiente",
+      origen_dispositivo: getNombreDispositivo(),
+      origen_device_id: getDeviceId(),
+      mesa: mesaActiva || null,
+      mesero: meseroNombre || null,
+      total: totalComanda ? Number(totalComanda() || 0) : 0,
+      created_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from(IMPRESION_QUEUE_TABLE)
+      .insert([payload]);
+
+    if(error) throw error;
+
+    showInlineNotice("Ticket enviado a la cola de impresión. La tablet receptora lo imprimirá.", "ok");
+    return true;
+  }catch(err){
+    console.error("Error enviando a cola de impresión:", err);
+    showInlineNotice("No se pudo enviar a cola. Revisa que exista la tabla cola_impresion.", "bad");
+    return false;
+  }
+}
+
+async function procesarTrabajoImpresion(row){
+  if(!receptorImpresionActivo || colaProcesando || !row?.id) return;
+  colaProcesando = true;
+
+  try{
+    await supabase
+      .from(IMPRESION_QUEUE_TABLE)
+      .update({
+        estado: "procesando",
+        receptor_device_id: getDeviceId(),
+        receptor_dispositivo: getNombreDispositivo(),
+        procesando_at: new Date().toISOString()
+      })
+      .eq("id", row.id)
+      .eq("estado", "pendiente");
+
+    const ok = await imprimirSilenciosoHTML(row.html || "");
+
+    if(ok){
+      await supabase
+        .from(IMPRESION_QUEUE_TABLE)
+        .update({
+          estado: "impreso",
+          impreso_at: new Date().toISOString(),
+          error: null
+        })
+        .eq("id", row.id);
+      showInlineNotice("Trabajo de cola impreso correctamente.", "ok");
+    }else{
+      await supabase
+        .from(IMPRESION_QUEUE_TABLE)
+        .update({
+          estado: "error",
+          error: "No se pudo imprimir con Flask local",
+          error_at: new Date().toISOString()
+        })
+        .eq("id", row.id);
+      showInlineNotice("Un ticket de la cola no se pudo imprimir. Revisa Flask/impresora.", "bad");
+    }
+  }catch(err){
+    console.error("Error procesando cola de impresión:", err);
+    try{
+      await supabase
+        .from(IMPRESION_QUEUE_TABLE)
+        .update({
+          estado: "error",
+          error: String(err?.message || err),
+          error_at: new Date().toISOString()
+        })
+        .eq("id", row.id);
+    }catch(_e){}
+  }finally{
+    colaProcesando = false;
+    setTimeout(revisarPendientesColaImpresion, 450);
+  }
+}
+
+async function revisarPendientesColaImpresion(){
+  if(!supabaseReady || !receptorImpresionActivo || colaProcesando) return;
+
+  try{
+    const { data, error } = await supabase
+      .from(IMPRESION_QUEUE_TABLE)
+      .select("*")
+      .eq("estado", "pendiente")
+      .order("created_at", { ascending:true })
+      .limit(1);
+
+    if(error) throw error;
+    if(data && data[0]) await procesarTrabajoImpresion(data[0]);
+  }catch(err){
+    console.error("No se pudo revisar cola de impresión:", err);
+    showInlineNotice("Receptor activo, pero no pude leer cola_impresion.", "bad");
+  }
+}
+
+function iniciarListenerColaImpresion(){
+  if(!supabaseReady || !supabase || colaImpresionChannel) return;
+
+  colaImpresionChannel = supabase
+    .channel("vdc-cola-impresion")
+    .on(
+      "postgres_changes",
+      { event:"INSERT", schema:"public", table: IMPRESION_QUEUE_TABLE },
+      payload => {
+        if(receptorImpresionActivo && payload?.new?.estado === "pendiente"){
+          procesarTrabajoImpresion(payload.new);
+        }
+      }
+    )
+    .subscribe(status=>{
+      if(status === "SUBSCRIBED" && receptorImpresionActivo){
+        revisarPendientesColaImpresion();
+      }
+    });
+}
+
+async function toggleReceptorImpresion(){
+  receptorImpresionActivo = !receptorImpresionActivo;
+  localStorage.setItem(RECEPTOR_IMPRESION_KEY, JSON.stringify(receptorImpresionActivo));
+  actualizarBotonReceptor();
+
+  if(receptorImpresionActivo){
+    iniciarListenerColaImpresion();
+    showInlineNotice("Receptor de impresión activado en este dispositivo.", "ok");
+    await revisarPendientesColaImpresion();
+  }else{
+    showInlineNotice("Receptor de impresión desactivado.", "warn");
   }
 }
 
@@ -3756,6 +3947,13 @@ async function imprimirHtmlTicket(htmlContenido){
     </html>
   `;
 
+  // En iPhone/iPad mandamos el ticket a Supabase para que lo imprima la tablet/PC receptora.
+  if(esIOS() && !receptorImpresionActivo){
+    const enCola = await enviarAColaImpresion(html, "ticket");
+    if(enCola) return true;
+  }
+
+  // En Android/tablet/PC intentamos imprimir directo con el servidor Flask local.
   const impresoSilencioso = await imprimirSilenciosoHTML(html);
   if(impresoSilencioso){
     showInlineNotice("Ticket enviado a la impresora POS-80.", "ok");
@@ -4057,6 +4255,9 @@ if(btnCerrarPedidoEl) btnCerrarPedidoEl.onclick = cerrarPedidoActual;
 if(paymentGrid){ paymentGrid.querySelectorAll("[data-pay]").forEach(btn=>{ btn.onclick = ()=> selectPaymentMethod(btn.getAttribute("data-pay")); }); }
 if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
 if(btnCorteCaja) btnCorteCaja.onclick = mostrarCorteCaja;
+const btnReceptorImpresion = document.getElementById("btnReceptorImpresion");
+if(btnReceptorImpresion) btnReceptorImpresion.onclick = toggleReceptorImpresion;
+actualizarBotonReceptor();
 
 /* =========================
    INIT
@@ -4085,6 +4286,8 @@ updateContinueButton();
 if(supabaseReady){
   setSyncStatus("Supabase conectado. Listo para guardar comandas.", "ok");
   cargarPedidosAbiertos();
+  iniciarListenerColaImpresion();
+  if(receptorImpresionActivo) revisarPendientesColaImpresion();
 }else{
   setSyncStatus("Supabase pendiente de configurar", "warn");
 }
