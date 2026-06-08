@@ -1252,22 +1252,33 @@ const METODOS_PAGO = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
 */
 const IMPRESION_SILENCIOSA_URL = "http://192.168.1.84:5050/imprimir";
 const USAR_IMPRESION_SILENCIOSA = true;
+const COPIAS_IMPRESION = 2;
 
-async function imprimirSilenciosoHTML(html){
+function esperar(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function imprimirSilenciosoHTML(html, copias = COPIAS_IMPRESION){
   if(!USAR_IMPRESION_SILENCIOSA) return false;
 
   try{
-    const res = await fetch(IMPRESION_SILENCIOSA_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ html })
-    });
+    const totalCopias = Math.max(1, Number(copias || 1));
 
-    let data = null;
-    try{ data = await res.json(); }catch(_e){}
+    for(let i = 1; i <= totalCopias; i++){
+      const res = await fetch(IMPRESION_SILENCIOSA_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html })
+      });
 
-    if(!res.ok || !data?.ok){
-      throw new Error(data?.error || data?.mensaje || "Error desconocido en impresión local");
+      let data = null;
+      try{ data = await res.json(); }catch(_e){}
+
+      if(!res.ok || !data?.ok){
+        throw new Error(data?.error || data?.mensaje || "Error desconocido en impresión local");
+      }
+
+      if(i < totalCopias) await esperar(450);
     }
 
     return true;
@@ -1293,6 +1304,8 @@ const DEVICE_ID_KEY = "vdc_device_id";
 let receptorImpresionActivo = JSON.parse(localStorage.getItem(RECEPTOR_IMPRESION_KEY) || "false");
 let colaImpresionChannel = null;
 let colaProcesando = false;
+let colaPollingTimer = null;
+const COLA_POLLING_MS = 2500;
 
 function getDeviceId(){
   let id = localStorage.getItem(DEVICE_ID_KEY);
@@ -1409,7 +1422,7 @@ async function procesarTrabajoImpresion(row){
           error: null
         })
         .eq("id", row.id);
-      showInlineNotice("Trabajo de cola impreso correctamente.", "ok");
+      showInlineNotice("Trabajo de cola impreso correctamente. Se imprimieron 2 copias.", "ok");
     }else{
       await supabase
         .from(IMPRESION_QUEUE_TABLE)
@@ -1458,8 +1471,28 @@ async function revisarPendientesColaImpresion(){
   }
 }
 
+function iniciarPollingColaImpresion(){
+  if(colaPollingTimer) return;
+
+  colaPollingTimer = setInterval(()=>{
+    if(receptorImpresionActivo && !colaProcesando){
+      revisarPendientesColaImpresion();
+    }
+  }, COLA_POLLING_MS);
+}
+
+function detenerPollingColaImpresion(){
+  if(!colaPollingTimer) return;
+  clearInterval(colaPollingTimer);
+  colaPollingTimer = null;
+}
+
 function iniciarListenerColaImpresion(){
-  if(!supabaseReady || !supabase || colaImpresionChannel) return;
+  if(!supabaseReady || !supabase) return;
+
+  iniciarPollingColaImpresion();
+
+  if(colaImpresionChannel) return;
 
   colaImpresionChannel = supabase
     .channel("vdc-cola-impresion")
@@ -1486,9 +1519,11 @@ async function toggleReceptorImpresion(){
 
   if(receptorImpresionActivo){
     iniciarListenerColaImpresion();
-    showInlineNotice("Receptor de impresión activado en este dispositivo.", "ok");
+    iniciarPollingColaImpresion();
+    showInlineNotice("Receptor de impresión activado. Revisaré la cola automáticamente cada 2.5 segundos.", "ok");
     await revisarPendientesColaImpresion();
   }else{
+    detenerPollingColaImpresion();
     showInlineNotice("Receptor de impresión desactivado.", "warn");
   }
 }
@@ -3992,7 +4027,7 @@ async function imprimirHtmlTicket(htmlContenido){
   // En Android/tablet/PC intentamos imprimir directo con el servidor Flask local.
   const impresoSilencioso = await imprimirSilenciosoHTML(html);
   if(impresoSilencioso){
-    showInlineNotice("Ticket enviado a la impresora POS-80.", "ok");
+    showInlineNotice("Ticket enviado a la impresora POS-80. Se imprimen 2 copias.", "ok");
     return true;
   }
 
@@ -4323,7 +4358,10 @@ if(supabaseReady){
   setSyncStatus("Supabase conectado. Listo para guardar comandas.", "ok");
   cargarPedidosAbiertos();
   iniciarListenerColaImpresion();
-  if(receptorImpresionActivo) revisarPendientesColaImpresion();
+  if(receptorImpresionActivo){
+    iniciarPollingColaImpresion();
+    revisarPendientesColaImpresion();
+  }
 }else{
   setSyncStatus("Supabase pendiente de configurar", "warn");
 }
