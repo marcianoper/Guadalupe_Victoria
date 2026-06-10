@@ -515,6 +515,116 @@
       .carneQuickBtn{font-size:15px;padding:12px 8px}
     }
 
+
+    /* =========================
+       CARNE POR KILO COMPACTO
+       Mantiene visibles los botones de agregar/cancelar en PC, tablet y teléfono
+       ========================= */
+    .backdrop.carneCompact .modal{
+      width:min(720px, calc(100vw - 24px));
+      max-height:86vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .backdrop.carneCompact .modalHead{
+      padding:10px 14px;
+      flex:0 0 auto;
+    }
+    .backdrop.carneCompact .modalHead h3{
+      font-size:18px;
+      line-height:1.15;
+    }
+    .backdrop.carneCompact .content{
+      padding:10px 14px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      max-height:calc(86vh - 126px);
+      flex:1 1 auto;
+    }
+    .backdrop.carneCompact .footerBtns{
+      flex:0 0 auto;
+      position:sticky;
+      bottom:0;
+      z-index:5;
+      padding:10px 14px;
+      background:linear-gradient(180deg, var(--card), var(--card2));
+      box-shadow:0 -10px 24px rgba(0,0,0,.10);
+    }
+    .backdrop.carneCompact .optGroup{
+      margin-top:8px;
+      padding:9px 10px;
+      border-radius:14px;
+    }
+    .backdrop.carneCompact .optTitle b{
+      font-size:13px;
+    }
+    .backdrop.carneCompact .optTitle span{
+      font-size:11px;
+    }
+    .backdrop.carneCompact .carneGrid{
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:7px;
+      margin-top:8px;
+    }
+    .backdrop.carneCompact .carneQuickBtn{
+      min-height:42px;
+      padding:8px 6px;
+      border-radius:12px;
+      font-size:13px;
+      line-height:1.12;
+    }
+    .backdrop.carneCompact label{
+      margin:6px 0 4px;
+      font-size:11px;
+    }
+    .backdrop.carneCompact input{
+      padding:9px 10px;
+      border-radius:12px;
+      font-size:14px;
+    }
+    .backdrop.carneCompact .stepRow{
+      gap:8px;
+    }
+    .backdrop.carneCompact .carneResult{
+      margin-top:8px;
+      padding:9px 10px;
+      border-radius:12px;
+      font-size:14px;
+      line-height:1.22;
+    }
+    .backdrop.carneCompact .carneResult small{
+      font-size:12px;
+    }
+    .backdrop.carneCompact #noteProd{
+      min-height:40px;
+    }
+    @media(max-width:820px){
+      .backdrop.carneCompact{
+        align-items:flex-end;
+        padding:0;
+      }
+      .backdrop.carneCompact .modal{
+        width:100%;
+        max-height:92vh;
+        border-radius:24px 24px 0 0;
+      }
+      .backdrop.carneCompact .content{
+        max-height:calc(92vh - 132px);
+      }
+      .backdrop.carneCompact .carneGrid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .backdrop.carneCompact .footerBtns{
+        padding-bottom:calc(10px + env(safe-area-inset-bottom));
+      }
+    }
+    @media(max-width:390px){
+      .backdrop.carneCompact .carneQuickBtn{
+        font-size:12px;
+        min-height:40px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1762,6 +1872,7 @@ function openCarneKiloModal(item){
     </div>
   `;
 
+  backdrop.classList.add("carneCompact");
   backdrop.style.display = "flex";
   backdrop.setAttribute("aria-hidden","false");
   document.body.style.overflow = "hidden";
@@ -1827,6 +1938,7 @@ function openModal(item){
     return;
   }
 
+  backdrop.classList.remove("carneCompact");
   currentItem = item;
   draft = {mods:{}, note:""};
   mTitle.textContent = `${item.name} — ${money(item.price)}`;
@@ -1890,6 +2002,7 @@ function openModal(item){
   }, 0);
 }
 function closeModal(){
+  backdrop.classList.remove("carneCompact");
   backdrop.style.display = "none";
   backdrop.setAttribute("aria-hidden","true");
   currentItem = null;
