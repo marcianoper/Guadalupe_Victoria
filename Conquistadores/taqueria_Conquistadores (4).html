@@ -469,7 +469,9 @@
     }
 
 
-    /* Modal especial para carne por kilo */
+    /* =========================
+       CARNE POR KILO: gramos/pesos
+       ========================= */
     .carneGrid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -478,38 +480,39 @@
     }
     .carneQuickBtn{
       border:1px solid rgba(0,0,0,.12);
-      background:rgba(255,255,255,.90);
-      padding:12px 10px;
+      background:rgba(255,255,255,.92);
       border-radius:14px;
+      padding:12px 10px;
+      min-height:52px;
       font-weight:1000;
-      cursor:pointer;
       color:var(--ink);
+      cursor:pointer;
       touch-action:manipulation;
       -webkit-tap-highlight-color:transparent;
     }
     .carneQuickBtn.active{
       border-color:rgba(139,30,30,.45);
       box-shadow:0 0 0 3px rgba(139,30,30,.14);
-      background:linear-gradient(180deg, rgba(194,65,47,.18), rgba(255,255,255,.92));
+      background:linear-gradient(180deg,rgba(212,163,115,.28),rgba(255,255,255,.92));
     }
     .carneResult{
       margin-top:12px;
       padding:12px;
-      border-radius:16px;
-      background:rgba(47,125,50,.10);
-      border:1px solid rgba(47,125,50,.18);
-      color:var(--green);
-      font-weight:1000;
+      border-radius:14px;
+      border:1px solid rgba(47,125,50,.24);
+      background:rgba(47,125,50,.09);
+      color:var(--ink);
+      font-weight:900;
       line-height:1.35;
     }
     .carneResult.bad{
-      background:rgba(155,28,28,.08);
       border-color:rgba(155,28,28,.18);
+      background:rgba(155,28,28,.08);
       color:var(--danger);
     }
     @media(max-width:520px){
       .carneGrid{grid-template-columns:1fr 1fr}
-      .carneQuickBtn{min-height:48px;font-size:15px}
+      .carneQuickBtn{font-size:15px;padding:12px 8px}
     }
 
   </style>
@@ -1404,13 +1407,10 @@ const MODS = {
 };
 
 function modsPara(item){
-  // ✅ Aplica a casi todo lo “comible” (menos bebidas, complementos y carne por kilo)
+  // ✅ Aplica a casi todo lo “comible” (menos bebidas y extras)
   if(!item.mods) return [];
   if(item.cat === "BEBIDAS") return [];
-  if(item.cat === "AGUAS FRESCAS") return [];
   if(item.cat === "EXTRAS") return [];
-  if(item.cat === "COMPLEMENTOS") return [];
-  if(item.cat === "CARNE POR KILO") return [];
   return ["conSin"];
 }
 
@@ -1441,8 +1441,7 @@ function modsToText(mods){
   return parts.join(" • ");
 }
 function buildKey(item, mods, note){
-  const baseKey = item.lineKey || (item.id + "|" + item.name + "|" + item.price);
-  return baseKey + "|" + JSON.stringify(mods) + "|" + (note||"");
+  return item.id + "|" + JSON.stringify(mods) + "|" + (note||"");
 }
 function validateRequired(item, mods){
   const keys = modsPara(item);
@@ -1503,7 +1502,6 @@ function badgeFor(cat){
     "CARNE POR KILO":"⚖️ Por kilo",
     "BEBIDAS":"🥤 Bebida",
     "EXTRAS":"➕ Extra",
-    "COMPLEMENTOS":"➕ Complemento",
   };
   return m[cat] || "⭐";
 }
@@ -1666,15 +1664,14 @@ mAdd.textContent = "Agregar al pedido";
 let currentItem = null;
 let draft = null;
 
-
 function isCarnePorKilo(item){
   return item && item.cat === "CARNE POR KILO";
 }
 
 function formatGramos(g){
   const grams = Math.round(Number(g || 0));
-  if(grams >= 1000 && grams % 1000 === 0) return (grams/1000) + " kg";
-  if(grams >= 1000) return (grams/1000).toFixed(2).replace(/\.00$/,"") + " kg";
+  if(grams >= 1000 && grams % 1000 === 0) return (grams / 1000) + " kg";
+  if(grams >= 1000) return (grams / 1000).toFixed(2).replace(/\.00$/, "") + " kg";
   return grams + " g";
 }
 
@@ -1693,6 +1690,7 @@ function calcularCarneDesdePesos(item, pesos){
 }
 
 function setCarneResult(item, result, fuenteTexto){
+  if(!draft) return;
   draft.carne = result;
   draft.carneFuente = fuenteTexto || "";
 
@@ -1717,13 +1715,13 @@ function openCarneKiloModal(item){
   currentItem = item;
   draft = {mods:{}, note:"", carne:null, carneFuente:""};
   mTitle.textContent = `${item.name} — ${money(item.price)} / kg`;
-  mSub.textContent = "Elige gramos/kilos o captura dinero";
+  mSub.textContent = "Elige kilos/gramos o captura dinero";
   mAdd.textContent = "Agregar al pedido";
 
   mBody.innerHTML = `
     <div class="optGroup">
       <div class="optTitle"><b>Pedidos rápidos por peso</b><span>convierte a pesos</span></div>
-      <div class="carneGrid" id="carnePesoRapido">
+      <div class="carneGrid">
         <button type="button" class="carneQuickBtn" data-grams="1000">1 kilo</button>
         <button type="button" class="carneQuickBtn" data-grams="500">Medio kilo / 500 g</button>
         <button type="button" class="carneQuickBtn" data-grams="200">200 g</button>
@@ -1733,7 +1731,7 @@ function openCarneKiloModal(item){
 
     <div class="optGroup">
       <div class="optTitle"><b>Pedidos rápidos por dinero</b><span>convierte a gramos</span></div>
-      <div class="carneGrid" id="carneDineroRapido">
+      <div class="carneGrid">
         <button type="button" class="carneQuickBtn" data-money="100">$100</button>
         <button type="button" class="carneQuickBtn" data-money="200">$200</button>
         <button type="button" class="carneQuickBtn" data-money="300">$300</button>
@@ -1742,7 +1740,7 @@ function openCarneKiloModal(item){
     </div>
 
     <div class="optGroup">
-      <div class="optTitle"><b>Captura manual</b><span>opcional</span></div>
+      <div class="optTitle"><b>Captura manual</b><span>pesos o gramos</span></div>
       <div class="stepRow" style="margin-top:10px">
         <div>
           <label>Pesos</label>
@@ -1775,10 +1773,11 @@ function openCarneKiloModal(item){
       clearActive();
       btn.classList.add("active");
       const grams = Number(btn.dataset.grams || 0);
-      setCarneResult(item, calcularCarneDesdeGramos(item, grams), formatGramos(grams));
+      const result = calcularCarneDesdeGramos(item, grams);
+      setCarneResult(item, result, formatGramos(grams));
       const pesos = document.getElementById("carnePesos");
       const gramos = document.getElementById("carneGramos");
-      if(pesos) pesos.value = "";
+      if(pesos) pesos.value = result.precio;
       if(gramos) gramos.value = grams;
     });
   });
@@ -1819,7 +1818,7 @@ function openCarneKiloModal(item){
       });
     }
     if(note) note.oninput = ()=> draft.note = note.value;
-  },0);
+  }, 0);
 }
 
 function openModal(item){
@@ -1915,11 +1914,37 @@ function addLine(item, mods, note){
   const key = buildKey(item, mods, note);
   const existing = cart.find(x=>x.key===key);
   if(existing){ existing.qty += 1; }
-  else cart.push({ key, id:item.id, name:item.name, basePrice:item.price, qty:1, mods, note: note || "", grams:item.grams || null });
+  else cart.push({ key, id:item.id, name:item.name, basePrice:item.price, qty:1, mods, note: note || "" });
+  renderCart();
+}
+function addCarneLine(item, result, note){
+  const gramosTxt = formatGramos(result.gramos);
+  const displayName = `${item.name} — ${gramosTxt}`;
+  const noteFinal = [
+    `Cantidad: ${gramosTxt}`,
+    `Equivalente: ${money(result.precio)}`,
+    note || ""
+  ].filter(Boolean).join(" • ");
+  const key = `${item.id}|CARNE|${result.gramos}|${result.precio}|${note || ""}`;
+  const existing = cart.find(x=>x.key===key);
+  if(existing){ existing.qty += 1; }
+  else cart.push({
+    key,
+    id:item.id,
+    name:displayName,
+    basePrice:result.precio,
+    qty:1,
+    mods:{},
+    note:noteFinal
+  });
   renderCart();
 }
 
 function onAddClicked(item){
+  if(isCarnePorKilo(item)){
+    openCarneKiloModal(item);
+    return;
+  }
   if(item.mods && modsPara(item).length) openModal(item);
   else addLine(item, {}, "");
 }
@@ -1931,24 +1956,12 @@ backdrop.addEventListener("pointerdown", (e)=>{ if(e.target===backdrop){ e.preve
 mAdd.addEventListener("click", ()=>{
   if(!currentItem || !draft) return;
 
-  if(draft.carne !== undefined){
+  if(isCarnePorKilo(currentItem)){
     if(!draft.carne || !draft.carne.gramos || !draft.carne.precio){
-      alert("Selecciona kilos/gramos o captura pesos para la carne por kilo.");
+      alert("Selecciona kilos/gramos o captura pesos para carne por kilo.");
       return;
     }
-
-    const detallePeso = formatGramos(draft.carne.gramos);
-    const carneItem = {
-      ...currentItem,
-      name: `${currentItem.name} — ${detallePeso}`,
-      price: draft.carne.precio,
-      grams: draft.carne.gramos,
-      lineKey: `${currentItem.id}|${draft.carne.gramos}g|${draft.carne.precio}`
-    };
-
-    const notaBase = `Equivale a ${detallePeso} a ${money(currentItem.price)}/kg`;
-    const notaFinal = draft.note ? `${notaBase}. ${draft.note}` : notaBase;
-    addLine(carneItem, {}, notaFinal);
+    addCarneLine(currentItem, draft.carne, draft.note);
     closeModal();
     return;
   }
