@@ -943,12 +943,108 @@ input:focus, select:focus{
 }
 
 .quickTopCorte{position:fixed;top:12px;right:12px;z-index:45;border:none;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:1000;cursor:pointer;color:#5a3b00;background:linear-gradient(180deg,var(--yellow),var(--yellow-dark));box-shadow:0 10px 24px rgba(2,6,23,.18)}
+.receptorPrintBtn{position:fixed;top:58px;right:12px;z-index:45;border:none;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:1000;cursor:pointer;color:#0b4f93;background:#fff;border:2px solid rgba(21,101,192,.18);box-shadow:0 10px 24px rgba(2,6,23,.14)}
+.receptorPrintBtn.on{color:#fff;background:linear-gradient(180deg,var(--green),var(--green-dark));border-color:var(--green-dark)}
 .cortePanel{position:fixed;top:62px;right:12px;width:min(430px,calc(100vw - 24px));max-height:calc(100vh - 84px);overflow:auto;z-index:44;display:none;background:rgba(255,255,255,.98);backdrop-filter:blur(10px);border:1px solid rgba(21,101,192,.16);border-radius:20px;padding:12px;box-shadow:0 26px 70px rgba(2,6,23,.22)}
 .cortePanel.show{display:grid;gap:10px}.authBox{display:grid;gap:10px}.inlineNotice{margin-top:10px;padding:10px 12px;border-radius:14px;font-size:13px;font-weight:900;display:none}.inlineNotice.show{display:block}.inlineNotice.ok{background:#edf9ef;color:#1f6a24;border:1px solid rgba(46,125,50,.22)}.inlineNotice.warn{background:#fff7e8;color:#8a5a00;border:1px solid rgba(251,192,45,.35)}.inlineNotice.bad{background:#fff1f1;color:#8e1d1d;border:1px solid rgba(198,40,40,.25)}
 .paymentSelector{margin-top:14px;padding:12px;border-radius:18px;background:linear-gradient(180deg,rgba(21,101,192,.05),rgba(251,192,45,.08));border:1px solid rgba(21,101,192,.14)}.paymentSelectorTitle{font-size:12px;font-weight:1000;color:#355070;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}.paymentGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:640px){.paymentGrid{grid-template-columns:1fr}}.payBtn{border:2px solid rgba(21,101,192,.14);border-radius:16px;padding:12px 10px;background:#fff;cursor:pointer;font-weight:1000;color:#0b4f93;text-align:center}.payBtn.active{background:linear-gradient(180deg,var(--green),var(--green-dark));color:#fff;border-color:var(--green-dark)}.closeHint{margin-top:8px;font-size:12px;color:var(--muted);font-weight:800}
 
 .hiddenField{display:none!important}
 .print-area{display:none}
+
+
+/* =========================
+   MODAL CARNE POR KILO RESPONSIVO
+   ========================= */
+#carneBackdrop{
+  padding:12px;
+}
+
+#carneBackdrop .modal{
+  width:min(94vw, 560px);
+  max-height:92vh;
+  display:flex;
+  flex-direction:column;
+}
+
+#carneBackdrop .modalBody{
+  overflow:auto;
+  max-height:70vh;
+  -webkit-overflow-scrolling:touch;
+}
+
+#carneBackdrop .modalFoot{
+  flex-shrink:0;
+}
+
+#carneBackdrop .quickMods{
+  grid-template-columns:repeat(2, minmax(0,1fr));
+}
+
+#carneBackdrop .modBtn{
+  min-height:52px;
+}
+
+@media (max-width:768px){
+  #carneBackdrop{
+    align-items:flex-end;
+    padding:8px;
+  }
+
+  #carneBackdrop .modal{
+    width:100%;
+    max-height:94vh;
+    border-radius:24px 24px 0 0;
+  }
+
+  #carneBackdrop .modalHead{
+    padding:12px 14px;
+  }
+
+  #carneBackdrop .modalHead h3{
+    font-size:16px;
+    line-height:1.15;
+  }
+
+  #carneBackdrop .modalBody{
+    padding:12px;
+    max-height:calc(94vh - 138px);
+  }
+
+  #carneBackdrop .quickMods{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  #carneBackdrop input{
+    font-size:16px;
+    padding:13px 12px;
+  }
+
+  #carneBackdrop .noteBox{
+    font-size:12px;
+    padding:9px 10px;
+  }
+
+  #carneBackdrop .modalFoot{
+    position:sticky;
+    bottom:0;
+    background:#fff;
+    padding:10px 12px;
+    box-shadow:0 -8px 20px rgba(2,6,23,.08);
+  }
+
+  #carneBackdrop .modalFoot .btn{
+    flex:1;
+    padding:13px 12px;
+  }
+}
+
+@media (max-width:420px){
+  #carneBackdrop .quickMods{
+    grid-template-columns:1fr;
+  }
+}
 
 @page{
   size:58mm auto;
@@ -969,6 +1065,7 @@ input:focus, select:focus{
 </header>
 
 <button class="quickTopCorte" id="btnCorteCaja" type="button">💰 Corte</button>
+<button class="receptorPrintBtn" id="btnReceptorImpresion" type="button">🖨️ Receptor OFF</button>
 <div class="cortePanel" id="corteCajaBox"></div>
 
 <div class="wrap">
@@ -1239,6 +1336,317 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 */
 const CLAVE_CORTE_CAJA = "4321";
 const METODOS_PAGO = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
+
+
+/* =========================
+   IMPRESIÓN SILENCIOSA LOCAL
+   =========================
+   Este servidor es el Flask que corre en la computadora conectada
+   a la impresora POS-80. Si falla, la página usa impresión normal.
+*/
+const IMPRESION_SILENCIOSA_URL = "http://127.0.0.1:5050/imprimir";
+const USAR_IMPRESION_SILENCIOSA = true;
+const COPIAS_IMPRESION = 2;
+
+function esperar(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function esUrlLocalInsegura(url){
+  return /^http:\/\//i.test(String(url || ""));
+}
+
+function paginaEstaEnHttps(){
+  return String(window.location.protocol || "") === "https:";
+}
+
+function puedeUsarImpresionLocal(){
+  // Los navegadores bloquean HTTPS -> HTTP por Mixed Content.
+  // Si la página está publicada en HTTPS, NO se debe llamar directo al Flask local por http://192...
+  // En ese caso se manda a cola_impresion y el receptor debe abrir la página desde un origen local HTTP/file.
+  return !(paginaEstaEnHttps() && esUrlLocalInsegura(IMPRESION_SILENCIOSA_URL));
+}
+
+async function imprimirSilenciosoHTML(html, copias = COPIAS_IMPRESION){
+  if(!USAR_IMPRESION_SILENCIOSA) return false;
+
+  if(!puedeUsarImpresionLocal()){
+    console.warn("Impresión local bloqueada: página HTTPS intentando llamar a HTTP local", IMPRESION_SILENCIOSA_URL);
+    return false;
+  }
+
+  try{
+    const totalCopias = Math.max(1, Number(copias || 1));
+
+    for(let i = 1; i <= totalCopias; i++){
+      const res = await fetch(IMPRESION_SILENCIOSA_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html })
+      });
+
+      let data = null;
+      try{ data = await res.json(); }catch(_e){}
+
+      if(!res.ok || !data?.ok){
+        throw new Error(data?.error || data?.mensaje || "Error desconocido en impresión local");
+      }
+
+      if(i < totalCopias) await esperar(450);
+    }
+
+    return true;
+  }catch(err){
+    console.error("No se pudo imprimir silenciosamente:", err);
+    showInlineNotice("No se pudo imprimir silenciosamente. Usaré impresión normal del navegador.", "warn");
+    return false;
+  }
+}
+
+
+/* =========================
+   COLA DE IMPRESIÓN SUPABASE
+   =========================
+   Uso:
+   - iPhone/iPad iOS: no imprime directo; manda el ticket a Supabase.
+   - Tablet Android o PC conectada a la impresora: activa "Receptor ON" y escucha la cola.
+*/
+const IMPRESION_QUEUE_TABLE = "cola_impresion";
+const RECEPTOR_IMPRESION_KEY = "vdc_receptor_impresion_activo";
+const DEVICE_ID_KEY = "vdc_device_id";
+
+let receptorImpresionActivo = JSON.parse(localStorage.getItem(RECEPTOR_IMPRESION_KEY) || "false");
+let colaImpresionChannel = null;
+let colaProcesando = false;
+let colaPollingTimer = null;
+const COLA_POLLING_MS = 2500;
+
+function getDeviceId(){
+  let id = localStorage.getItem(DEVICE_ID_KEY);
+  if(!id){
+    id = (crypto?.randomUUID?.() || ("dev_" + Date.now() + "_" + Math.random().toString(16).slice(2)));
+    localStorage.setItem(DEVICE_ID_KEY, id);
+  }
+  return id;
+}
+
+function esIOS(){
+  const ua = navigator.userAgent || "";
+  return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function getNombreDispositivo(){
+  if(esIOS()) return "iPhone/iPad";
+  if(/Android/i.test(navigator.userAgent || "")) return "Android/Tablet";
+  return "PC/Navegador";
+}
+
+function actualizarBotonReceptor(){
+  const btn = document.getElementById("btnReceptorImpresion");
+  if(!btn) return;
+  btn.textContent = receptorImpresionActivo ? "🖨️ Receptor ON" : "🖨️ Receptor OFF";
+  btn.classList.toggle("on", receptorImpresionActivo);
+}
+
+function detalleErrorSupabase(err){
+  if(!err) return "Error desconocido";
+  const partes = [];
+  if(err.message) partes.push(err.message);
+  if(err.details) partes.push("Detalles: " + err.details);
+  if(err.hint) partes.push("Hint: " + err.hint);
+  if(err.code) partes.push("Código: " + err.code);
+  return partes.join("\n") || String(err);
+}
+
+async function enviarAColaImpresion(htmlCompleto, tipo="ticket"){
+ if(!supabaseReady || !supabase){
+  const msg = "Supabase no está conectado";
+  showInlineNotice("No se pudo mandar a cola: " + msg, "bad");
+  alert("Error cola impresión: ❌\n" + msg);
+  return false;
+}
+
+  try{
+    const payload = {
+      html: htmlCompleto,
+      tipo,
+      estado: "pendiente",
+      origen_dispositivo: getNombreDispositivo() + " | " + (navigator.userAgent || ""),
+      origen_device_id: getDeviceId(),
+      mesa: mesaActiva || null,
+      mesero: meseroNombre || null,
+      total: totalComanda ? Number(totalComanda() || 0) : 0,
+      created_at: new Date().toISOString()
+    };
+
+    const { data, error } = await supabase
+      .from(IMPRESION_QUEUE_TABLE)
+      .insert(payload)
+      .select("id, estado, created_at")
+      .single();
+
+    if(error) throw error;
+
+    showInlineNotice("Ticket enviado a la cola de impresión. ID: " + (data?.id || "ok"), "ok");
+    return true;
+ }catch(err){
+  console.error("Error enviando a cola de impresión:", err);
+
+  const detalle = detalleErrorSupabase(err);
+
+  showInlineNotice(
+    "No se pudo enviar a cola. Error: " +
+    (err?.message || detalle),
+    "bad"
+  );
+
+  alert(
+    "Error Supabase al enviar a cola: ❌\n" +
+    detalle
+  );
+
+  return false;
+}
+}
+
+async function procesarTrabajoImpresion(row){
+  if(!receptorImpresionActivo || colaProcesando || !row?.id) return;
+
+  if(!puedeUsarImpresionLocal()){
+    showInlineNotice("Receptor ON, pero esta página HTTPS no puede llamar al servidor local HTTP. Abre el receptor desde el archivo local o desde una página HTTP local.", "warn");
+    return;
+  }
+
+  colaProcesando = true;
+
+  try{
+    await supabase
+      .from(IMPRESION_QUEUE_TABLE)
+      .update({
+        estado: "procesando",
+        receptor_device_id: getDeviceId(),
+        receptor_dispositivo: getNombreDispositivo(),
+        procesando_at: new Date().toISOString()
+      })
+      .eq("id", row.id)
+      .eq("estado", "pendiente");
+
+    const ok = await imprimirSilenciosoHTML(row.html || "");
+
+    if(ok){
+      await supabase
+        .from(IMPRESION_QUEUE_TABLE)
+        .update({
+          estado: "impreso",
+          impreso_at: new Date().toISOString(),
+          error: null
+        })
+        .eq("id", row.id);
+      showInlineNotice("Trabajo de cola impreso correctamente. Se imprimieron 2 copias.", "ok");
+    }else{
+      await supabase
+        .from(IMPRESION_QUEUE_TABLE)
+        .update({
+          estado: "error",
+          error: "No se pudo imprimir con Flask local",
+          error_at: new Date().toISOString()
+        })
+        .eq("id", row.id);
+      showInlineNotice("Un ticket de la cola no se pudo imprimir. Revisa Flask/impresora.", "bad");
+    }
+  }catch(err){
+    console.error("Error procesando cola de impresión:", err);
+    try{
+      await supabase
+        .from(IMPRESION_QUEUE_TABLE)
+        .update({
+          estado: "error",
+          error: String(err?.message || err),
+          error_at: new Date().toISOString()
+        })
+        .eq("id", row.id);
+    }catch(_e){}
+  }finally{
+    colaProcesando = false;
+    setTimeout(revisarPendientesColaImpresion, 450);
+  }
+}
+
+async function revisarPendientesColaImpresion(){
+  if(!supabaseReady || !receptorImpresionActivo || colaProcesando) return;
+
+  try{
+    const { data, error } = await supabase
+      .from(IMPRESION_QUEUE_TABLE)
+      .select("*")
+      .eq("estado", "pendiente")
+      .order("created_at", { ascending:true })
+      .limit(1);
+
+    if(error) throw error;
+    if(data && data[0]) await procesarTrabajoImpresion(data[0]);
+  }catch(err){
+    console.error("No se pudo revisar cola de impresión:", err);
+    showInlineNotice("Receptor activo, pero no pude leer cola_impresion.", "bad");
+  }
+}
+
+function iniciarPollingColaImpresion(){
+  if(colaPollingTimer) return;
+
+  colaPollingTimer = setInterval(()=>{
+    if(receptorImpresionActivo && !colaProcesando){
+      revisarPendientesColaImpresion();
+    }
+  }, COLA_POLLING_MS);
+}
+
+function detenerPollingColaImpresion(){
+  if(!colaPollingTimer) return;
+  clearInterval(colaPollingTimer);
+  colaPollingTimer = null;
+}
+
+function iniciarListenerColaImpresion(){
+  if(!supabaseReady || !supabase) return;
+
+  iniciarPollingColaImpresion();
+
+  if(colaImpresionChannel) return;
+
+  colaImpresionChannel = supabase
+    .channel("vdc-cola-impresion")
+    .on(
+      "postgres_changes",
+      { event:"INSERT", schema:"public", table: IMPRESION_QUEUE_TABLE },
+      payload => {
+        if(receptorImpresionActivo && payload?.new?.estado === "pendiente"){
+          procesarTrabajoImpresion(payload.new);
+        }
+      }
+    )
+    .subscribe(status=>{
+      if(status === "SUBSCRIBED" && receptorImpresionActivo){
+        revisarPendientesColaImpresion();
+      }
+    });
+}
+
+async function toggleReceptorImpresion(){
+  receptorImpresionActivo = !receptorImpresionActivo;
+  localStorage.setItem(RECEPTOR_IMPRESION_KEY, JSON.stringify(receptorImpresionActivo));
+  actualizarBotonReceptor();
+
+  if(receptorImpresionActivo){
+    iniciarListenerColaImpresion();
+    iniciarPollingColaImpresion();
+    showInlineNotice("Receptor de impresión activado. Revisaré la cola automáticamente cada 2.5 segundos.", "ok");
+    await revisarPendientesColaImpresion();
+  }else{
+    detenerPollingColaImpresion();
+    showInlineNotice("Receptor de impresión desactivado.", "warn");
+  }
+}
 
 
 try{
@@ -1835,10 +2243,28 @@ const catalogo = [
     desc: "Agua fresca",
     requiereNota: false,
     cocina: false
+  },
+  {
+    id: "extra_chimichurri",
+    cat: "COMPLEMENTOS",
+    name: "Chimichurri extra",
+    price: 15,
+    desc: "Complemento extra",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "extra_tortillas",
+    cat: "COMPLEMENTOS",
+    name: "Tortillas extras",
+    price: 15,
+    desc: "Complemento extra",
+    requiereNota: false,
+    cocina: true
   }
 ];
 
-const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "ALAMBRES", "CARNE POR KILO", "BEBIDAS", "AGUAS FRESCAS"];
+const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "ALAMBRES", "CARNE POR KILO", "COMPLEMENTOS", "BEBIDAS", "AGUAS FRESCAS"];
 const PLATOS = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
 const MESAS = ["Mesa 1","Mesa 2","Mesa 3","Mesa 4","Mesa 5"];
 const CARRITOS = ["Carrito 1","Carrito 2","Carrito 3","Carrito 4","Carrito 5"];
@@ -2891,7 +3317,7 @@ function renderCorteCaja(corte){
   const btnHide = document.getElementById("btnOcultarCorte");
 
   if(btnPrint){
-    btnPrint.onclick = ()=> imprimirHtmlTicket(buildTicketCorteCaja(corte));
+    btnPrint.onclick = async ()=> { await imprimirHtmlTicket(buildTicketCorteCaja(corte)); };
   }
   if(btnHide){
     btnHide.onclick = ()=>{
@@ -3564,7 +3990,7 @@ drinkBackdrop.addEventListener("click", (e)=>{
 /* =========================
    IMPRESIÓN LIMPIA 58MM
    ========================= */
-function imprimirHtmlTicket(htmlContenido){
+async function imprimirHtmlTicket(htmlContenido){
   const html = `
     <!doctype html>
     <html lang="es">
@@ -3721,16 +4147,53 @@ function imprimirHtmlTicket(htmlContenido){
     </html>
   `;
 
+  // ✅ BLOQUEO TOTAL DE AIRPRINT EN iPHONE/iPAD
+  // En iOS nunca abrimos ventana, nunca llamamos window.print() y nunca usamos fallback.
+  // Solo mandamos el ticket a Supabase para que lo imprima la tablet/Android/PC receptora.
+  if(esIOS()){
+    const enCola = await enviarAColaImpresion(html, "ticket");
+
+    if(enCola){
+      showInlineNotice("✅ Pedido enviado a cocina. La tablet receptora lo imprimirá.", "ok");
+      return true;
+    }
+
+    showInlineNotice("❌ No se pudo enviar a la cola. No se abrió AirPrint para evitar errores en iPhone.", "bad");
+    return false;
+  }
+
+  // Si la página está en HTTPS y Flask está en HTTP local, el navegador lo bloquea por Mixed Content.
+  // En ese caso tampoco abrimos impresión normal: mandamos a la cola para que imprima el receptor local.
+  if(!puedeUsarImpresionLocal()){
+    const enCola = await enviarAColaImpresion(html, "ticket");
+
+    if(enCola){
+      showInlineNotice("✅ Pedido enviado a cola de impresión. El receptor local lo imprimirá.", "ok");
+      return true;
+    }
+
+    showInlineNotice("❌ No se pudo enviar a la cola de impresión.", "bad");
+    return false;
+  }
+
+  // En Android/tablet/PC con página local/HTTP intentamos imprimir directo con el servidor Flask local.
+  const impresoSilencioso = await imprimirSilenciosoHTML(html);
+  if(impresoSilencioso){
+    showInlineNotice("Ticket enviado a la impresora POS-80. Se imprimen 2 copias.", "ok");
+    return true;
+  }
+
   const win = window.open("", "_blank");
 
   if(!win){
     showInlineNotice("El navegador bloqueó la impresión. Revisa permisos de impresión/ventanas.", "bad");
-    return;
+    return false;
   }
 
   win.document.open();
   win.document.write(html);
   win.document.close();
+  return true;
 }
 
 /* =========================
@@ -3899,23 +4362,25 @@ async function imprimirCocina(){
   if(!pendientes.length){ showInlineNotice("No hay productos nuevos pendientes para imprimir.", "warn"); return; }
 
   const html = buildTicketCocinaPendiente();
-  imprimirHtmlTicket(html);
+  const pudoImprimir = await imprimirHtmlTicket(html);
 
-  setTimeout(async ()=>{
-    await marcarPendientesComoEnviados();
-  }, 900);
+  if(pudoImprimir){
+    setTimeout(async ()=>{
+      await marcarPendientesComoEnviados();
+    }, 900);
+  }
 }
 
-function reimprimirTodoCocina(){
+async function reimprimirTodoCocina(){
   if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
   const html = buildTicketCocinaCompleto();
-  imprimirHtmlTicket(html);
+  await imprimirHtmlTicket(html);
 }
 
-function verResumen(){
+async function verResumen(){
   if(!cart.length){ showInlineNotice("No hay productos en la comanda.", "warn"); return; }
   const html = buildResumenComanda();
-  imprimirHtmlTicket(html);
+  await imprimirHtmlTicket(html);
 }
 
 /* =========================
@@ -4013,6 +4478,9 @@ if(btnCerrarPedidoEl) btnCerrarPedidoEl.onclick = cerrarPedidoActual;
 if(paymentGrid){ paymentGrid.querySelectorAll("[data-pay]").forEach(btn=>{ btn.onclick = ()=> selectPaymentMethod(btn.getAttribute("data-pay")); }); }
 if(btnVerPedidosAbiertos) btnVerPedidosAbiertos.onclick = cargarPedidosAbiertos;
 if(btnCorteCaja) btnCorteCaja.onclick = mostrarCorteCaja;
+const btnReceptorImpresion = document.getElementById("btnReceptorImpresion");
+if(btnReceptorImpresion) btnReceptorImpresion.onclick = toggleReceptorImpresion;
+actualizarBotonReceptor();
 
 /* =========================
    INIT
@@ -4041,6 +4509,11 @@ updateContinueButton();
 if(supabaseReady){
   setSyncStatus("Supabase conectado. Listo para guardar comandas.", "ok");
   cargarPedidosAbiertos();
+  iniciarListenerColaImpresion();
+  if(receptorImpresionActivo){
+    iniciarPollingColaImpresion();
+    revisarPendientesColaImpresion();
+  }
 }else{
   setSyncStatus("Supabase pendiente de configurar", "warn");
 }
