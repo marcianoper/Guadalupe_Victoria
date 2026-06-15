@@ -2915,7 +2915,7 @@ async function cargarPedidosAbiertos(){
     return;
   }
 
-  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando pedidos abiertos...</div>`;
+  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando mesas abiertas...</div>`;
 
   const { data, error } = await supabase
     .from("comandas_conquistadores")
@@ -2925,17 +2925,17 @@ async function cargarPedidosAbiertos(){
 
   if(error){
     console.error(error);
-    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar los pedidos abiertos.</div>`;
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar las mesas abiertas.</div>`;
     return;
   }
 
   const pedidos = (data || []).filter(x => {
-    const mesaTxt = String(x.mesa || "").toUpperCase();
-    return mesaTxt.includes("COLOR:") || mesaTxt.includes("PERSONA:");
+    const mesaTxt = String(x.mesa || "").trim().toUpperCase();
+    return /^MESA\s+\d+$/.test(mesaTxt);
   });
 
   if(!pedidos.length){
-    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay carros con pedido abierto.</div>`;
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay mesas con cuenta abierta.</div>`;
     return;
   }
 
@@ -2945,7 +2945,7 @@ async function cargarPedidosAbiertos(){
         <strong>${escapeHtml(p.mesa)}</strong>
         <span>${Number(p.total_productos || 0)} productos • Mesero: ${escapeHtml(p.mesero || "—")}</span>
       </button>
-      <div class="openOrderActionsTitle">Cerrar cuenta desde aquí:</div>
+      <div class="openOrderActionsTitle">Cerrar mesa desde aquí:</div>
       <div class="openOrderActions">
         <button type="button" class="closeAccountBtn cash" data-close-pay="EFECTIVO">💵 Cerrar efectivo</button>
         <button type="button" class="closeAccountBtn card" data-close-pay="TARJETA">💳 Cerrar tarjeta</button>
