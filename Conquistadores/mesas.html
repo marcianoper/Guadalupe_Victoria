@@ -1200,7 +1200,7 @@ input:focus, select:focus{
         <div class="noteBox">
           <b>Amarillo = nuevo / pendiente por imprimir.</b><br>
           <b>Gris = ya impreso anteriormente.</b><br>
-          Bebidas y aguas frescas sí salen en el ticket final.
+          Bebidas, aguas frescas y complementos también salen en cocina.
         </div>
 
         <div class="noteBox">
@@ -2134,7 +2134,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_sprite",
@@ -2143,7 +2143,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_fresca",
@@ -2152,7 +2152,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_manzana",
@@ -2161,7 +2161,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_fanta",
@@ -2170,7 +2170,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_limón_con_chía",
@@ -2179,7 +2179,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_limón_con_chía",
@@ -2188,7 +2188,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_piña-hierbabuena",
@@ -2197,7 +2197,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_piña-hierbabuena",
@@ -2206,7 +2206,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_horchata",
@@ -2215,7 +2215,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_horchata",
@@ -2224,7 +2224,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_pepino_con_limón",
@@ -2233,7 +2233,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_pepino_con_limón",
@@ -2242,7 +2242,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
   id: "agua_medio_jamaica",
@@ -2251,7 +2251,7 @@ const catalogo = [
   price: 34,
   desc: "Agua fresca",
   requiereNota: false,
-  cocina: false
+  cocina: true
 },
 {
   id: "agua_litro_jamaica",
@@ -2260,7 +2260,7 @@ const catalogo = [
   price: 50,
   desc: "Agua fresca",
   requiereNota: false,
-  cocina: false
+  cocina: true
 },
   {
     id: "extra_chimichurri",
@@ -2627,7 +2627,7 @@ function construirRefresco(nombreBase, presentacion){
     name: `${nombreBase} (${presentacion})`,
     price: precio,
     requiereNota: false,
-    cocina: false
+    cocina: true
   };
 }
 
@@ -3835,7 +3835,7 @@ function renderCart(){
             <div class="lineTitle">${escapeHtml(line.qty)} x ${escapeHtml(line.name)}</div>
             ${line.note ? `<div class="lineMeta">${escapeHtml(line.note)}</div>` : ``}
             <div class="lineCat">
-              ${escapeHtml(line.cat)} ${line.cocina ? "• cocina" : "• no imprimir cocina"}
+              ${escapeHtml(line.cat)} ${line.cocina ? "• cocina" : "• cocina"}
               ${line.cocina ? ` • pendiente: ${pendiente}` : ``}
             </div>
           </div>
@@ -3861,7 +3861,7 @@ function renderCart(){
       <div class="groupHead">
         <div class="groupTitle">${escapeHtml(group.persona)}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span class="groupTag">${nuevosCount} nuevos • ${cocinaCount} cocina • ${extraCount} extra</span>
+          <span class="groupTag">${nuevosCount} nuevos • ${cocinaCount} cocina</span>
           <button class="toggleBtn" data-toggle="${escapeHtml(group.persona)}">
             ${isOpen ? "▼ Ocultar pedidos" : "▶ Ver pedidos"}
           </button>
