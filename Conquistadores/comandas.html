@@ -2146,7 +2146,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_sprite",
@@ -2155,7 +2155,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_fresca",
@@ -2164,7 +2164,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_manzana",
@@ -2173,7 +2173,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_fanta",
@@ -2182,7 +2182,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_limón_con_chía",
@@ -2191,7 +2191,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_limón_con_chía",
@@ -2200,7 +2200,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_piña-hierbabuena",
@@ -2209,7 +2209,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_piña-hierbabuena",
@@ -2218,7 +2218,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_horchata",
@@ -2227,7 +2227,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_horchata",
@@ -2236,7 +2236,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_pepino_con_limón",
@@ -2245,7 +2245,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_pepino_con_limón",
@@ -2254,7 +2254,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
   id: "agua_medio_jamaica",
@@ -2263,7 +2263,7 @@ const catalogo = [
   price: 34,
   desc: "Agua fresca",
   requiereNota: false,
-  cocina: false
+  cocina: true
 },
 {
   id: "agua_litro_jamaica",
@@ -2272,7 +2272,7 @@ const catalogo = [
   price: 50,
   desc: "Agua fresca",
   requiereNota: false,
-  cocina: false
+  cocina: true
 },
   {
     id: "extra_chimichurri",
@@ -2604,7 +2604,7 @@ function construirRefresco(nombreBase, presentacion){
     name: `${nombreBase} (${presentacion})`,
     price: precio,
     requiereNota: false,
-    cocina: false
+    cocina: true
   };
 }
 
@@ -2817,7 +2817,7 @@ async function cargarComandaDeMesa(mesa){
     qty: Number(it.qty || 0),
     sentQty: Number(it.qty_enviada_cocina || 0),
     cat: it.categoria || "",
-    cocina: !!it.cocina,
+    cocina: true,
     price: Number(it.precio_unitario || 0)
   }));
 
@@ -2883,7 +2883,7 @@ async function syncComandaToSupabase(){
         nota: line.note || "",
         qty: Number(line.qty || 0),
         qty_enviada_cocina: Number(line.sentQty || 0),
-        cocina: !!line.cocina,
+        cocina: true,
         precio_unitario: Number(line.price || 0)
       }));
 
@@ -3567,7 +3567,7 @@ async function agregarLinea(item, persona, note, cardEl=null, sentQty=0){
       qty:1,
       sentQty:Number(sentQty || 0),
       cat:item.cat,
-      cocina:!!item.cocina,
+      cocina:true,
       price:Number(item.price || 0)
     });
   }
@@ -3648,8 +3648,8 @@ function agruparCart(){
     .filter(p => grupos[p] && grupos[p].length)
     .map(p => {
       const ordenadas = [...grupos[p]].sort((a,b)=>{
-        const pendA = a.cocina ? Math.max(0, Number(a.qty||0) - Number(a.sentQty||0)) : 0;
-        const pendB = b.cocina ? Math.max(0, Number(b.qty||0) - Number(b.sentQty||0)) : 0;
+        const pendA = Math.max(0, Number(a.qty||0) - Number(a.sentQty||0));
+        const pendB = Math.max(0, Number(b.qty||0) - Number(b.sentQty||0));
 
         if(pendA > 0 && pendB <= 0) return -1;
         if(pendA <= 0 && pendB > 0) return 1;
@@ -3740,7 +3740,7 @@ async function editarLineaExistente(lineKey, newNote){
     id: line.id,
     name: line.name,
     cat: line.cat,
-    cocina: line.cocina,
+    cocina: true,
     price: line.price
   };
 
@@ -3767,7 +3767,7 @@ async function editarLineaExistente(lineKey, newNote){
         qty:1,
         sentQty:oldSent,
         cat:line.cat,
-        cocina:!!line.cocina,
+        cocina:true,
         price:Number(line.price || 0)
       });
     }
@@ -3794,7 +3794,7 @@ async function editarLineaExistente(lineKey, newNote){
         qty:1,
         sentQty:sentFromThisPiece,
         cat:line.cat,
-        cocina:!!line.cocina,
+        cocina:true,
         price:Number(line.price || 0)
       });
     }
@@ -3823,16 +3823,16 @@ function renderCart(){
     const isOpen = openGroups.has(group.persona);
     g.className = "group" + (isOpen ? " open":"");
 
-    const cocinaCount = group.lines.filter(x=>x.cocina).reduce((a,x)=>a+Number(x.qty||0),0);
-    const extraCount = group.lines.filter(x=>!x.cocina).reduce((a,x)=>a+Number(x.qty||0),0);
+    const cocinaCount = group.lines.reduce((a,x)=>a+Number(x.qty||0),0);
+    const extraCount = 0;
     const nuevosCount = group.lines
-      .filter(x => x.cocina && (Number(x.qty||0) - Number(x.sentQty||0) > 0))
+      .filter(x => (Number(x.qty||0) - Number(x.sentQty||0) > 0))
       .reduce((a,x)=>a + Math.max(0, Number(x.qty||0) - Number(x.sentQty||0)), 0);
 
     const bodyRows = group.lines.map((line)=>{
-      const pendiente = line.cocina ? Math.max(0, Number(line.qty || 0) - Number(line.sentQty || 0)) : 0;
-      const isPending = line.cocina && pendiente > 0;
-      const isSent = line.cocina && pendiente <= 0;
+      const pendiente = Math.max(0, Number(line.qty || 0) - Number(line.sentQty || 0));
+      const isPending = pendiente > 0;
+      const isSent = pendiente <= 0;
 
       return `
         <div class="line ${isPending ? "pendingLine" : ""} ${isSent ? "sentLine" : ""}">
@@ -3840,17 +3840,13 @@ function renderCart(){
             <div class="lineTitle">${escapeHtml(line.qty)} x ${escapeHtml(line.name)}</div>
             ${line.note ? `<div class="lineMeta">${escapeHtml(line.note)}</div>` : ``}
             <div class="lineCat">
-              ${escapeHtml(line.cat)} ${line.cocina ? "• cocina" : "• no imprimir cocina"}
-              ${line.cocina ? ` • pendiente: ${pendiente}` : ``}
+              ${escapeHtml(line.cat)} • cocina
+              • pendiente: ${pendiente}
             </div>
           </div>
           <div class="rightInfo">
             <div class="qtyBadge">${line.qty}</div>
-            ${
-              line.cocina
-                ? `<div class="stateBadge ${isPending ? "pending" : "sent"}">${isPending ? "NUEVO" : "YA IMPRESO"}</div>`
-                : `<div class="stateBadge sent">EXTRA</div>`
-            }
+            <div class="stateBadge ${isPending ? "pending" : "sent"}">${isPending ? "NUEVO" : "YA IMPRESO"}</div>
             <div class="lineActions">
               <button type="button" class="btnMini btnMiniBlue" data-act="plus" data-key="${escapeHtml(line.key)}">+</button>
               <button type="button" class="btnMini btnMiniYellow" data-act="minus" data-key="${escapeHtml(line.key)}">-</button>
@@ -3866,7 +3862,7 @@ function renderCart(){
       <div class="groupHead">
         <div class="groupTitle">${escapeHtml(group.persona)}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span class="groupTag">${nuevosCount} nuevos • ${cocinaCount} cocina • ${extraCount} extra</span>
+          <span class="groupTag">${nuevosCount} nuevos • ${cocinaCount} cocina</span>
           <button class="toggleBtn" data-toggle="${escapeHtml(group.persona)}">
             ${isOpen ? "▼ Ocultar pedidos" : "▶ Ver pedidos"}
           </button>
@@ -3903,15 +3899,10 @@ function renderCart(){
         id: line.id,
         name: line.name,
         cat: line.cat,
-        cocina: line.cocina,
+        cocina: true,
         price: line.price,
         requiereNota: false
       };
-
-      if(line.cat === "BEBIDAS" || line.cat === "POSTRES"){
-        showInlineNotice("Edición disponible para cambiar indicaciones como sin verdura, solo cebolla, etc.", "warn");
-        return;
-      }
 
       personaActiva = line.persona;
       renderPersonas();
@@ -4334,7 +4325,7 @@ function buildResumenComanda(){
     html += `<div class="g">${escapeHtml(persona)}</div>`;
 
     lines.forEach(l=>{
-      const pendiente = l.cocina ? Math.max(0, Number(l.qty||0) - Number(l.sentQty||0)) : 0;
+      const pendiente = Math.max(0, Number(l.qty||0) - Number(l.sentQty||0));
       const qty = Number(l.qty || 0);
       const price = Number(l.price || 0);
       const sub = qty * price;
