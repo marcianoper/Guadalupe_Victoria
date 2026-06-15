@@ -2938,7 +2938,7 @@ async function cargarPedidosAbiertos(){
     return;
   }
 
-  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando pedidos abiertos...</div>`;
+  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando pedidos para llevar abiertos...</div>`;
 
   const { data, error } = await supabase
     .from("comandas_conquistadores")
@@ -2948,17 +2948,19 @@ async function cargarPedidosAbiertos(){
 
   if(error){
     console.error(error);
-    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar los pedidos abiertos.</div>`;
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar los pedidos para llevar abiertos.</div>`;
     return;
   }
 
   const pedidos = (data || []).filter(x => {
-    const mesaTxt = String(x.mesa || "").toUpperCase();
-    return mesaTxt.includes("COLOR:") || mesaTxt.includes("PERSONA:");
+    const mesaTxt = String(x.mesa || "").trim().toUpperCase();
+    const esMesaSalon = /^MESA\s+\d+$/.test(mesaTxt);
+    if(esMesaSalon) return false;
+    return mesaTxt.includes("COLOR:") || mesaTxt.includes("PERSONA:") || mesaTxt.includes("PARA LLEVAR") || mesaTxt.includes("CARRITO");
   });
 
   if(!pedidos.length){
-    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay carros con pedido abierto.</div>`;
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay pedidos para llevar abiertos.</div>`;
     return;
   }
 
