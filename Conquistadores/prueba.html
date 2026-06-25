@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Comandas</title>
+<title>Mesas — Tacos Los Conquistadores</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1046,6 +1046,38 @@ input:focus, select:focus{
   }
 }
 
+
+/* =========================
+   MESAS SALÓN — 15 MESAS
+   ========================= */
+.mesasGrid15{
+  grid-template-columns:repeat(5,1fr);
+}
+.mesasGrid15 .mesaCard{
+  min-height:92px;
+}
+.mesasGrid15 .mesaTop{
+  width:46px;
+  height:46px;
+}
+.mesaBtn.ocupada .mesaCard{
+  border-color:rgba(46,125,50,.45);
+  background:linear-gradient(180deg,#effaf1,#d9f3df);
+}
+.mesaBtn.ocupada .mesaText::after{
+  content:" • abierta";
+  display:block;
+  font-size:11px;
+  color:#1f6a24;
+  font-weight:900;
+}
+@media (max-width:760px){
+  .mesasGrid15{grid-template-columns:repeat(3,1fr);}
+}
+@media (max-width:420px){
+  .mesasGrid15{grid-template-columns:repeat(2,1fr);}
+}
+
 @page{
   size:58mm auto;
   margin:1mm;
@@ -1057,8 +1089,8 @@ input:focus, select:focus{
 <header>
   <div class="head">
     <div class="brand">
-      <h1>🌮 Comandas</h1>
-      <div class="sub">Pedidos para clientes en carro</div>
+      <h1>🌮 Mesas</h1>
+      <div class="sub">Comandas por mesa — salón</div>
     </div>
     <div class="pill" id="pill">0 productos</div>
   </div>
@@ -1071,7 +1103,7 @@ input:focus, select:focus{
 <div class="wrap">
   <div class="stepDots">
     <div class="stepDot active" id="dot1">1. Mesero</div>
-    <div class="stepDot" id="dot2">2. Auto</div>
+    <div class="stepDot" id="dot2">2. Mesa</div>
     <div class="stepDot" id="dot3">3. Pedido</div>
     <div class="stepDot" id="dot4">4. Comanda</div>
   </div>
@@ -1095,40 +1127,20 @@ input:focus, select:focus{
 
       <section class="step" id="step2">
         <div class="noteBox" style="margin-top:0">
-          Para coche/troca/moto captura el <b>color</b> y el <b>tipo</b>. Si eliges <b>Persona</b>, solo se pedirá el nombre.
+          Selecciona la <b>mesa</b> donde se está tomando el pedido. Esta versión está pensada para salón y trabaja en paralelo al sistema de pickup/para llevar.
         </div>
 
         <div class="ubicacionesWrap" style="margin-top:12px">
           <div class="ubicacionSection">
-            <div class="sectionTitle">Auto estacionamiento</div>
-
-            <div id="autoColorWrap">
-              <label>Color del carro</label>
-              <input id="autoColor" placeholder="Ej. Blanco, rojo, gris" autocomplete="off">
-            </div>
-
-            <div id="autoTipoWrap">
-              <label style="margin-top:12px">Tipo de vehículo</label>
-              <select id="autoTipo">
-                <option value="">Selecciona</option>
-                <option value="COCHE">🚗 Coche</option>
-                <option value="TROCA">🛻 Troca</option>
-                <option value="MOTO">🏍️ Moto</option>
-                <option value="PERSONA">🧍 Persona</option>
-              </select>
-            </div>
-
-            <div id="personaNombreWrap" class="hiddenField">
-              <label style="margin-top:12px">Nombre de la persona</label>
-              <input id="personaNombre" placeholder="Ej. Don José, cliente azul" autocomplete="off">
-            </div>
+            <div class="sectionTitle">Mesas del salón</div>
+            <div class="mesasGrid mesasGrid15" id="mesasGrid"></div>
 
             <div class="noteBox" id="autoPreview">
-              🚗 Pendiente: captura color y últimos dígitos de placas.
+              🍽️ Pendiente: selecciona una mesa.
             </div>
 
             <div class="btnRow">
-              <button class="btn btnLight" id="btnVerPedidosAbiertos" type="button">Ver pedidos abiertos</button>
+              <button class="btn btnLight" id="btnVerPedidosAbiertos" type="button">Ver mesas abiertas</button>
             </div>
             <div class="pedidosAbiertosBox" id="pedidosAbiertosBox"></div>
           </div>
@@ -1143,13 +1155,13 @@ input:focus, select:focus{
               <span id="meseroView">—</span>
             </div>
             <div class="resumeBox">
-              <b>Auto</b>
+              <b>Mesa</b>
               <span id="mesaView">—</span>
             </div>
           </div>
 
           <div class="btnRow" style="margin-top:10px">
-            <button class="btn btnLight" id="btnCambiarMesaPaso3" type="button">Cambiar auto</button>
+            <button class="btn btnLight" id="btnCambiarMesaPaso3" type="button">Cambiar mesa</button>
           </div>
 
           <label style="margin-top:12px">Plato</label>
@@ -1172,13 +1184,13 @@ input:focus, select:focus{
             <span id="meseroView4">—</span>
           </div>
           <div class="resumeBox">
-            <b>Auto</b>
+            <b>Mesa</b>
             <span id="mesaView4">—</span>
           </div>
         </div>
 
         <div class="btnRow" style="margin-top:10px">
-          <button class="btn btnLight" id="btnCambiarMesaPaso4" type="button">Cambiar auto</button>
+          <button class="btn btnLight" id="btnCambiarMesaPaso4" type="button">Cambiar mesa</button>
         </div>
 
         <div class="btnRow">
@@ -1786,6 +1798,24 @@ const catalogo = [
     cocina: true
   },
   {
+    id: "quesa_ojo",
+    cat: "QUESADILLAS",
+    name: "Quesadilla de Ojo",
+    price: 36,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "quesa_cachete",
+    cat: "QUESADILLAS",
+    name: "Quesadilla de Cachete",
+    price: 36,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
     id: "quesa_bistec",
     cat: "QUESADILLAS",
     name: "Quesadilla de Bistec",
@@ -1835,6 +1865,24 @@ const catalogo = [
     cat: "BARBACOA",
     name: "Quesadilla de Barbacoa",
     price: 38,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "barb_torta",
+    cat: "BARBACOA",
+    name: "Torta de Barbacoa",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+   {
+    id: "barb_torta_con_queso",
+    cat: "BARBACOA",
+    name: "Torta de Barbacoa con queso",
+    price: 85,
     desc: "",
     requiereNota: false,
     cocina: true
@@ -1915,6 +1963,15 @@ const catalogo = [
     id: "volcan_sesos",
     cat: "VOLCANES",
     name: "Volcán de Sesos",
+    price: 35,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "volcan_barbacoa",
+    cat: "VOLCANES",
+    name: "Volcán de Barbacoa",
     price: 35,
     desc: "",
     requiereNota: false,
@@ -2038,6 +2095,78 @@ const catalogo = [
     cocina: true
   },
   {
+    id: "burrito_pastor",
+    cat: "BURRITOS",
+    name: "Burrito de Pastor",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_cabeza",
+    cat: "BURRITOS",
+    name: "Burrito de Cabeza",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_chorizo",
+    cat: "BURRITOS",
+    name: "Burrito de Chorizo",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_cachete",
+    cat: "BURRITOS",
+    name: "Burrito de Cachete",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_ojo",
+    cat: "BURRITOS",
+    name: "Burrito de Ojo",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_bistec",
+    cat: "BURRITOS",
+    name: "Burrito de Bistec",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_maciza",
+    cat: "BURRITOS",
+    name: "Burrito de Maciza",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "burrito_barbacoa",
+    cat: "BURRITOS",
+    name: "Burrito de Barbacoa",
+    price: 75,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
     id: "alambre_especial_conquistadores",
     cat: "ALAMBRES",
     name: "Alambre Especial Conquistadores",
@@ -2128,13 +2257,22 @@ const catalogo = [
     cocina: true
   },
   {
+    id: "carne_barbacoa",
+    cat: "CARNE POR KILO",
+    name: "Barbacoa",
+    price: 480,
+    desc: "Precio por kilo — acepta $ o gramos",
+    requiereNota: false,
+    cocina: true
+  },
+  {
     id: "ref_coca_cola",
     cat: "BEBIDAS",
     name: "Coca-Cola",
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_sprite",
@@ -2143,7 +2281,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_fresca",
@@ -2152,7 +2290,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_manzana",
@@ -2161,7 +2299,7 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "ref_fanta",
@@ -2170,7 +2308,16 @@ const catalogo = [
     price: 34,
     desc: "Refresco",
     requiereNota: false,
-    cocina: false
+    cocina: true
+  },
+  {
+    id: "agua_mineral",
+    cat: "BEBIDAS",
+    name: "Agua Mineral",
+    price: 34,
+    desc: "Bebida",
+    requiereNota: false,
+    cocina: true
   },
   {
     id: "agua_medio_limón_con_chía",
@@ -2179,7 +2326,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_limón_con_chía",
@@ -2188,7 +2335,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_piña-hierbabuena",
@@ -2197,7 +2344,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_piña-hierbabuena",
@@ -2206,7 +2353,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_horchata",
@@ -2215,7 +2362,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_horchata",
@@ -2224,7 +2371,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_medio_pepino_con_limón",
@@ -2233,7 +2380,7 @@ const catalogo = [
     price: 34,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
     id: "agua_litro_pepino_con_limón",
@@ -2242,7 +2389,7 @@ const catalogo = [
     price: 50,
     desc: "Agua fresca",
     requiereNota: false,
-    cocina: false
+    cocina: true
   },
   {
   id: "agua_medio_jamaica",
@@ -2251,7 +2398,7 @@ const catalogo = [
   price: 34,
   desc: "Agua fresca",
   requiereNota: false,
-  cocina: false
+  cocina: true
 },
 {
   id: "agua_litro_jamaica",
@@ -2260,7 +2407,7 @@ const catalogo = [
   price: 50,
   desc: "Agua fresca",
   requiereNota: false,
-  cocina: false
+  cocina: true
 },
   {
     id: "extra_chimichurri",
@@ -2282,9 +2429,9 @@ const catalogo = [
   }
 ];
 
-const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "ALAMBRES", "CARNE POR KILO", "COMPLEMENTOS", "BEBIDAS", "AGUAS FRESCAS"];
+const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "BURRITOS", "ALAMBRES", "CARNE POR KILO", "COMPLEMENTOS", "BEBIDAS", "AGUAS FRESCAS"];
 const PLATOS = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
-const MESAS = ["Mesa 1","Mesa 2","Mesa 3","Mesa 4","Mesa 5"];
+const MESAS = Array.from({length:15}, (_,i)=>`Mesa ${i+1}`);
 const CARRITOS = ["Carrito 1","Carrito 2","Carrito 3","Carrito 4","Carrito 5"];
 const PARA_LLEVAR = ["Para llevar 1","Para llevar 2","Para llevar 3","Para llevar 4","Para llevar 5"];
 
@@ -2323,7 +2470,7 @@ const steps = {
 
 const titles = {
   1: ["Paso 1 — Mesero","Primero selecciona quién está tomando el pedido."],
-  2: ["Paso 2 — Datos del cliente","Captura carro/troca/moto o solo nombre si es persona."],
+  2: ["Paso 2 — Mesa","Selecciona la mesa donde se está tomando el pedido."],
   3: ["Paso 3 — Capturar pedido","Elige plato y agrega productos sin bajar hasta la comanda."],
   4: ["Paso 4 — Revisar e imprimir","Confirma la comanda y manda a imprimir cocina."],
 };
@@ -2430,86 +2577,51 @@ function updateHeaderPill(){
 }
 
 function normalizarTipoVehiculo(tipo){
-  const limpio = String(tipo || "")
-    .replace(/[🚗🛻🏍️🧍]/g, "")
-    .replace(/\ufe0f/g, "")
-    .trim()
-    .toUpperCase();
-
-  if(limpio.includes("TROCA") || limpio.includes("CAMIONETA")) return "TROCA";
-  if(limpio.includes("PERSONA") || limpio.includes("PERSONAS")) return "PERSONA";
-  if(limpio.includes("MOTO")) return "MOTO";
-  if(limpio.includes("COCHE") || limpio.includes("CARRO") || limpio.includes("AUTO")) return "COCHE";
-  return limpio;
+  return String(tipo || "").trim().toUpperCase();
 }
 
 function tipoVehiculoConEmoji(tipo){
-  const t = normalizarTipoVehiculo(tipo);
-  const emojis = {
-    COCHE: "🚗",
-    TROCA: "🛻",
-    MOTO: "🏍️",
-    PERSONA: "🧍"
-  };
-  return t ? `${emojis[t] || ""} ${t}`.trim() : "";
+  return String(tipo || "").trim();
 }
 
-function esTipoPersona(){
-  return normalizarTipoVehiculo(autoTipoInput?.value || "") === "PERSONA";
-}
-
-function actualizarCamposPorTipo(){
-  const esPersona = esTipoPersona();
-  if(autoColorWrap) autoColorWrap.classList.toggle("hiddenField", esPersona);
-  if(personaNombreWrap) personaNombreWrap.classList.toggle("hiddenField", !esPersona);
-  return esPersona;
-}
+function esTipoPersona(){ return false; }
+function actualizarCamposPorTipo(){ return false; }
 
 function construirReferenciaAuto(){
-  const tipoNormal = normalizarTipoVehiculo(autoTipoInput?.value || "");
-
-  if(tipoNormal === "PERSONA"){
-    const nombre = String(personaNombreInput?.value || "").trim();
-    if(!nombre) return "";
-    return `🧍 PERSONA: ${nombre.toUpperCase()}`;
-  }
-
-  const color = String(autoColorInput?.value || "").trim();
-  const tipo = tipoVehiculoConEmoji(tipoNormal);
-
-  if(!color || !tipo) return "";
-
-  return `COLOR: ${color.toUpperCase()} — TIPO: ${tipo}`;
+  return String(mesaActiva || "").trim();
 }
-  
+
 function actualizarPreviewAuto(){
-  const esPersona = actualizarCamposPorTipo();
   const ref = construirReferenciaAuto();
   if(autoPreview){
     autoPreview.innerHTML = ref
-      ? `<b>${escapeHtml(ref)}</b>`
-      : (esPersona
-        ? `🧍 Pendiente: escribe el nombre de la persona.`
-        : `🚗 Pendiente: captura color y tipo de vehículo.`);
+      ? `🍽️ Mesa seleccionada: <b>${escapeHtml(ref)}</b>`
+      : `🍽️ Pendiente: selecciona una mesa.`;
   }
+
+  if(mesasGrid){
+    mesasGrid.querySelectorAll(".mesaBtn").forEach(btn=>{
+      btn.classList.toggle("active", btn.getAttribute("data-mesa") === ref);
+    });
+  }
+
   return ref;
 }
 
 function setAutoInputsFromReferencia(ref){
-  const txt = String(ref || "");
-  const personaMatch = txt.match(/PERSONA:\s*(.*)$/i);
-  const match = txt.match(/COLOR:\s*(.*?)\s*[—-]\s*TIPO:\s*(.*)$/i);
-
-  if(personaMatch){
-    if(autoTipoInput) autoTipoInput.value = "PERSONA";
-    if(personaNombreInput) personaNombreInput.value = personaMatch[1].trim();
-  }else if(match){
-    if(autoColorInput) autoColorInput.value = match[1].trim();
-    if(autoTipoInput) autoTipoInput.value = normalizarTipoVehiculo(match[2].trim());
-    if(personaNombreInput) personaNombreInput.value = "";
-  }
-
+  mesaActiva = String(ref || "").trim();
   actualizarPreviewAuto();
+}
+
+function seleccionarMesa(mesa){
+  mesaActiva = String(mesa || "").trim();
+  comandaIdActual = null;
+  cart = [];
+  openGroups.clear();
+  actualizarPreviewAuto();
+  updateResumeViews();
+  renderCart();
+  renderItems();
 }
 
 function updateResumeViews(){
@@ -2523,7 +2635,7 @@ function updateContinueButton(){
   fixedContinue.style.display = "block";
 
   if(currentStep === 1){
-    mainContinueBtn.textContent = "Continuar a auto";
+    mainContinueBtn.textContent = "Continuar a mesa";
     mainContinueBtn.className = "btn btnBlue";
     return;
   }
@@ -2627,7 +2739,7 @@ function construirRefresco(nombreBase, presentacion){
     name: `${nombreBase} (${presentacion})`,
     price: precio,
     requiereNota: false,
-    cocina: false
+    cocina: true
   };
 }
 
@@ -2840,7 +2952,7 @@ async function cargarComandaDeMesa(mesa){
     qty: Number(it.qty || 0),
     sentQty: Number(it.qty_enviada_cocina || 0),
     cat: it.categoria || "",
-    cocina: !!it.cocina,
+    cocina: true,
     price: Number(it.precio_unitario || 0)
   }));
 
@@ -2906,7 +3018,7 @@ async function syncComandaToSupabase(){
         nota: line.note || "",
         qty: Number(line.qty || 0),
         qty_enviada_cocina: Number(line.sentQty || 0),
-        cocina: !!line.cocina,
+        cocina: true,
         precio_unitario: Number(line.price || 0)
       }));
 
@@ -2938,7 +3050,7 @@ async function cargarPedidosAbiertos(){
     return;
   }
 
-  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando pedidos abiertos...</div>`;
+  pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">Cargando mesas abiertas...</div>`;
 
   const { data, error } = await supabase
     .from("comandas_conquistadores")
@@ -2948,17 +3060,17 @@ async function cargarPedidosAbiertos(){
 
   if(error){
     console.error(error);
-    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar los pedidos abiertos.</div>`;
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No se pudieron cargar las mesas abiertas.</div>`;
     return;
   }
 
   const pedidos = (data || []).filter(x => {
-    const mesaTxt = String(x.mesa || "").toUpperCase();
-    return mesaTxt.includes("COLOR:") || mesaTxt.includes("PERSONA:");
+    const mesaTxt = String(x.mesa || "").trim().toUpperCase();
+    return /^MESA\s+\d+$/.test(mesaTxt);
   });
 
   if(!pedidos.length){
-    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay carros con pedido abierto.</div>`;
+    pedidosAbiertosBox.innerHTML = `<div class="noteBox" style="margin-top:0">No hay mesas con cuenta abierta.</div>`;
     return;
   }
 
@@ -2968,7 +3080,7 @@ async function cargarPedidosAbiertos(){
         <strong>${escapeHtml(p.mesa)}</strong>
         <span>${Number(p.total_productos || 0)} productos • Mesero: ${escapeHtml(p.mesero || "—")}</span>
       </button>
-      <div class="openOrderActionsTitle">Cerrar cuenta desde aquí:</div>
+      <div class="openOrderActionsTitle">Cerrar mesa desde aquí:</div>
       <div class="openOrderActions">
         <button type="button" class="closeAccountBtn cash" data-close-pay="EFECTIVO">💵 Cerrar efectivo</button>
         <button type="button" class="closeAccountBtn card" data-close-pay="TARJETA">💳 Cerrar tarjeta</button>
@@ -3043,6 +3155,7 @@ async function cerrarPedidoAbiertoDirecto(comandaId, metodoPago, ref, btn){
       if(autoTipoInput) autoTipoInput.value = "";
       if(personaNombreInput) personaNombreInput.value = "";
       actualizarPreviewAuto();
+      renderMesas();
       updateHeaderPill();
       updateResumeViews();
       renderCart();
@@ -3362,11 +3475,38 @@ function selectUbicacion(ubicacion){
 
   cargarComandaDeMesa(mesaActiva).catch(err=>{
     console.error(err);
-    setSyncStatus("No se pudo cargar el auto desde Supabase", "bad");
+    setSyncStatus("No se pudo cargar la mesa desde Supabase", "bad");
   });
 }
 
-function renderMesas(){}
+function renderMesas(){
+  if(!mesasGrid) return;
+  mesasGrid.innerHTML = "";
+  MESAS.forEach(m=>{
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "mesaBtn" + (m === mesaActiva ? " active" : "");
+    btn.setAttribute("data-mesa", m);
+    btn.innerHTML = `
+      <div class="mesaCard">
+        <div class="mesaTop"></div>
+        <div class="mesaLegs"><span></span><span></span></div>
+        <div class="mesaText">${escapeHtml(m)}</div>
+      </div>
+    `;
+    btn.onclick = async ()=>{
+      seleccionarMesa(m);
+      try{
+        await cargarComandaDeMesa(mesaActiva);
+      }catch(err){
+        console.error(err);
+        setSyncStatus("No se pudo cargar la mesa desde Supabase", "bad");
+      }
+    };
+    mesasGrid.appendChild(btn);
+  });
+  actualizarPreviewAuto();
+}
 function renderCarritos(){}
 function renderParaLlevar(){}
 
@@ -3425,7 +3565,7 @@ function getQuickMods(item){
   if(["TACOS","VOLCANES","BARBACOA","CARNE POR KILO"].includes(item.cat)){
     mods.push("Sin verdura", "Solo cebolla", "Solo cilantro");
   }
-    if(item.cat === "QUESADILLAS" || item.cat === "TORTAS" || item.cat === "ALAMBRES"){
+    if(item.cat === "QUESADILLAS" || item.cat === "TORTAS" || item.cat === "BURRITOS" || item.cat === "ALAMBRES"){
     mods.push("Sin frijoles", "Sin verdura", "Solo cebolla", "Solo cilantro");
   }
   if(item.cat === "CHAROLAS" || item.cat === "AGUAS FRESCAS"){
@@ -3562,7 +3702,7 @@ async function agregarLinea(item, persona, note, cardEl=null, sentQty=0){
       qty:1,
       sentQty:Number(sentQty || 0),
       cat:item.cat,
-      cocina:!!item.cocina,
+      cocina:true,
       price:Number(item.price || 0)
     });
   }
@@ -3643,8 +3783,8 @@ function agruparCart(){
     .filter(p => grupos[p] && grupos[p].length)
     .map(p => {
       const ordenadas = [...grupos[p]].sort((a,b)=>{
-        const pendA = a.cocina ? Math.max(0, Number(a.qty||0) - Number(a.sentQty||0)) : 0;
-        const pendB = b.cocina ? Math.max(0, Number(b.qty||0) - Number(b.sentQty||0)) : 0;
+        const pendA = Math.max(0, Number(a.qty||0) - Number(a.sentQty||0));
+        const pendB = Math.max(0, Number(b.qty||0) - Number(b.sentQty||0));
 
         if(pendA > 0 && pendB <= 0) return -1;
         if(pendA <= 0 && pendB > 0) return 1;
@@ -3735,7 +3875,7 @@ async function editarLineaExistente(lineKey, newNote){
     id: line.id,
     name: line.name,
     cat: line.cat,
-    cocina: line.cocina,
+    cocina: true,
     price: line.price
   };
 
@@ -3762,7 +3902,7 @@ async function editarLineaExistente(lineKey, newNote){
         qty:1,
         sentQty:oldSent,
         cat:line.cat,
-        cocina:!!line.cocina,
+        cocina:true,
         price:Number(line.price || 0)
       });
     }
@@ -3789,7 +3929,7 @@ async function editarLineaExistente(lineKey, newNote){
         qty:1,
         sentQty:sentFromThisPiece,
         cat:line.cat,
-        cocina:!!line.cocina,
+        cocina:true,
         price:Number(line.price || 0)
       });
     }
@@ -3818,16 +3958,16 @@ function renderCart(){
     const isOpen = openGroups.has(group.persona);
     g.className = "group" + (isOpen ? " open":"");
 
-    const cocinaCount = group.lines.filter(x=>x.cocina).reduce((a,x)=>a+Number(x.qty||0),0);
-    const extraCount = group.lines.filter(x=>!x.cocina).reduce((a,x)=>a+Number(x.qty||0),0);
+    const cocinaCount = group.lines.reduce((a,x)=>a+Number(x.qty||0),0);
+    const extraCount = 0;
     const nuevosCount = group.lines
-      .filter(x => x.cocina && (Number(x.qty||0) - Number(x.sentQty||0) > 0))
+      .filter(x => (Number(x.qty||0) - Number(x.sentQty||0) > 0))
       .reduce((a,x)=>a + Math.max(0, Number(x.qty||0) - Number(x.sentQty||0)), 0);
 
     const bodyRows = group.lines.map((line)=>{
-      const pendiente = line.cocina ? Math.max(0, Number(line.qty || 0) - Number(line.sentQty || 0)) : 0;
-      const isPending = line.cocina && pendiente > 0;
-      const isSent = line.cocina && pendiente <= 0;
+      const pendiente = Math.max(0, Number(line.qty || 0) - Number(line.sentQty || 0));
+      const isPending = pendiente > 0;
+      const isSent = pendiente <= 0;
 
       return `
         <div class="line ${isPending ? "pendingLine" : ""} ${isSent ? "sentLine" : ""}">
@@ -3835,17 +3975,13 @@ function renderCart(){
             <div class="lineTitle">${escapeHtml(line.qty)} x ${escapeHtml(line.name)}</div>
             ${line.note ? `<div class="lineMeta">${escapeHtml(line.note)}</div>` : ``}
             <div class="lineCat">
-              ${escapeHtml(line.cat)} ${line.cocina ? "• cocina" : "• no imprimir cocina"}
-              ${line.cocina ? ` • pendiente: ${pendiente}` : ``}
+              ${escapeHtml(line.cat)} • cocina
+              • pendiente: ${pendiente}
             </div>
           </div>
           <div class="rightInfo">
             <div class="qtyBadge">${line.qty}</div>
-            ${
-              line.cocina
-                ? `<div class="stateBadge ${isPending ? "pending" : "sent"}">${isPending ? "NUEVO" : "YA IMPRESO"}</div>`
-                : `<div class="stateBadge sent">EXTRA</div>`
-            }
+            <div class="stateBadge ${isPending ? "pending" : "sent"}">${isPending ? "NUEVO" : "YA IMPRESO"}</div>
             <div class="lineActions">
               <button type="button" class="btnMini btnMiniBlue" data-act="plus" data-key="${escapeHtml(line.key)}">+</button>
               <button type="button" class="btnMini btnMiniYellow" data-act="minus" data-key="${escapeHtml(line.key)}">-</button>
@@ -3861,7 +3997,7 @@ function renderCart(){
       <div class="groupHead">
         <div class="groupTitle">${escapeHtml(group.persona)}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span class="groupTag">${nuevosCount} nuevos • ${cocinaCount} cocina • ${extraCount} extra</span>
+          <span class="groupTag">${nuevosCount} nuevos • ${cocinaCount} cocina</span>
           <button class="toggleBtn" data-toggle="${escapeHtml(group.persona)}">
             ${isOpen ? "▼ Ocultar pedidos" : "▶ Ver pedidos"}
           </button>
@@ -3898,15 +4034,10 @@ function renderCart(){
         id: line.id,
         name: line.name,
         cat: line.cat,
-        cocina: line.cocina,
+        cocina: true,
         price: line.price,
         requiereNota: false
       };
-
-      if(line.cat === "BEBIDAS" || line.cat === "POSTRES"){
-        showInlineNotice("Edición disponible para cambiar indicaciones como sin verdura, solo cebolla, etc.", "warn");
-        return;
-      }
 
       personaActiva = line.persona;
       renderPersonas();
@@ -4329,7 +4460,7 @@ function buildResumenComanda(){
     html += `<div class="g">${escapeHtml(persona)}</div>`;
 
     lines.forEach(l=>{
-      const pendiente = l.cocina ? Math.max(0, Number(l.qty||0) - Number(l.sentQty||0)) : 0;
+      const pendiente = Math.max(0, Number(l.qty||0) - Number(l.sentQty||0));
       const qty = Number(l.qty || 0);
       const price = Number(l.price || 0);
       const sub = qty * price;
@@ -4428,7 +4559,7 @@ function handleMainContinue(e){
     const referenciaAuto = actualizarPreviewAuto();
 
     if(!referenciaAuto){
-      showInlineNotice("Captura color del carro y últimos dígitos de placas.", "warn");
+      showInlineNotice("Selecciona una mesa para continuar.", "warn");
       return false;
     }
 
@@ -4437,7 +4568,7 @@ function handleMainContinue(e){
 
     cargarComandaDeMesa(mesaActiva).catch(err=>{
       console.error(err);
-      setSyncStatus("No se pudo cargar el auto desde Supabase", "bad");
+      setSyncStatus("No se pudo cargar la mesa desde Supabase", "bad");
     });
 
     goToStep(3);
@@ -4515,6 +4646,7 @@ if(personaNombreInput) personaNombreInput.addEventListener("input", ()=>{
   personaNombreInput.value = personaNombreInput.value.replace(/\s+/g," ").trimStart();
   actualizarPreviewAuto();
 });
+renderMesas();
 actualizarPreviewAuto();
 renderPersonas();
 renderCats();
