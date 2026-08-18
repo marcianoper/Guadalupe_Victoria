@@ -2451,7 +2451,7 @@ body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinal
 <body>
 <div id="sushinaloaLoader" class="sushinaloa-loader">
   <div class="loader-inner">
-    <img id="loaderLogo" class="loader-logo" alt="Suchinaloa">
+    <img id="loaderLogo" class="loader-logo" src="img/logo-suchinaloa-transparente.png" alt="Suchinaloa">
     <div class="loader-name">SUCHINALOA</div>
     <div class="loader-bar"><span></span></div>
     <div class="loader-copy">Preparando tu experiencia</div>
@@ -2461,7 +2461,7 @@ body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinal
  <header class="topbar">
  <div class="topbar-inner">
  <div class="brand">
- <div class="logo official-logo"><img src="img/imagen-01.png" alt="Logo Suchinaloa"></div>
+ <div class="logo official-logo"><img src="img/logo-suchinaloa-transparente.png" alt="Logo Suchinaloa"></div>
  <div>
  <strong>SUCHINALOA</strong>
  <small> · Entrega a domicilio</small>
@@ -3893,10 +3893,10 @@ ${document.getElementById("kitchenTicket").innerHTML}
   function init(){
     const loader=document.getElementById("sushinaloaLoader");
     const loaderLogo=document.getElementById("loaderLogo");
-    const source=document.querySelector(".official-logo img")||
-                 document.querySelector("img.official-logo")||
-                 document.querySelector(".official-hero-logo");
-    if(loaderLogo&&source&&source.src) loaderLogo.src=source.src;
+    // El loader usa directamente el logo transparente del repositorio.
+    if(loaderLogo && !loaderLogo.getAttribute("src")){
+      loaderLogo.src="img/logo-suchinaloa-transparente.png";
+    }
 
     let done=false;
     function closeLoader(){
