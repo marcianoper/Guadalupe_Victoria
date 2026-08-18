@@ -1,0 +1,39 @@
+SUCHINALOA · GOOGLE ROUTES
+
+1. Abre config.js.
+2. Reemplaza:
+   PEGA_AQUI_TU_CLAVE_DE_GOOGLE
+   por la API Key que acabas de crear en Google Cloud.
+
+3. NO cambies el origen salvo que Suchinaloa cambie de domicilio.
+   Origen actual:
+   Emilio Carranza y Gabino Chávez #854, Col. Rodríguez, Irapuato, Guanajuato, México
+
+4. La página ahora:
+   - Obtiene la ubicación del cliente.
+   - Consulta Google Routes (DRIVE, TRAFFIC_UNAWARE).
+   - Calcula kilómetros reales por carretera.
+   - Aplica la tabla normal o lluvia.
+   - Muestra “A pagar al moto envío”.
+   - Mercado Pago sigue cobrando SOLO alimentos.
+   - Si supera 10 km, no permite confirmar el pedido.
+
+Tarifa NORMAL:
+0-3 $45 | >3-4 $50 | >4-5 $55 | >5-6 $60
+>6-7 $65 | >7-8 $70 | >8-9 $75 | >9-10 $80
+
+Tarifa LLUVIA:
+0-3 $55 | >3-4 $65 | >4-5 $75 | >5-6 $85
+>6-7 $95 | >7-8 $105 | >8-9 $115 | >9-10 $125
+
+ADMIN:
+Abre la página con ?admin=1 y usa el PIN actual del proyecto.
+Aparecerá un botón NORMAL / LLUVIA para cambiar la tarifa.
+
+IMPORTANTE SOBRE LA RESTRICCIÓN WEB:
+Los navegadores pueden enviar solo el origen en el Referer de solicitudes cross-origin.
+Si Google devuelve REQUEST_DENIED / 403 con una restricción de ruta
+https://picapiedra.org/sushinaloa/*
+autoriza temporalmente:
+https://picapiedra.org/*
+manteniendo Routes API como única restricción de API.
