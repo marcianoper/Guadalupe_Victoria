@@ -2526,19 +2526,6 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  totalMercadoPago: subtotal, // Mercado Pago cobra únicamente alimentos.
  totalEfectivo: total
  };
- },0);
-
- // A pagar al moto envío provisional. Más adelante puede sustituirse por tarifa por distancia.
- const delivery = cart.length ? 35 : 0;
- const total = subtotal + delivery;
-
- return {
- subtotal,
- delivery,
- total,
- totalMercadoPago: subtotal, // El envío NO se cobra con tarjeta.
- totalEfectivo: total
- };
  }
 
  function renderCart(){
