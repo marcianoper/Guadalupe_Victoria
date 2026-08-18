@@ -2185,6 +2185,266 @@ body.sushinaloa-ready .product{animation:cardIn .5s ease both}
 @keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.loader-logo,.loader-bar span,body.sushinaloa-ready .topbar,
 body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinaloa-ready .product{animation:none!important}}
+
+
+/* =========================================================
+   SUCHINALOA · HERO EXPERIENCIA V1
+   Inspiración: landing de restaurante visual / editorial
+   ========================================================= */
+.hero-experience{
+  position:relative!important;
+  width:100%!important;
+  max-width:none!important;
+  min-height:82vh!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  background:#030303!important;
+}
+
+.hero-experience-bg{
+  position:absolute;
+  inset:-4%;
+  z-index:-3;
+  background-image:url("img/imagen-13.jpg");
+  background-size:cover;
+  background-position:center 48%;
+  transform:scale(1.08);
+  filter:saturate(.92) contrast(1.04);
+  animation:heroKenBurns 13s ease-in-out infinite alternate;
+}
+
+.hero-experience-overlay{
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 72% 48%,rgba(176,20,18,.14),transparent 32%),
+    linear-gradient(90deg,rgba(0,0,0,.93) 0%,rgba(0,0,0,.76) 43%,rgba(0,0,0,.32) 74%,rgba(0,0,0,.58) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.48));
+}
+
+.hero-experience-content{
+  position:relative;
+  z-index:2;
+  width:min(1180px,calc(100% - 36px));
+  min-height:82vh;
+  margin:0 auto;
+  padding:88px 0 86px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+}
+
+.hero-experience-eyebrow{
+  color:#d9a646;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2.2px;
+  text-transform:uppercase;
+  opacity:.9;
+  animation:heroReveal .65s .05s both;
+}
+
+.hero-experience-logo{
+  width:min(390px,65vw);
+  height:auto;
+  margin:16px 0 6px;
+  object-fit:contain;
+  filter:drop-shadow(0 14px 34px rgba(0,0,0,.48));
+  animation:heroReveal .75s .12s both;
+}
+
+.hero-experience-copy{
+  max-width:620px;
+  animation:heroReveal .75s .20s both;
+}
+
+.hero-experience-copy h1{
+  margin:0;
+  color:#fff0c7;
+  font-size:clamp(44px,6.1vw,82px);
+  line-height:.92;
+  letter-spacing:-3.4px;
+  font-weight:950;
+  text-wrap:balance;
+  text-shadow:0 12px 32px rgba(0,0,0,.45);
+}
+
+.hero-experience-copy p{
+  max-width:520px;
+  margin:20px 0 0;
+  color:#e5cfa1;
+  font-size:16px;
+  line-height:1.55;
+}
+
+.hero-experience-actions{
+  margin-top:28px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+  animation:heroReveal .75s .28s both;
+}
+
+.hero-order-btn{
+  min-width:168px;
+  min-height:52px;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  border-radius:14px;
+  border:1px solid #e12b22;
+  background:linear-gradient(180deg,#cf1d1b,#940706);
+  color:#fff1d0;
+  font-size:15px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(164,7,7,.28);
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+
+.hero-order-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 32px rgba(164,7,7,.36);
+}
+
+.hero-order-btn span{
+  font-size:20px;
+  color:#f2c265;
+}
+
+.hero-experience-tag{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#d8bd84;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.25px;
+}
+
+.hero-pulse{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#d9a640;
+  box-shadow:0 0 0 0 rgba(217,166,64,.5);
+  animation:heroPulse 1.8s infinite;
+}
+
+.hero-scroll-cue{
+  position:absolute;
+  z-index:2;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  color:#b89a63;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.8px;
+}
+
+.hero-scroll-cue i{
+  width:1px;
+  height:30px;
+  display:block;
+  background:linear-gradient(#d3a248,transparent);
+  transform-origin:top;
+  animation:scrollCue 1.8s ease-in-out infinite;
+}
+
+@keyframes heroKenBurns{
+  from{transform:scale(1.08) translate3d(0,0,0)}
+  to{transform:scale(1.15) translate3d(-1.3%,.8%,0)}
+}
+@keyframes heroReveal{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes heroPulse{
+  0%{box-shadow:0 0 0 0 rgba(217,166,64,.45)}
+  70%{box-shadow:0 0 0 9px rgba(217,166,64,0)}
+  100%{box-shadow:0 0 0 0 rgba(217,166,64,0)}
+}
+@keyframes scrollCue{
+  0%,100%{transform:scaleY(.45);opacity:.5}
+  50%{transform:scaleY(1);opacity:1}
+}
+
+/* El antiguo hero queda completamente reemplazado */
+.hero-card,
+.hero-logo-wrap,
+.hero-menu-title{
+  display:none!important;
+}
+
+@media(max-width:720px){
+  .hero-experience{
+    min-height:76vh!important;
+  }
+  .hero-experience-content{
+    min-height:76vh;
+    width:calc(100% - 24px);
+    padding:70px 8px 78px;
+    justify-content:flex-end;
+  }
+  .hero-experience-bg{
+    background-position:64% center;
+  }
+  .hero-experience-overlay{
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,.38) 35%,rgba(0,0,0,.93) 84%,#030303 100%),
+      linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.08));
+  }
+  .hero-experience-logo{
+    width:min(300px,74vw);
+    margin-bottom:4px;
+  }
+  .hero-experience-copy h1{
+    font-size:clamp(42px,12.2vw,62px);
+    line-height:.94;
+    letter-spacing:-2.5px;
+  }
+  .hero-experience-copy p{
+    margin-top:14px;
+    font-size:14px;
+    max-width:390px;
+  }
+  .hero-experience-actions{
+    width:100%;
+    margin-top:20px;
+  }
+  .hero-order-btn{
+    width:100%;
+    min-height:50px;
+  }
+  .hero-experience-tag{
+    display:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-experience-bg,
+  .hero-experience-eyebrow,
+  .hero-experience-logo,
+  .hero-experience-copy,
+  .hero-experience-actions,
+  .hero-pulse,
+  .hero-scroll-cue i{
+    animation:none!important;
+  }
+}
+
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2215,18 +2475,40 @@ body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinal
 
  <main>
  
-<section class="hero" id="inicio">
- <div class="hero-card">
- <div class="hero-logo-wrap">
- <img class="official-hero-logo" src="img/imagen-02.png" alt="Suchinaloa">
- </div>
- <div class="hero-menu-title">
- <span></span>
- <strong>MENÚ</strong>
- <span></span>
- </div>
- </div>
+
+<section class="hero hero-experience" id="inicio">
+  <div class="hero-experience-bg" aria-hidden="true"></div>
+  <div class="hero-experience-overlay" aria-hidden="true"></div>
+
+  <div class="hero-experience-content">
+    <div class="hero-experience-eyebrow">SUCHINALOA · IRAPUATO</div>
+
+    <img class="hero-experience-logo" src="img/imagen-02.png" alt="Suchinaloa">
+
+    <div class="hero-experience-copy">
+      <h1>Algo bien<br>se está preparando.</h1>
+      <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
+    </div>
+
+    <div class="hero-experience-actions">
+      <button type="button" class="hero-order-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+        Ver menú
+        <span>↓</span>
+      </button>
+
+      <div class="hero-experience-tag">
+        <span class="hero-pulse"></span>
+        Pedido en línea
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-cue" aria-hidden="true">
+    <span>DESLIZA</span>
+    <i></i>
+  </div>
 </section>
+
 <section class="content" id="menu">
  <div class="menu-panel">
  <div class="section-head">
