@@ -2106,6 +2106,56 @@ body.checkout-open .mobile-cart{
   }
 }
 
+
+
+/* ===== GOOGLE ROUTES · COTIZACIÓN DE ENTREGA ===== */
+.delivery-estimate{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.delivery-estimate.hidden{
+  display:none!important;
+}
+.delivery-estimate > div{
+  min-height:58px;
+  padding:10px 12px;
+  border-radius:13px;
+  background:rgba(224,166,64,.08);
+  border:1px solid rgba(224,166,64,.24);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:3px;
+}
+.delivery-estimate span{
+  color:#a98d60;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  font-weight:850;
+}
+.delivery-estimate strong{
+  color:#ffe4a0;
+  font-size:16px;
+}
+.delivery-estimate.delivery-error > div{
+  border-color:rgba(210,35,35,.45);
+  background:rgba(210,35,35,.08);
+}
+.delivery-estimate.delivery-error strong{
+  color:#ff8e8e;
+}
+.rain-admin{
+  display:none;
+}
+@media(max-width:560px){
+  .delivery-estimate{
+    grid-template-columns:1fr;
+  }
+}
+
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2233,6 +2283,16 @@ body.checkout-open .mobile-cart{
  <button class="location-btn" type="button" onclick="obtenerUbicacion(true)">📍 Usar mi ubicación actual</button>
  <span id="locationStatus" class="location-status">Puedes permitir ubicación para facilitar la entrega.</span>
  </div>
+ <div id="deliveryEstimate" class="delivery-estimate hidden">
+   <div>
+     <span>Distancia de entrega</span>
+     <strong id="deliveryDistance">—</strong>
+   </div>
+   <div>
+     <span>A pagar al moto envío</span>
+     <strong id="deliveryCost">—</strong>
+   </div>
+ </div>
  </div>
 
  <div class="field full">
@@ -2242,7 +2302,7 @@ body.checkout-open .mobile-cart{
  <input type="radio" name="payment" value="Mercado Pago" checked onchange="actualizarPagoCheckout()" />
  <span>
  <strong>💳 Tarjeta / Mercado Pago</strong>
- <small>El pago electrónico cubre únicamente los alimentos. El moto envío se paga en efectivo al repartidor.</small>
+ <small>El pago electrónico cubre únicamente los alimentos. La entrega se paga en efectivo al repartidor.</small>
  </span>
  </label>
 
@@ -2250,7 +2310,7 @@ body.checkout-open .mobile-cart{
  <input type="radio" name="payment" value="Efectivo" onchange="actualizarPagoCheckout()" />
  <span>
  <strong>💵 Efectivo</strong>
- <small>Pagas alimentos y moto envío al recibir tu pedido.</small>
+ <small>Pagas alimentos y entrega en efectivo al recibir tu pedido.</small>
  </span>
  </label>
  </div>
@@ -2262,6 +2322,10 @@ body.checkout-open .mobile-cart{
  <div class="cash-admin">
  <span>ADMIN · Opción de pago en efectivo</span>
  <button id="cashToggleBtn" class="cash-toggle" type="button" onclick="toggleEfectivo()">DESACTIVAR EFECTIVO</button>
+ </div>
+ <div class="cash-admin rain-admin">
+   <span>ADMIN · Tarifa de reparto</span>
+   <button id="rainToggleBtn" class="cash-toggle" type="button" onclick="toggleLluvia()">NORMAL</button>
  </div>
  </div>
  <div class="field full">
@@ -2281,7 +2345,9 @@ body.checkout-open .mobile-cart{
  Suchinaloa · · Entrega a domicilio
  </footer>
 
- <script>
+ <script src="config.js"></script>
+
+<script>
  const products = [
  {id:1,name:"Arroz Frito Gohan",category:"Entradas",price:85,emoji:"🍚",photo:"img/imagen-03.jpg",tag:"ENTRADA",desc:"Arroz frito preparado con tocino, queso crema, cebollín, pollo y carne de res; sazonado con soya natural y zanahoria, coronado con tampico y aguacate."},
  {id:2,name:"Orden Chiles Güeros Rellenos",category:"Entradas",price:75,emoji:"🌶️",photo:"img/imagen-04.jpg",tag:"3 PIEZAS",desc:"3 chiles güeros rellenos de tampico y queso crema, empanizados y coronados con salsa de anguila y chipotle."},
@@ -2313,7 +2379,44 @@ body.checkout-open .mobile-cart{
  // Ejemplo: https://tudominio.com/sushinaloa/?admin=1
  // Cambia este PIN antes de publicar.
  const ADMIN_PIN = "2580";
+
  let MODO_ADMIN = false;
+
+ // GOOGLE ROUTES + TARIFA DE REPARTO
+ const GOOGLE_ROUTES_API_KEY = window.SUCHINALOA_CONFIG?.GOOGLE_ROUTES_API_KEY || "";
+ const ORIGEN_REPARTO = window.SUCHINALOA_CONFIG?.ORIGEN_REPARTO ||
+   "Emilio Carranza y Gabino Chávez #854, Col. Rodríguez, Irapuato, Guanajuato, México";
+
+ let MODO_LLUVIA = localStorage.getItem("suchinaloaRainMode") === "true";
+ let deliveryQuote = {
+   distanceKm: null,
+   cost: null,
+   loading: false,
+   outOfCoverage: false
+ };
+
+ const TARIFAS_ENVIO = {
+   normal: [
+     {max:3, cost:45},
+     {max:4, cost:50},
+     {max:5, cost:55},
+     {max:6, cost:60},
+     {max:7, cost:65},
+     {max:8, cost:70},
+     {max:9, cost:75},
+     {max:10, cost:80}
+   ],
+   lluvia: [
+     {max:3, cost:55},
+     {max:4, cost:65},
+     {max:5, cost:75},
+     {max:6, cost:85},
+     {max:7, cost:95},
+     {max:8, cost:105},
+     {max:9, cost:115},
+     {max:10, cost:125}
+   ]
+ };
 
  function iniciarModoAdmin(){
  const params = new URLSearchParams(window.location.search);
@@ -2409,7 +2512,23 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  return sum+(p.price*item.qty);
  },0);
 
- // Moto envío provisional. Más adelante puede sustituirse por tarifa por distancia.
+ // La entrega se calcula con Google Routes cuando conocemos el destino.
+ const delivery = cart.length && Number.isFinite(deliveryQuote.cost)
+   ? deliveryQuote.cost
+   : 0;
+
+ const total = subtotal + delivery;
+
+ return {
+ subtotal,
+ delivery,
+ total,
+ totalMercadoPago: subtotal, // Mercado Pago cobra únicamente alimentos.
+ totalEfectivo: total
+ };
+ },0);
+
+ // A pagar al moto envío provisional. Más adelante puede sustituirse por tarifa por distancia.
  const delivery = cart.length ? 35 : 0;
  const total = subtotal + delivery;
 
@@ -2504,7 +2623,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  document.getElementById("checkoutOverlay").classList.remove("hidden");
  document.body.classList.add("checkout-open");
- setTimeout(()=>{ aplicarEstadoEfectivo(); obtenerUbicacion(false); },150);
+ setTimeout(()=>{ aplicarEstadoEfectivo(); actualizarControlLluvia(); obtenerUbicacion(false); },150);
  document.body.style.overflow="hidden";
  }
 
@@ -2734,10 +2853,188 @@ ${document.getElementById("kitchenTicket").innerHTML}
  if(!note) return;
 
  if(selected === "Efectivo"){
- note.textContent = "Pago en efectivo: alimentos + moto envío se pagan al recibir.";
+ note.textContent = "Pago en efectivo: alimentos + entrega se pagan al recibir.";
  }else{
- note.textContent = "Mercado Pago cobrará únicamente los alimentos. El moto envío se paga en efectivo al repartidor.";
+ note.textContent = "Mercado Pago cobrará únicamente los alimentos. La entrega se paga en efectivo al repartidor.";
  }
+ }
+
+ function costoEnvioPorKm(km){
+ const tabla = MODO_LLUVIA ? TARIFAS_ENVIO.lluvia : TARIFAS_ENVIO.normal;
+ const fila = tabla.find(t => km <= t.max);
+ return fila ? fila.cost : null;
+ }
+
+ function actualizarControlLluvia(){
+ const box = document.querySelector(".rain-admin");
+ const btn = document.getElementById("rainToggleBtn");
+ if(box) box.style.display = MODO_ADMIN ? "flex" : "none";
+ if(btn){
+   btn.textContent = MODO_LLUVIA ? "LLUVIA" : "NORMAL";
+   btn.title = MODO_LLUVIA ? "Tarifa de lluvia activa" : "Tarifa normal activa";
+ }
+ }
+
+ function toggleLluvia(){
+ MODO_LLUVIA = !MODO_LLUVIA;
+ localStorage.setItem("suchinaloaRainMode", String(MODO_LLUVIA));
+ actualizarControlLluvia();
+
+ // Si ya conocemos la distancia, recalculamos sin volver a llamar a Google.
+ if(Number.isFinite(deliveryQuote.distanceKm)){
+   deliveryQuote.cost = costoEnvioPorKm(deliveryQuote.distanceKm);
+   deliveryQuote.outOfCoverage = deliveryQuote.cost === null;
+   mostrarTarifaEnvio();
+   renderCart();
+ }
+ }
+
+ function mostrarTarifaEnvio(){
+ const box = document.getElementById("deliveryEstimate");
+ const distance = document.getElementById("deliveryDistance");
+ const cost = document.getElementById("deliveryCost");
+ if(!box || !distance || !cost) return;
+
+ box.classList.remove("hidden");
+
+ if(deliveryQuote.loading){
+   distance.textContent = "Calculando...";
+   cost.textContent = "Calculando...";
+   box.classList.remove("delivery-error");
+   return;
+ }
+
+ if(deliveryQuote.outOfCoverage){
+   distance.textContent = Number.isFinite(deliveryQuote.distanceKm)
+     ? `${deliveryQuote.distanceKm.toFixed(1)} km`
+     : "—";
+   cost.textContent = "Fuera de cobertura";
+   box.classList.add("delivery-error");
+   return;
+ }
+
+ box.classList.remove("delivery-error");
+ distance.textContent = Number.isFinite(deliveryQuote.distanceKm)
+   ? `${deliveryQuote.distanceKm.toFixed(1)} km`
+   : "—";
+ cost.textContent = Number.isFinite(deliveryQuote.cost)
+   ? money(deliveryQuote.cost)
+   : "—";
+ }
+
+ async function consultarGoogleRoutes(destination){
+ if(!GOOGLE_ROUTES_API_KEY || GOOGLE_ROUTES_API_KEY.includes("PEGA_AQUI")){
+   throw new Error("Falta configurar la API Key de Google Routes en config.js.");
+ }
+
+ const response = await fetch(
+   "https://routes.googleapis.com/directions/v2:computeRoutes",
+   {
+     method:"POST",
+     headers:{
+       "Content-Type":"application/json",
+       "X-Goog-Api-Key":GOOGLE_ROUTES_API_KEY,
+       "X-Goog-FieldMask":"routes.distanceMeters"
+     },
+     body:JSON.stringify({
+       origin:{address:ORIGEN_REPARTO},
+       destination,
+       travelMode:"DRIVE",
+       routingPreference:"TRAFFIC_UNAWARE",
+       languageCode:"es-MX",
+       units:"METRIC"
+     })
+   }
+ );
+
+ const result = await response.json().catch(()=>({}));
+
+ if(!response.ok){
+   const detail = result?.error?.message || `Google Routes HTTP ${response.status}`;
+   throw new Error(detail);
+ }
+
+ const meters = Number(result?.routes?.[0]?.distanceMeters);
+ if(!Number.isFinite(meters)){
+   throw new Error("Google Routes no devolvió una distancia válida.");
+ }
+
+ return meters / 1000;
+ }
+
+ async function calcularTarifaEnvio(destination){
+ deliveryQuote.loading = true;
+ deliveryQuote.outOfCoverage = false;
+ mostrarTarifaEnvio();
+
+ try{
+   const km = await consultarGoogleRoutes(destination);
+   const cost = costoEnvioPorKm(km);
+
+   deliveryQuote = {
+     distanceKm:km,
+     cost,
+     loading:false,
+     outOfCoverage:cost === null
+   };
+
+   mostrarTarifaEnvio();
+   renderCart();
+   return deliveryQuote;
+ }catch(error){
+   deliveryQuote = {
+     distanceKm:null,
+     cost:null,
+     loading:false,
+     outOfCoverage:false
+   };
+   mostrarTarifaEnvio();
+
+   const status = document.getElementById("locationStatus");
+   if(status) status.textContent = `No se pudo calcular el envío: ${error.message}`;
+   throw error;
+ }
+ }
+
+ function destinoDesdeFormulario(data){
+ const lat = Number(data.latitude);
+ const lng = Number(data.longitude);
+
+ if(Number.isFinite(lat) && Number.isFinite(lng) && lat !== 0 && lng !== 0){
+   return {
+     location:{
+       latLng:{
+         latitude:lat,
+         longitude:lng
+       }
+     }
+   };
+ }
+
+ const parts = [
+   data.address,
+   data.neighborhood ? `Col. ${data.neighborhood}` : "",
+   data.zip ? `C.P. ${data.zip}` : "",
+   "Irapuato, Guanajuato, México"
+ ].filter(Boolean);
+
+ return {address:parts.join(", ")};
+ }
+
+ async function asegurarTarifaEnvio(data){
+ if(Number.isFinite(deliveryQuote.cost) && !deliveryQuote.outOfCoverage){
+   return deliveryQuote;
+ }
+
+ const quote = await calcularTarifaEnvio(destinoDesdeFormulario(data));
+
+ if(quote.outOfCoverage){
+   throw new Error(
+     `La ubicación está a ${quote.distanceKm.toFixed(1)} km y supera la cobertura actual de 10 km.`
+   );
+ }
+
+ return quote;
  }
 
  async function completarDireccionDesdeCoordenadas(lat, lng){
@@ -2845,6 +3142,25 @@ ${document.getElementById("kitchenTicket").innerHTML}
  if(status) status.textContent = "Ubicación obtenida. Buscando dirección...";
 
  await completarDireccionDesdeCoordenadas(lat, lng);
+
+ try{
+   await calcularTarifaEnvio({
+     location:{
+       latLng:{
+         latitude:lat,
+         longitude:lng
+       }
+     }
+   });
+
+   if(status && Number.isFinite(deliveryQuote.cost)){
+     status.textContent = `✓ Ubicación lista · ${deliveryQuote.distanceKm.toFixed(1)} km · A pagar al moto envío ${money(deliveryQuote.cost)}`;
+   }else if(status && deliveryQuote.outOfCoverage){
+     status.textContent = `La ubicación está a ${deliveryQuote.distanceKm.toFixed(1)} km y queda fuera de la cobertura de 10 km.`;
+   }
+ }catch(error){
+   console.warn("Tarifa de envío:", error);
+ }
  },
  error => {
  if(status){
@@ -2868,7 +3184,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const payment = data.payment || "No especificado";
  const esMercadoPago = payment === "Mercado Pago";
  const paymentDetail = esMercadoPago
- ? `💳 Alimentos pagados por Mercado Pago: ${money(totals.subtotal)}\n🛵 Moto envío a cobrar en efectivo: ${money(totals.delivery)}`
+ ? `💳 Alimentos pagados por Mercado Pago: ${money(totals.subtotal)}\n🛵 A pagar al moto envío a cobrar en efectivo: ${money(totals.delivery)}`
  : `💵 Total a cobrar en efectivo: ${money(totals.total)}`;
 
  const locationText = data.location
@@ -2942,7 +3258,7 @@ Favor de confirmar quién toma el envío.`;
  });
  const result=await response.json().catch(()=>({}));
  if(!response.ok) throw new Error(result.error || "No se pudo enviar");
- setSendStatus("Mensaje enviado al grupo de moto envíos.", true);
+ setSendStatus("Mensaje enviado al grupo de a pagar al moto envíos.", true);
  }catch(error){
  setSendStatus(`Error al enviar: ${error.message}`);
  }
@@ -2992,7 +3308,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  estado_pago: esEfectivo ? "efectivo_al_recibir" : "pendiente",
 
- // En Mercado Pago se cobra SOLO alimentos; el moto envío queda en efectivo.
+ // En Mercado Pago se cobra SOLO alimentos; la entrega queda en efectivo.
  total_esperado: Number(
  esEfectivo
  ? 0
@@ -3104,6 +3420,30 @@ ${document.getElementById("kitchenTicket").innerHTML}
  event.preventDefault();
  const formData=new FormData(event.target);
  const data=Object.fromEntries(formData.entries());
+
+ const submitButton = event.target.querySelector('button[type="submit"]');
+ const originalSubmitText = submitButton?.textContent || "Confirmar pedido";
+
+ try{
+   if(submitButton){
+     submitButton.disabled = true;
+     submitButton.textContent = "Calculando envío...";
+   }
+   await asegurarTarifaEnvio(data);
+ }catch(error){
+   alert("No se pudo confirmar el costo de entrega: " + (error.message || error));
+   if(submitButton){
+     submitButton.disabled = false;
+     submitButton.textContent = originalSubmitText;
+   }
+   return;
+ }
+
+ if(submitButton){
+   submitButton.disabled = false;
+   submitButton.textContent = originalSubmitText;
+ }
+
  const order=generateOrderNumber();
  const orderItems=cart.map(item=>({...item}));
  const totals=getTotals();
@@ -3161,7 +3501,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  <div class="payment-final-breakdown">
    <div><span>Alimentos</span><strong>${money(totals.subtotal)}</strong></div>
-   <div><span>Moto envío</span><strong>${money(totals.delivery)}</strong></div>
+   <div><span>A pagar al moto envío</span><strong>${money(totals.delivery)}</strong></div>
  </div>
 
  <div id="paymentStatus" class="payment-final-status ok">
@@ -3179,7 +3519,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
      <strong>${money(totals.totalMercadoPago)}</strong>
    </div>
    <div>
-     <span>Moto envío</span>
+     <span>A pagar al moto envío</span>
      <strong>${money(totals.delivery)} en efectivo</strong>
    </div>
  </div>
@@ -3198,7 +3538,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  </div>
 
  <div class="payment-final-help">
-   El pago se confirma automáticamente. El moto envío se paga en efectivo al repartidor.
+   El pago se confirma automáticamente. La entrega se paga en efectivo al repartidor.
  </div>
  `
  }
