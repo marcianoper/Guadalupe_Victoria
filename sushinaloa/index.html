@@ -2468,18 +2468,212 @@ body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinal
   .hero-experience-overlay{background:linear-gradient(180deg,rgba(0,0,0,.20) 0%,rgba(0,0,0,.38) 38%,rgba(0,0,0,.92) 84%,#030303 100%)!important;}
 }
 @media(prefers-reduced-motion:reduce){.hero-experience-bg{animation:none!important;transform:scale(1.08)!important;}}
+
+
+/* =========================================================
+   SUCHINALOA · INTRO DE 4 PLATILLOS
+   ========================================================= */
+html.intro-lock,
+html.intro-lock body{
+  overflow:hidden!important;
+}
+
+.suchinaloa-intro{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  background:#020202;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .5s ease,visibility .5s ease;
+}
+.suchinaloa-intro.is-leaving{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.intro-slides{
+  position:absolute;
+  inset:0;
+}
+.intro-slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transform:scale(1.025);
+  transition:opacity .38s ease,transform 1.25s ease;
+  background-image:var(--intro-bg);
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  will-change:opacity,transform;
+}
+.intro-slide.is-active{
+  opacity:1;
+  transform:scale(1.06);
+}
+.intro-shade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.22) 0%,rgba(0,0,0,.18) 38%,rgba(0,0,0,.82) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.05) 58%,rgba(0,0,0,.28));
+}
+.intro-content{
+  position:absolute;
+  left:max(22px,5vw);
+  right:max(22px,5vw);
+  bottom:max(76px,9vh);
+  z-index:2;
+}
+.intro-brand{
+  color:#e0a640;
+  font-size:12px;
+  font-weight:950;
+  letter-spacing:3px;
+  margin-bottom:10px;
+  text-shadow:0 3px 20px rgba(0,0,0,.45);
+}
+.intro-content h2{
+  margin:0;
+  color:#fff0c7;
+  font-size:clamp(44px,8vw,96px);
+  line-height:.9;
+  letter-spacing:-3px;
+  font-weight:1000;
+  text-shadow:0 12px 30px rgba(0,0,0,.55);
+}
+.intro-content p{
+  margin:12px 0 0;
+  color:#e6c98e;
+  font-size:15px;
+  font-weight:750;
+}
+.intro-skip{
+  position:absolute;
+  top:max(18px,env(safe-area-inset-top));
+  right:18px;
+  z-index:5;
+  border:1px solid rgba(224,166,64,.42);
+  background:rgba(0,0,0,.38);
+  backdrop-filter:blur(8px);
+  color:#f0c66f;
+  border-radius:999px;
+  padding:9px 14px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.4px;
+}
+.intro-progress{
+  position:absolute;
+  left:max(22px,5vw);
+  right:max(22px,5vw);
+  bottom:28px;
+  z-index:4;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+}
+.intro-progress-segment{
+  height:2px;
+  overflow:hidden;
+  background:rgba(255,255,255,.18);
+  border-radius:99px;
+}
+.intro-progress-segment i{
+  display:block;
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#b31313,#e0a640);
+  border-radius:99px;
+}
+.intro-progress-segment.is-done i{
+  width:100%;
+}
+.intro-progress-segment.is-active i{
+  animation:introProgress .92s linear forwards;
+}
+@keyframes introProgress{
+  from{width:0%}
+  to{width:100%}
+}
+
+@media(max-width:700px){
+  .intro-slide{
+    background-position:center;
+  }
+  .intro-content{
+    bottom:82px;
+  }
+  .intro-content h2{
+    font-size:clamp(42px,14vw,68px);
+    letter-spacing:-2px;
+  }
+  .intro-progress{
+    bottom:22px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .intro-slide,
+  .intro-progress-segment.is-active i{
+    transition:none!important;
+    animation:none!important;
+  }
+}
+
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div id="sushinaloaLoader" class="sushinaloa-loader">
-  <div class="loader-inner">
-    <img id="loaderLogo" class="loader-logo" src="img/logo-suchinaloa-transparente.png" alt="Suchinaloa">
-    <div class="loader-name">SUCHINALOA</div>
-    <div class="loader-bar"><span></span></div>
-    <div class="loader-copy">Preparando tu experiencia</div>
+
+<div id="suchinaloaIntro" class="suchinaloa-intro" aria-label="Presentación Suchinaloa">
+  <button id="introSkip" class="intro-skip" type="button">Saltar</button>
+
+  <div class="intro-slides">
+    <article class="intro-slide is-active" data-title="¡QUE CHULADA!" style="--intro-bg:url('img/imagen-07.jpg')">
+      <div class="intro-shade"></div>
+      <div class="intro-content">
+        <div class="intro-brand">SUCHINALOA</div>
+        <h2>¡QUE CHULADA!</h2>
+      </div>
+    </article>
+
+    <article class="intro-slide" data-title="SUCHINALOA" style="--intro-bg:url('img/imagen-13.jpg')">
+      <div class="intro-shade"></div>
+      <div class="intro-content">
+        <div class="intro-brand">SUCHINALOA</div>
+        <h2>SUCHINALOA</h2>
+      </div>
+    </article>
+
+    <article class="intro-slide" data-title="MACHÍN ROLL" style="--intro-bg:url('img/imagen-11.jpg')">
+      <div class="intro-shade"></div>
+      <div class="intro-content">
+        <div class="intro-brand">SUCHINALOA</div>
+        <h2>MACHÍN ROLL</h2>
+      </div>
+    </article>
+
+    <article class="intro-slide intro-slide-last" data-title="ALGO BIEN" style="--intro-bg:url('img/imagen-14.jpg')">
+      <div class="intro-shade"></div>
+      <div class="intro-content">
+        <div class="intro-brand">SUCHINALOA</div>
+        <h2>ALGO BIEN.</h2>
+        <p>Directo a tu puerta.</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="intro-progress" aria-hidden="true">
+    <span class="intro-progress-segment"><i></i></span>
+    <span class="intro-progress-segment"><i></i></span>
+    <span class="intro-progress-segment"><i></i></span>
+    <span class="intro-progress-segment"><i></i></span>
   </div>
 </div>
+
+
 
  <header class="topbar">
  <div class="topbar-inner">
@@ -3905,36 +4099,85 @@ ${document.getElementById("kitchenTicket").innerHTML}
  renderProducts();
  renderCart();
  </script>
+
+
+
 <script>
 (function(){
-  document.documentElement.classList.add("sushinaloa-loading");
-  const started=Date.now();
-  function init(){
-    const loader=document.getElementById("sushinaloaLoader");
-    const loaderLogo=document.getElementById("loaderLogo");
-    // El loader usa directamente el logo transparente del repositorio.
-    if(loaderLogo && !loaderLogo.getAttribute("src")){
-      loaderLogo.src="img/logo-suchinaloa-transparente.png";
-    }
+  const intro = document.getElementById("suchinaloaIntro");
+  if(!intro) return;
 
-    let done=false;
-    function closeLoader(){
-      if(done)return; done=true;
-      const wait=Math.max(0,950-(Date.now()-started));
-      setTimeout(()=>{
-        loader?.classList.add("is-hidden");
-        document.documentElement.classList.remove("sushinaloa-loading");
-        document.body.classList.add("sushinaloa-ready");
-        setTimeout(()=>loader?.remove(),650);
-      },wait);
+  const slides = Array.from(intro.querySelectorAll(".intro-slide"));
+  const bars = Array.from(intro.querySelectorAll(".intro-progress-segment"));
+  const skip = document.getElementById("introSkip");
+
+  const SLIDE_MS = 920;
+  const EXIT_MS = 500;
+  let current = 0;
+  let timer = null;
+  let finished = false;
+
+  document.documentElement.classList.add("intro-lock");
+
+  // Precarga inmediata solo de las 4 fotos del intro.
+  slides.forEach(slide=>{
+    const bg = getComputedStyle(slide).getPropertyValue("--intro-bg");
+    const match = bg.match(/url\(["']?(.*?)["']?\)/);
+    if(match && match[1]){
+      const img = new Image();
+      img.src = match[1];
     }
-    if(document.readyState==="complete") closeLoader();
-    else window.addEventListener("load",closeLoader,{once:true});
-    setTimeout(closeLoader,2200);
+  });
+
+  function paint(){
+    slides.forEach((slide,i)=>{
+      slide.classList.toggle("is-active",i===current);
+    });
+
+    bars.forEach((bar,i)=>{
+      bar.classList.remove("is-active","is-done");
+      if(i < current) bar.classList.add("is-done");
+      if(i === current) bar.classList.add("is-active");
+    });
   }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
-  else init();
+
+  function finish(){
+    if(finished) return;
+    finished = true;
+    clearTimeout(timer);
+
+    bars.forEach(bar=>{
+      bar.classList.remove("is-active");
+      bar.classList.add("is-done");
+    });
+
+    intro.classList.add("is-leaving");
+    document.documentElement.classList.remove("intro-lock");
+    document.body.classList.add("sushinaloa-ready");
+
+    setTimeout(()=>intro.remove(),EXIT_MS + 80);
+  }
+
+  function next(){
+    if(finished) return;
+    if(current >= slides.length - 1){
+      finish();
+      return;
+    }
+    current++;
+    paint();
+    timer = setTimeout(next,SLIDE_MS);
+  }
+
+  skip?.addEventListener("click",finish);
+
+  paint();
+  timer = setTimeout(next,SLIDE_MS);
+
+  // Fallback: jamás bloquear la página.
+  setTimeout(finish,5200);
 })();
 </script>
+
 </body>
 </html>
