@@ -2446,13 +2446,28 @@ body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinal
 }
 
 
-/* SUCHINALOA · WEBGL ACCRETION HERO */
-.hero-experience{background:#020202!important;}
-.hero-webgl-canvas{position:absolute;inset:0;z-index:-2;width:100%;height:100%;display:block;pointer-events:none;background:#020202;}
-.hero-experience-bg{z-index:-4!important;opacity:.12!important;filter:saturate(.55) brightness(.38)!important;}
-.hero-experience-overlay{z-index:-1!important;background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.73) 42%,rgba(0,0,0,.18) 72%,rgba(0,0,0,.34) 100%)!important;}
-.hero-experience[data-webgl="unsupported"] .hero-webgl-canvas,.hero-experience[data-webgl="build-failed"] .hero-webgl-canvas,.hero-experience[data-webgl="lost"] .hero-webgl-canvas{display:none!important;}
-@media(max-width:720px){.hero-experience-overlay{background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,.44) 38%,rgba(0,0,0,.92) 83%,#020202 100%)!important;}}
+/* SUCHINALOA · HERO LIGERO: foto real + movimiento CSS */
+.hero-experience-bg{
+  z-index:-3!important;
+  opacity:1!important;
+  background-image:url("img/imagen-13.jpg")!important;
+  background-size:cover!important;
+  background-position:center 48%!important;
+  filter:saturate(.96) contrast(1.05) brightness(.78)!important;
+  animation:heroKenBurns 18s ease-in-out infinite alternate!important;
+  will-change:transform;
+}
+.hero-experience-overlay{
+  z-index:-2!important;
+  background:
+    radial-gradient(circle at 72% 48%,rgba(176,20,18,.10),transparent 34%),
+    linear-gradient(90deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.80) 34%,rgba(0,0,0,.45) 58%,rgba(0,0,0,.18) 78%,rgba(0,0,0,.42) 100%)!important;
+}
+@media(max-width:720px){
+  .hero-experience-bg{background-position:60% center!important;animation-duration:22s!important;}
+  .hero-experience-overlay{background:linear-gradient(180deg,rgba(0,0,0,.20) 0%,rgba(0,0,0,.38) 38%,rgba(0,0,0,.92) 84%,#030303 100%)!important;}
+}
+@media(prefers-reduced-motion:reduce){.hero-experience-bg{animation:none!important;transform:scale(1.08)!important;}}
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2485,8 +2500,7 @@ body.sushinaloa-ready .hero-card,body.sushinaloa-ready .categories,body.sushinal
  
 
 <section class="hero hero-experience" id="inicio">
-  <canvas id="suchinaloaWebglHero" class="hero-webgl-canvas" aria-hidden="true"></canvas>
-  <div class="hero-experience-bg" aria-hidden="true"></div>
+<div class="hero-experience-bg" aria-hidden="true"></div>
   <div class="hero-experience-overlay" aria-hidden="true"></div>
 
   <div class="hero-experience-content">
@@ -3891,9 +3905,6 @@ ${document.getElementById("kitchenTicket").innerHTML}
  renderProducts();
  renderCart();
  </script>
-
-<script src="webgl-hero.js" defer></script>
-
 <script>
 (function(){
   document.documentElement.classList.add("sushinaloa-loading");
