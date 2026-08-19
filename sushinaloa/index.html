@@ -2591,7 +2591,7 @@ html.intro-lock body{
   width:100%;
 }
 .intro-progress-segment.is-active i{
-  animation:introProgress .92s linear forwards;
+  animation:introProgress 1.75s linear forwards;
 }
 @keyframes introProgress{
   from{width:0%}
@@ -2699,10 +2699,7 @@ html.intro-lock body{
 
   <div class="hero-experience-content">
     <div class="hero-experience-eyebrow">SUCHINALOA · IRAPUATO</div>
-
-    <img class="hero-experience-logo" src="img/logo-suchinaloa-transparente.png" alt="Suchinaloa">
-
-    <div class="hero-experience-copy">
+<div class="hero-experience-copy">
       <h1>Algo bien<br>se está preparando.</h1>
       <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
     </div>
@@ -4111,7 +4108,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
   const bars = Array.from(intro.querySelectorAll(".intro-progress-segment"));
   const skip = document.getElementById("introSkip");
 
-  const SLIDE_MS = 920;
+  const SLIDE_MS = 1750;
   const EXIT_MS = 500;
   let current = 0;
   let timer = null;
@@ -4175,7 +4172,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
   timer = setTimeout(next,SLIDE_MS);
 
   // Fallback: jamás bloquear la página.
-  setTimeout(finish,5200);
+  setTimeout(finish,9000);
 })();
 </script>
 
