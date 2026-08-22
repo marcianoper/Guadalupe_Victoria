@@ -2693,6 +2693,36 @@ html.intro-lock body{
   }
 }
 </style>
+
+<style>
+.success.payment-confirmed .success-icon{
+  background:rgba(25,135,84,.14)!important;
+  color:#29c774!important;
+  border:1px solid rgba(41,199,116,.38)!important;
+  box-shadow:0 0 0 8px rgba(41,199,116,.06),0 12px 34px rgba(0,0,0,.24);
+}
+.success.payment-confirmed h2{color:#7ee2aa!important}
+.success.payment-confirmed .payment-final-card{
+  border-color:rgba(41,199,116,.34)!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.34),inset 0 0 0 1px rgba(41,199,116,.04)!important;
+}
+.success.payment-confirmed #paymentStatus{
+  background:rgba(25,135,84,.13)!important;
+  border:1px solid rgba(41,199,116,.28)!important;
+  color:#31d17b!important;
+}
+.payment-confirmed-banner{
+  margin:12px auto 0;
+  max-width:740px;
+  padding:12px 16px;
+  border-radius:14px;
+  background:rgba(25,135,84,.12);
+  border:1px solid rgba(41,199,116,.26);
+  color:#6fe09f;
+  font-weight:900;
+  text-align:center;
+}
+</style>
 </head>
 <body>
 
@@ -4093,6 +4123,44 @@ ${document.getElementById("kitchenTicket").innerHTML}
  return true;
  }
 
+ function aplicarEstadoPagoConfirmado(){
+   const success = document.querySelector("#checkoutContent .success");
+   if(success) success.classList.add("payment-confirmed");
+
+   const title = document.querySelector("#checkoutContent .success h2");
+   if(title) title.textContent = "¡Pago recibido!";
+
+   const intro = document.querySelector("#checkoutContent .success > p");
+   if(intro) intro.textContent = "Tu pago fue confirmado correctamente. Tu pedido ya está en proceso.";
+
+   const icon = document.querySelector("#checkoutContent .success-icon");
+   if(icon) icon.textContent = "✓";
+
+   const kicker = document.querySelector("#checkoutContent .payment-final-kicker");
+   if(kicker) kicker.textContent = "PAGO RECIBIDO";
+
+   const payButton = document.getElementById("mercadoPagoBtn");
+   if(payButton) payButton.style.display = "none";
+
+   const status = document.getElementById("paymentStatus");
+   if(status){
+     status.classList.remove("waiting");
+     status.classList.add("ok");
+     status.innerHTML = "✓ Pago recibido y confirmado por Mercado Pago.";
+   }
+
+   const help = document.querySelector("#checkoutContent .payment-final-help");
+   if(help) help.textContent = "Tu orden está confirmada. La entrega se paga en efectivo al repartidor.";
+
+   const card = document.querySelector("#checkoutContent .payment-final-card");
+   if(card && !card.querySelector(".payment-confirmed-banner")){
+     const banner = document.createElement("div");
+     banner.className = "payment-confirmed-banner";
+     banner.textContent = "Todo listo. Estamos preparando tu pedido.";
+     card.appendChild(banner);
+   }
+ }
+
  async function openMercadoPago(){
  const status = document.getElementById("paymentStatus");
  const button = document.getElementById("mercadoPagoBtn");
@@ -4165,7 +4233,8 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const button = document.getElementById("mercadoPagoBtn");
 
  if(status){
- status.textContent = "✓ Pago confirmado automáticamente por Mercado Pago.";
+ status.textContent = "✓ Pago recibido y confirmado por Mercado Pago.";
+   aplicarEstadoPagoConfirmado();
  status.style.color = "#167d4d";
  }
 
@@ -4431,5 +4500,26 @@ ${document.getElementById("kitchenTicket").innerHTML}
 })();
 </script>
 
+
+<script>
+(function(){
+  function revisarPagoConfirmado(){
+    const status = document.getElementById("paymentStatus");
+    if(!status) return;
+    const txt = (status.textContent || "").toLowerCase();
+    if(txt.includes("pago confirmado") || txt.includes("pago recibido")){
+      if(typeof aplicarEstadoPagoConfirmado === "function"){
+        aplicarEstadoPagoConfirmado();
+      }
+    }
+  }
+  const checkout = document.getElementById("checkoutContent");
+  if(checkout){
+    new MutationObserver(revisarPagoConfirmado)
+      .observe(checkout,{subtree:true,childList:true,characterData:true,attributes:true});
+  }
+  window.addEventListener("pageshow",revisarPagoConfirmado);
+})();
+</script>
 </body>
 </html>
