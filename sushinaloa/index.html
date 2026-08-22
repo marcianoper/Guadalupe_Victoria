@@ -2624,6 +2624,14 @@ html.intro-lock body{
 
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+.add:disabled{
+  opacity:.48!important;
+  cursor:not-allowed!important;
+  filter:grayscale(.35);
+}
+</style>
 </head>
 <body>
 
@@ -2739,6 +2747,7 @@ html.intro-lock body{
  <button class="category" data-category="Rollo Horneado" onclick="filterProducts('Rollo Horneado',this)">Horneado</button>
  <button class="category" data-category="El Especial" onclick="filterProducts('El Especial',this)">El Especial</button>
  <button class="category" data-category="Natural" onclick="filterProducts('Natural',this)">Natural</button>
+ <button class="category" data-category="Bebidas" onclick="filterProducts('Bebidas',this)">Bebidas</button>
  </div>
 
  <div class="products" id="products"></div>
@@ -2895,7 +2904,8 @@ html.intro-lock body{
  {id:10,name:"Que Chilo",category:"Rollos Empanizados",price:135,emoji:"🍣",photo:"img/imagen-11.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate y camarón; coronado con tampico, tocino, salsa de anguila y aderezo ranch."},
  {id:11,name:"Machin Roll",category:"Rollo Horneado",price:160,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
  {id:12,name:"Suchinaloa",category:"El Especial",price:175,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
- {id:13,name:"Avocado Roll",category:"Natural",price:120,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."}
+ {id:13,name:"Avocado Roll",category:"Natural",price:120,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
+ {id:14,name:"Té de Jazmín Saboraté",category:"Bebidas",price:null,emoji:"🍵",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."}
  ];
 
  let cart = JSON.parse(localStorage.getItem("suchinaloaCart") || "[]");
@@ -3000,8 +3010,8 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  <h3>${p.name}</h3>
  <p>${p.desc}</p>
  <div class="product-bottom">
- <span class="price">${money(p.price)}</span>
- <button class="add" aria-label="Agregar ${p.name}" onclick="addToCart(${p.id})">+</button>
+ <span class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</span>
+ <button class="add" aria-label="${Number.isFinite(p.price) ? `Agregar ${p.name}` : `${p.name} sin precio`}" onclick="addToCart(${p.id})" ${Number.isFinite(p.price) ? "" : "disabled"}>+</button>
  </div>
  </div>
  </article>
