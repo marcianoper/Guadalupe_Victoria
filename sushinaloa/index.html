@@ -2632,6 +2632,41 @@ html.intro-lock body{
   filter:grayscale(.35);
 }
 </style>
+
+<style>
+.invoice-notice{
+  margin:18px auto 4px;
+  max-width:740px;
+  padding:16px 18px;
+  border:1px solid rgba(218,165,32,.42);
+  border-radius:16px;
+  background:rgba(218,165,32,.08);
+  text-align:center;
+  line-height:1.45;
+}
+.invoice-notice strong{
+  display:block;
+  margin-bottom:5px;
+  color:#f4c45a;
+  font-size:16px;
+}
+.invoice-notice span{
+  color:#ddd;
+}
+.invoice-notice a{
+  display:inline-block;
+  margin-left:5px;
+  color:#fff1c7;
+  font-weight:800;
+  text-decoration:none;
+  overflow-wrap:anywhere;
+}
+.invoice-notice a:hover{text-decoration:underline}
+@media(max-width:600px){
+  .invoice-notice{margin-top:14px;padding:14px 12px;font-size:14px}
+  .invoice-notice a{display:block;margin:4px 0 0}
+}
+</style>
 </head>
 <body>
 
@@ -4073,6 +4108,12 @@ ${document.getElementById("kitchenTicket").innerHTML}
  </div>
  `
  }
+ </div>
+
+ <div class="invoice-notice">
+   <strong>¿Requieres factura?</strong>
+   <span>Favor de enviar tus datos fiscales a</span>
+   <a href="mailto:suchinaloa1@gmail.com">suchinaloa1@gmail.com</a>
  </div>
 </div>
 <div id="sendStatus" class="send-status"></div>
