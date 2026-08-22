@@ -2667,6 +2667,32 @@ html.intro-lock body{
   .invoice-notice a{display:block;margin:4px 0 0}
 }
 </style>
+
+<style>
+.location-tools{
+  align-items:center;
+}
+.location-btn-secondary{
+  background:#0d0d0d!important;
+  color:#f0c66f!important;
+  border:1px solid rgba(224,166,64,.48)!important;
+}
+.location-status{
+  flex:1 1 100%;
+  margin-top:3px;
+  line-height:1.4;
+}
+@media(max-width:640px){
+  .location-tools{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+  }
+  .location-btn,
+  .location-btn-secondary{
+    width:100%;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -2859,7 +2885,8 @@ html.intro-lock body{
  <input id="longitudeInput" name="longitude" type="hidden" />
  <div class="location-tools">
  <button class="location-btn" type="button" onclick="obtenerUbicacion(true)">📍 Usar mi ubicación actual</button>
- <span id="locationStatus" class="location-status">Puedes permitir ubicación para facilitar la entrega.</span>
+ <button class="location-btn location-btn-secondary" type="button" onclick="calcularUbicacionManual()">✍️ Calcular con dirección escrita</button>
+ <span id="locationStatus" class="location-status">Puedes usar tu ubicación, pegar un enlace de Google Maps o capturar tu dirección manualmente.</span>
  </div>
  <div id="deliveryEstimate" class="delivery-estimate hidden">
    <div>
@@ -3682,6 +3709,177 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
  }
 
+
+ function extraerCoordenadasDeTexto(valor){
+   const text = String(valor || "").trim();
+   if(!text) return null;
+
+   // Ejemplos compatibles:
+   // https://www.google.com/maps?q=20.417,-101.7287
+   // https://www.google.com/maps/@20.417,-101.7287,17z
+   // 20.417,-101.7287
+   const q = text.match(/[?&](?:q|query|ll)=(-?\d+(?:\.\d+)?)[,%20\s]+(-?\d+(?:\.\d+)?)/i);
+   if(q){
+     const lat = Number(q[1]);
+     const lng = Number(q[2]);
+     if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat,lng};
+   }
+
+   const at = text.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+   if(at){
+     const lat = Number(at[1]);
+     const lng = Number(at[2]);
+     if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat,lng};
+   }
+
+   const plain = text.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
+   if(plain){
+     const lat = Number(plain[1]);
+     const lng = Number(plain[2]);
+     if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat,lng};
+   }
+
+   return null;
+ }
+
+ function limpiarCoordenadasAutomaticas(){
+   const latInput = document.getElementById("latitudeInput");
+   const lngInput = document.getElementById("longitudeInput");
+   if(latInput) latInput.value = "";
+   if(lngInput) lngInput.value = "";
+ }
+
+ async function calcularUbicacionManual(){
+   const form = document.getElementById("checkoutForm");
+   const status = document.getElementById("locationStatus");
+   const locationInput = document.getElementById("locationInput");
+   const latInput = document.getElementById("latitudeInput");
+   const lngInput = document.getElementById("longitudeInput");
+
+   if(!form){
+     if(status) status.textContent = "No se encontró el formulario de entrega.";
+     return;
+   }
+
+   if(status) status.textContent = "Calculando envío con los datos capturados...";
+
+   try{
+     const fd = new FormData(form);
+     const locationText = String(locationInput?.value || "").trim();
+     const coords = extraerCoordenadasDeTexto(locationText);
+
+     let destination;
+
+     if(coords){
+       if(latInput) latInput.value = coords.lat;
+       if(lngInput) lngInput.value = coords.lng;
+
+       destination = {
+         location:{
+           latLng:{
+             latitude:coords.lat,
+             longitude:coords.lng
+           }
+         }
+       };
+     }else if(locationText){
+       // También permite escribir una dirección completa en el campo Ubicación.
+       limpiarCoordenadasAutomaticas();
+       destination = {address: locationText};
+     }else{
+       limpiarCoordenadasAutomaticas();
+
+       const address = String(fd.get("address") || "").trim();
+       const neighborhood = String(fd.get("neighborhood") || "").trim();
+       const zip = String(fd.get("zip") || "").trim();
+
+       if(!address && !neighborhood && !zip){
+         throw new Error("Captura calle y número, colonia y/o código postal antes de calcular.");
+       }
+
+       destination = {
+         address:[
+           address,
+           neighborhood ? `Col. ${neighborhood}` : "",
+           zip ? `C.P. ${zip}` : "",
+           "Irapuato, Guanajuato, México"
+         ].filter(Boolean).join(", ")
+       };
+     }
+
+     const quote = await calcularTarifaEnvio(destination);
+
+     if(quote.outOfCoverage){
+       if(status){
+         status.textContent = `La dirección calculada está a ${quote.distanceKm.toFixed(1)} km y queda fuera de la cobertura de 10 km. Revisa los datos capturados.`;
+       }
+       return;
+     }
+
+     if(status){
+       status.textContent = `✓ Dirección calculada · ${quote.distanceKm.toFixed(1)} km · A pagar al moto envío ${money(quote.cost)}`;
+     }
+   }catch(error){
+     console.warn("Ubicación manual:", error);
+     deliveryQuote = {
+       distanceKm:null,
+       cost:null,
+       loading:false,
+       outOfCoverage:false
+     };
+     mostrarTarifaEnvio();
+     if(status) status.textContent = `No se pudo calcular con la dirección capturada: ${error.message}`;
+   }
+ }
+
+ function prepararUbicacionManual(){
+   const form = document.getElementById("checkoutForm");
+   const locationInput = document.getElementById("locationInput");
+   if(!form) return;
+
+   // Si el cliente modifica manualmente su domicilio después de usar GPS,
+   // descartamos las coordenadas anteriores para que Routes use lo escrito.
+   ["address","neighborhood","zip"].forEach(name=>{
+     const field = form.elements[name];
+     if(field){
+       field.addEventListener("input",()=>{
+         limpiarCoordenadasAutomaticas();
+         deliveryQuote = {
+           distanceKm:null,
+           cost:null,
+           loading:false,
+           outOfCoverage:false
+         };
+       });
+     }
+   });
+
+   if(locationInput){
+     locationInput.addEventListener("input",()=>{
+       const coords = extraerCoordenadasDeTexto(locationInput.value);
+       limpiarCoordenadasAutomaticas();
+
+       if(coords){
+         const latInput = document.getElementById("latitudeInput");
+         const lngInput = document.getElementById("longitudeInput");
+         if(latInput) latInput.value = coords.lat;
+         if(lngInput) lngInput.value = coords.lng;
+       }
+
+       deliveryQuote = {
+         distanceKm:null,
+         cost:null,
+         loading:false,
+         outOfCoverage:false
+       };
+     });
+
+     locationInput.addEventListener("change",()=>{
+       if(locationInput.value.trim()) calcularUbicacionManual();
+     });
+   }
+ }
+
  function obtenerUbicacion(mostrarError=false){
  const status = document.getElementById("locationStatus");
  const input = document.getElementById("locationInput");
@@ -3722,7 +3920,12 @@ ${document.getElementById("kitchenTicket").innerHTML}
    if(status && Number.isFinite(deliveryQuote.cost)){
      status.textContent = `✓ Ubicación lista · ${deliveryQuote.distanceKm.toFixed(1)} km · A pagar al moto envío ${money(deliveryQuote.cost)}`;
    }else if(status && deliveryQuote.outOfCoverage){
-     status.textContent = `La ubicación está a ${deliveryQuote.distanceKm.toFixed(1)} km y queda fuera de la cobertura de 10 km.`;
+     // En computadoras de escritorio la geolocalización del navegador puede
+     // devolver la ubicación aproximada del proveedor de internet.
+     // Si sale fuera de cobertura, no conservamos esas coordenadas para que
+     // el cliente pueda calcular con su dirección real escrita.
+     limpiarCoordenadasAutomaticas();
+     status.textContent = `La ubicación automática marcó ${deliveryQuote.distanceKm.toFixed(1)} km y parece incorrecta o fuera de cobertura. Usa “Calcular con dirección escrita” para continuar.`;
    }
  }catch(error){
    console.warn("Tarifa de envío:", error);
@@ -3736,7 +3939,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
  console.warn("Geolocalización:", error);
  },
- {enableHighAccuracy:true, timeout:12000, maximumAge:30000}
+ {enableHighAccuracy:true, timeout:15000, maximumAge:0}
  );
  }
 
@@ -4144,6 +4347,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  iniciarModoAdmin();
  checkoutFormOriginal = document.getElementById("checkoutContent").innerHTML;
+ prepararUbicacionManual();
  renderProducts();
  renderCart();
  </script>
