@@ -4125,7 +4125,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  function aplicarEstadoPagoConfirmado(){
    const success = document.querySelector("#checkoutContent .success");
-   if(success) success.classList.add("payment-confirmed");
+   if(!success || success.dataset.pagoConfirmado === "1") return;
+   success.dataset.pagoConfirmado = "1";
+   success.classList.add("payment-confirmed");
 
    const title = document.querySelector("#checkoutContent .success h2");
    if(title) title.textContent = "¡Pago recibido!";
@@ -4501,25 +4503,5 @@ ${document.getElementById("kitchenTicket").innerHTML}
 </script>
 
 
-<script>
-(function(){
-  function revisarPagoConfirmado(){
-    const status = document.getElementById("paymentStatus");
-    if(!status) return;
-    const txt = (status.textContent || "").toLowerCase();
-    if(txt.includes("pago confirmado") || txt.includes("pago recibido")){
-      if(typeof aplicarEstadoPagoConfirmado === "function"){
-        aplicarEstadoPagoConfirmado();
-      }
-    }
-  }
-  const checkout = document.getElementById("checkoutContent");
-  if(checkout){
-    new MutationObserver(revisarPagoConfirmado)
-      .observe(checkout,{subtree:true,childList:true,characterData:true,attributes:true});
-  }
-  window.addEventListener("pageshow",revisarPagoConfirmado);
-})();
-</script>
 </body>
 </html>
