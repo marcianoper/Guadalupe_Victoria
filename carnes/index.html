@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cortes de Res — Carnes y Vísceras del Centro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="promo">Cortes de res por kilo • Precios sujetos a disponibilidad • Pedido directo por WhatsApp</div>
+
+  <header>
+    <div class="nav">
+      <div class="brand collaborationBrand">
+        <div class="logoPair">
+          <img class="fiveLogo" src="assets/logo_five_bravos.png" alt="Five Bravos Angus Beef">
+          <span class="collabX">×</span>
+          <img class="vdcLogo" src="assets/logo_vdc.png" alt="Carnes y Vísceras del Centro">
+        </div>
+        <div class="brandText">
+          <b>Five Bravos × Carnes y Vísceras del Centro</b>
+          <span>CORTES DE RES</span>
+        </div>
+      </div>
+      <button class="cartPill" id="cartPill" onclick="document.getElementById('pedido').scrollIntoView()">
+        🛒 <b>0</b> <span>Mi pedido</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="heroText">
+        <div class="eyebrow">Colaboración especial</div>
+        <h1>Five Bravos <span class="heroX">×</span><br>Carnes y Vísceras del Centro</h1>
+        <p>La calidad de Five Bravos y el servicio de Carnes y Vísceras del Centro, reunidos en un solo catálogo. Elige tus cortes, captura los kilos y envía tu pedido por WhatsApp.</p>
+        <div class="heroActions">
+          <button class="primary" onclick="document.getElementById('catalogo').scrollIntoView()">Ver catálogo</button>
+          <button class="secondary" onclick="document.getElementById('pedido').scrollIntoView()">Ver mi pedido</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature"><b>🔥 Cortes premium</b><span>Filete, Tomahawk, Rib Eye, Picaña y más.</span></div>
+      <div class="feature"><b>🥩 Venta por kilogramo</b><span>Selecciona la cantidad exacta para tu pedido.</span></div>
+      <div class="feature"><b>💬 Pedido por WhatsApp</b><span>El pedido se envía con productos, cantidades y total.</span></div>
+    </section>
+
+    <section class="shop" id="catalogo">
+      <div class="panel">
+        <div class="panelHead">
+          <h2>Catálogo de cortes</h2>
+          <span class="muted" style="font-weight:900">Precio por kg</span>
+        </div>
+        <div class="tools">
+          <div class="search"><input id="q" placeholder="Buscar: rib eye, bistec, pecho..."></div>
+          <div class="tabs" id="tabs"></div>
+        </div>
+        <div class="catalogTitle">
+          <h3 id="sectionTitle">PREMIUM</h3>
+          <p>Selecciona un producto y agrega los kilos que necesitas.</p>
+        </div>
+        <div class="items" id="items"></div>
+      </div>
+
+      <aside class="panel cart" id="pedido">
+        <div class="panelHead">
+          <h2>Tu pedido</h2>
+          <span class="muted" id="cartSmall">0 productos</span>
+        </div>
+        <div class="cartBody">
+          <div class="field">
+            <label>Nombre del cliente</label>
+            <input id="cliente" placeholder="Nombre o negocio">
+          </div>
+          <div class="field">
+            <label>Teléfono</label>
+            <input id="telefono" inputmode="tel" placeholder="462 000 0000">
+          </div>
+          <div class="field">
+            <label>Dirección de envío</label>
+            <textarea id="direccion" placeholder="Calle, colonia y referencias"></textarea>
+          </div>
+
+          <div id="cart"></div>
+
+          <div class="cartTotal">
+            <span>Total</span>
+            <strong id="total">$0</strong>
+          </div>
+          <button class="checkout" id="btnCheckout">ENVIAR PEDIDO POR WHATSAPP</button>
+          <button class="clear" id="btnClear">Vaciar pedido</button>
+          <div class="note">Los precios son por kilogramo. La disponibilidad puede variar al momento de confirmar el pedido.</div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div class="backdrop" id="backdrop">
+    <div class="modal">
+      <div class="modalHead">
+        <div>
+          <h3 id="mTitle">Producto</h3>
+          <div class="muted" style="font-size:13px;font-weight:800">Cantidad en kilogramos</div>
+        </div>
+        <button class="x" id="mClose">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="optGroup">
+          <div class="optTop"><b>Kilos</b><span>captura la cantidad exacta</span></div>
+          <div class="qtyInputRow">
+            <input id="qtyProd" type="number" min="0.1" step="0.1" value="1">
+            <div class="unitBadge">kg</div>
+          </div>
+          <div class="quickQty" id="quickQty"></div>
+        </div>
+        <div class="optGroup">
+          <div class="optTop"><b>Nota del producto</b><span>opcional</span></div>
+          <textarea id="noteProd" placeholder="Ej. grueso, delgado, para asar, empacado por separado..."></textarea>
+        </div>
+      </div>
+      <div class="modalFoot">
+        <button class="ghost" id="mCancel">Cancelar</button>
+        <button class="solid" id="mAdd">Agregar al pedido</button>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
