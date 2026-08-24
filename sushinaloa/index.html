@@ -2723,6 +2723,51 @@ html.intro-lock body{
   text-align:center;
 }
 </style>
+
+<style>
+/* Botón Cerrar de la confirmación */
+#checkoutContent .success button[onclick*="closeCheckout"],
+#checkoutContent .success .close-btn,
+#checkoutContent .success button:last-of-type{
+  display:block;
+  width:min(100%,260px);
+  min-height:52px;
+  margin:28px auto 4px;
+  padding:13px 24px;
+  border:1px solid rgba(224,166,64,.65);
+  border-radius:14px;
+  background:#111;
+  color:#f4c45a;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:900;
+  line-height:1;
+  cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+  transition:transform .18s ease,background .18s ease,border-color .18s ease;
+}
+#checkoutContent .success button[onclick*="closeCheckout"]:hover,
+#checkoutContent .success .close-btn:hover,
+#checkoutContent .success button:last-of-type:hover{
+  background:#1a150b;
+  border-color:#f0b93e;
+  transform:translateY(-1px);
+}
+#checkoutContent .success button[onclick*="closeCheckout"]:active,
+#checkoutContent .success .close-btn:active,
+#checkoutContent .success button:last-of-type:active{
+  transform:translateY(0);
+}
+</style>
+
+<style>
+.order-wait-time{width:min(100%,520px);margin:14px auto 20px;padding:13px 16px;border-radius:14px;border:1px solid rgba(224,166,64,.38);background:rgba(224,166,64,.07);display:flex;align-items:center;justify-content:space-between;gap:12px;color:#d9ba7d}
+.order-wait-time span{font-size:13px;font-weight:800}.order-wait-time strong{color:#f4c45a;font-size:17px;white-space:nowrap}
+.order-process-notice{margin:14px 0 0;padding:13px 15px;border-radius:14px;background:rgba(25,135,84,.10);border:1px solid rgba(41,199,116,.24);color:#68dc99;font-weight:850;line-height:1.45;text-align:center}
+@media(max-width:560px){.order-wait-time{align-items:flex-start;flex-direction:column}}
+</style>
 </head>
 <body>
 
@@ -2839,6 +2884,7 @@ html.intro-lock body{
  <button class="category" data-category="El Especial" onclick="filterProducts('El Especial',this)">El Especial</button>
  <button class="category" data-category="Natural" onclick="filterProducts('Natural',this)">Natural</button>
  <button class="category" data-category="Bebidas" onclick="filterProducts('Bebidas',this)">Bebidas</button>
+ <button class="category" data-category="Extras" onclick="filterProducts('Extras',this)">Extras</button>
  </div>
 
  <div class="products" id="products"></div>
@@ -2983,21 +3029,24 @@ html.intro-lock body{
  <script src="config.js"></script>
 
 <script>
+ const TIEMPO_ESPERA = "45–60 min";
  const products = [
  {id:1,name:"Arroz Frito Gohan",category:"Entradas",price:85,emoji:"🍚",photo:"img/imagen-03.jpg",tag:"ENTRADA",desc:"Arroz frito preparado con tocino, queso crema, cebollín, pollo y carne de res; sazonado con soya natural y zanahoria, coronado con tampico y aguacate."},
  {id:2,name:"Orden Chiles Güeros Rellenos",category:"Entradas",price:75,emoji:"🌶️",photo:"img/imagen-04.jpg",tag:"3 PIEZAS",desc:"3 chiles güeros rellenos de tampico y queso crema, empanizados y coronados con salsa de anguila y chipotle."},
- {id:3,name:"Mar y Tierra",category:"Rollos Empanizados",price:120,emoji:"🍣",photo:"img/imagen-05.jpg",tag:"EMPANIZADO",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, camarón y res."},
- {id:4,name:"Yaquesita",category:"Rollos Empanizados",price:135,emoji:"🧀",photo:"img/imagen-06.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón y surimi; coronado con mozzarella, queso crema, chimichurri, salsa sriracha y ajonjolí."},
- {id:5,name:"¡Que Chulada!",category:"Rollos Empanizados",price:150,emoji:"🍤",photo:"img/imagen-07.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y surimi; coronado con queso especial de la casa, tampico y camarones empanizados, bañado en salsa de anguila y ajonjolí."},
- {id:6,name:"Que Rollo",category:"Rollos Empanizados",price:135,emoji:"🥓",photo:"img/imagen-08.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y res; coronado con tampico y trozos de tocino frito."},
- {id:7,name:"Al-Bien",category:"Rollos Empanizados",price:130,emoji:"🥢",photo:"img/imagen-09.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, surimi y camarón; coronado con tampico, salsa de anguila, chipotle y sriracha."},
- {id:8,name:"Túmbate el Rollo",category:"Rollos Empanizados",price:150,emoji:"🍗",photo:"img/imagen-10.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón, res y surimi; coronado con tampico y pollo empanizado, bañado en BBQ y ranch con ajonjolí."},
- {id:9,name:"Rollo Culichi",category:"Rollos Empanizados",price:145,emoji:"🌶️",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, res, pollo y chile güero; coronado con queso especial de la casa, tampico, tocino picado y ajonjolí."},
- {id:10,name:"Que Chilo",category:"Rollos Empanizados",price:135,emoji:"🍣",photo:"img/imagen-11.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate y camarón; coronado con tampico, tocino, salsa de anguila y aderezo ranch."},
- {id:11,name:"Machin Roll",category:"Rollo Horneado",price:160,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
- {id:12,name:"Suchinaloa",category:"El Especial",price:175,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
- {id:13,name:"Avocado Roll",category:"Natural",price:120,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
- {id:14,name:"Té de Jazmín Saboraté",category:"Bebidas",price:null,emoji:"🍵",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."}
+ {id:3,name:"Mar y Tierra",category:"Rollos Empanizados",price:125,emoji:"🍣",photo:"img/imagen-05.jpg",tag:"EMPANIZADO",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, camarón y res."},
+ {id:4,name:"Yaquesita",category:"Rollos Empanizados",price:140,emoji:"🧀",photo:"img/imagen-06.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón y surimi; coronado con mozzarella, queso crema, chimichurri, salsa sriracha y ajonjolí."},
+ {id:5,name:"¡Que Chulada!",category:"Rollos Empanizados",price:155,emoji:"🍤",photo:"img/imagen-07.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y surimi; coronado con queso especial de la casa, tampico y camarones empanizados, bañado en salsa de anguila y ajonjolí."},
+ {id:6,name:"Que Rollo",category:"Rollos Empanizados",price:140,emoji:"🥓",photo:"img/imagen-08.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y res; coronado con tampico y trozos de tocino frito."},
+ {id:7,name:"Al-Bien",category:"Rollos Empanizados",price:135,emoji:"🥢",photo:"img/imagen-09.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, surimi y camarón; coronado con tampico, salsa de anguila, chipotle y sriracha."},
+ {id:8,name:"Túmbate el Rollo",category:"Rollos Empanizados",price:155,emoji:"🍗",photo:"img/imagen-10.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón, res y surimi; coronado con tampico y pollo empanizado, bañado en BBQ y ranch con ajonjolí."},
+ {id:9,name:"Rollo Culichi",category:"Rollos Empanizados",price:150,emoji:"🌶️",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, res, pollo y chile güero; coronado con queso especial de la casa, tampico, tocino picado y ajonjolí."},
+ {id:10,name:"Que Chilo",category:"Rollos Empanizados",price:140,emoji:"🍣",photo:"img/imagen-11.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate y camarón; coronado con tampico, tocino, salsa de anguila y aderezo ranch."},
+ {id:11,name:"Machin Roll",category:"Rollo Horneado",price:165,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
+ {id:12,name:"Suchinaloa",category:"El Especial",price:180,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
+ {id:13,name:"Avocado Roll",category:"Natural",price:125,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
+ {id:14,name:"Té de Jazmín Saboraté",category:"Bebidas",price:null,emoji:"🍵",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
+ {id:15,name:"Extra de Salsa",category:"Extras",price:15,emoji:"🥣",tag:"EXTRA",desc:"Porción extra de salsa para acompañar tu pedido."},
+ {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."}
  ];
 
  let cart = JSON.parse(localStorage.getItem("suchinaloaCart") || "[]");
@@ -4133,7 +4182,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
    if(title) title.textContent = "¡Pago recibido!";
 
    const intro = document.querySelector("#checkoutContent .success > p");
-   if(intro) intro.textContent = "Tu pago fue confirmado correctamente. Tu pedido ya está en proceso.";
+   if(intro) intro.textContent = "Tu pago fue confirmado correctamente. Tu pedido ya se está elaborando.";
 
    const icon = document.querySelector("#checkoutContent .success-icon");
    if(icon) icon.textContent = "✓";
@@ -4152,13 +4201,13 @@ ${document.getElementById("kitchenTicket").innerHTML}
    }
 
    const help = document.querySelector("#checkoutContent .payment-final-help");
-   if(help) help.textContent = "Tu orden está confirmada. La entrega se paga en efectivo al repartidor.";
+   if(help) help.textContent = "Tu orden está confirmada. El pedido está en elaboración y el repartidor se comunicará contigo. La entrega se paga en efectivo al repartidor.";
 
    const card = document.querySelector("#checkoutContent .payment-final-card");
    if(card && !card.querySelector(".payment-confirmed-banner")){
      const banner = document.createElement("div");
      banner.className = "payment-confirmed-banner";
-     banner.textContent = "Todo listo. Estamos preparando tu pedido.";
+     banner.textContent = "Todo listo. Estamos elaborando tu pedido. El repartidor se comunicará contigo cuando salga a entrega.";
      card.appendChild(banner);
    }
  }
@@ -4331,6 +4380,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  <h2>¡Pedido recibido!</h2>
  <p>Tu pedido está registrado. Completa el pago para confirmar tu orden.</p>
  <div class="order-number">${order}</div>
+ <div class="order-wait-time"><span>⏱ Tiempo estimado de espera</span><strong>${TIEMPO_ESPERA}</strong></div>
 
  <div class="payment-final-card">
  ${
@@ -4346,6 +4396,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  <div id="paymentStatus" class="payment-final-status ok">
    ✓ Pedido confirmado. Paga en efectivo al recibir.
+ </div>
+ <div class="order-process-notice">
+   🍣 Tu pedido ya se está elaborando. El repartidor se comunicará contigo cuando salga a entrega.
  </div>
  `
  : `
