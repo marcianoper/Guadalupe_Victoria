@@ -4398,6 +4398,244 @@ html,body{
 }
 </style>
 
+
+<style>
+/* =========================================================
+   HERO LIMPIO · FOTO REAL SIN RECORTE EXTRAÑO
+   ========================================================= */
+.hero-experience{
+  min-height:540px!important;
+  display:block!important;
+  background:#f7f1e9!important;
+}
+
+.hero-experience-content{
+  position:relative!important;
+  z-index:5!important;
+  width:100%!important;
+  max-width:1400px!important;
+  min-height:540px!important;
+  padding:72px 7%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+}
+
+.hero-experience-copy{
+  position:relative!important;
+  z-index:6!important;
+  width:43%!important;
+  max-width:520px!important;
+}
+
+.hero-experience-copy h1{
+  max-width:100%!important;
+  font-size:clamp(48px,5.2vw,76px)!important;
+  line-height:.92!important;
+}
+
+.hero-experience-copy p{
+  max-width:440px!important;
+}
+
+.hero-experience-actions{
+  position:relative!important;
+  z-index:6!important;
+}
+
+/* Visual del lado derecho */
+.hero-real-visual{
+  position:absolute!important;
+  z-index:2!important;
+  top:50%!important;
+  right:4%!important;
+  width:52%!important;
+  height:76%!important;
+  transform:translateY(-50%)!important;
+  pointer-events:none!important;
+}
+
+/* Sol rojo detrás de la comida */
+.hero-red-sun{
+  position:absolute!important;
+  z-index:0!important;
+  width:310px!important;
+  height:310px!important;
+  top:0!important;
+  right:5%!important;
+  border-radius:50%!important;
+  background:#df2525!important;
+}
+
+/* Pincel negro más controlado */
+.hero-brush{
+  position:absolute!important;
+  z-index:1!important;
+  left:2%!important;
+  right:0!important;
+  bottom:8%!important;
+  width:96%!important;
+  height:22%!important;
+  background:#1b1917!important;
+  transform:rotate(-4deg)!important;
+  clip-path:polygon(
+    0 48%, 7% 35%, 5% 58%, 15% 40%, 14% 61%,
+    28% 42%, 31% 60%, 46% 45%, 49% 62%,
+    65% 43%, 68% 58%, 82% 41%, 86% 56%,
+    100% 39%, 94% 63%, 100% 62%, 86% 75%,
+    68% 70%, 50% 78%, 32% 72%, 16% 79%, 0 72%
+  )!important;
+}
+
+/* La foto ya no usa clip polygon irregular */
+.hero-real-visual img{
+  position:absolute!important;
+  z-index:3!important;
+  right:0!important;
+  bottom:4%!important;
+  width:88%!important;
+  height:78%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:34px!important;
+  clip-path:none!important;
+  transform:rotate(-1.2deg)!important;
+  box-shadow:0 24px 46px rgba(66,45,30,.18)!important;
+  border:8px solid rgba(255,250,244,.72)!important;
+}
+
+/* Solo se conserva el bloque LOS FAVORITOS DE LA CASA */
+.menu-intro{
+  margin:54px auto 16px!important;
+}
+.menu-intro > span{
+  color:#df2525!important;
+  letter-spacing:2px!important;
+}
+.menu-intro h2{
+  color:#1d1a18!important;
+}
+.menu-intro h2 b{
+  color:#df2525!important;
+}
+
+/* Ocultamos cualquier CSS viejo de secciones ya eliminadas */
+.brand-story,
+.mock-about,
+.mock-menu-title{
+  display:none!important;
+}
+
+@media(max-width:900px){
+  .hero-experience-content{
+    min-height:590px!important;
+    padding:56px 28px 300px!important;
+    justify-content:flex-start!important;
+  }
+
+  .hero-experience-copy{
+    width:100%!important;
+    max-width:600px!important;
+  }
+
+  .hero-real-visual{
+    top:auto!important;
+    bottom:18px!important;
+    right:3%!important;
+    width:82%!important;
+    height:300px!important;
+    transform:none!important;
+  }
+
+  .hero-real-visual img{
+    width:90%!important;
+    height:230px!important;
+  }
+
+  .hero-red-sun{
+    width:190px!important;
+    height:190px!important;
+  }
+}
+
+@media(max-width:560px){
+  .hero-experience{
+    min-height:650px!important;
+  }
+
+  .hero-experience-content{
+    min-height:650px!important;
+    padding:42px 20px 300px!important;
+  }
+
+  .hero-experience-copy h1{
+    font-size:48px!important;
+  }
+
+  .hero-real-visual{
+    width:96%!important;
+    right:-7%!important;
+  }
+
+  .hero-real-visual img{
+    width:92%!important;
+    height:220px!important;
+    border-radius:24px!important;
+  }
+}
+</style>
+
+
+<style>
+/* ESTRUCTURA: HERO → SOBRE SUCHINALOA → NUESTROS ROLLOS → PRODUCTOS */
+.mock-about{
+  display:grid!important;
+  max-width:1280px!important;
+  margin:48px auto 42px!important;
+  padding:30px 22px!important;
+  grid-template-columns:.8fr 1.3fr .8fr!important;
+  gap:28px!important;
+  align-items:center!important;
+}
+
+.rollos-heading{
+  max-width:1280px;
+  margin:8px auto 4px;
+  padding:0 22px;
+  text-align:center;
+}
+.rollos-heading h2{
+  margin:0;
+  color:#1d1a18;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:36px;
+  line-height:1;
+}
+.rollos-heading h2 b{
+  color:#df2525;
+}
+
+.menu-intro{
+  display:none!important;
+}
+
+@media(max-width:980px){
+  .mock-about{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:560px){
+  .mock-about{
+    margin:28px auto 30px!important;
+    padding:22px 18px!important;
+  }
+  .rollos-heading h2{
+    font-size:29px;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -4505,37 +4743,6 @@ html,body{
 
 </section>
 
-<section class="brand-story" aria-label="Sobre Suchinaloa">
-  <div class="brand-story-grid">
-    <div class="brand-story-title">
-      <span>ALGO BIEN</span>
-      <strong>SUCHINALOA</strong>
-      <em>IRAPUATO</em>
-    </div>
-
-    <div class="brand-story-copy">
-      <p>Sushi con carácter, preparado al momento y con ese toque que hace que cada rollo se sienta diferente.</p>
-      <p class="brand-story-jp">スシナルoa · hecho para compartir</p>
-    </div>
-
-    <div class="brand-story-stats">
-      <div><strong>100%</strong><span>Preparado al momento</span></div>
-      <div><strong>+15</strong><span>Opciones para elegir</span></div>
-      <div><strong>10 km</strong><span>Zona de cobertura</span></div>
-    </div>
-  </div>
-
-  <div class="brand-story-photo">
-    <img src="img/imagen-07.jpg" alt="Rollo Suchinaloa" loading="lazy">
-  </div>
-</section>
-
-<section class="menu-intro">
-  <span>NUESTRO MENÚ</span>
-  <h2>LOS FAVORITOS <b>DE LA CASA</b></h2>
-  <p>Elige tu rollo, agrega extras y arma tu pedido a tu manera.</p>
-</section>
-
 
 <section class="mock-about">
   <div class="mock-about-copy">
@@ -4551,13 +4758,12 @@ html,body{
   </div>
 
   <div class="mock-about-photo">
-    <img src="img/imagen-07.jpg" alt="¡Que Chulada!" loading="lazy">
+    <img src="img/imagen-07.jpg" alt="Suchinaloa" loading="lazy">
   </div>
 </section>
 
-<section class="mock-menu-title">
-  <span>NUESTROS</span>
-  <h2>ROLLOS</h2>
+<section class="rollos-heading">
+  <h2>NUESTROS <b>ROLLOS</b></h2>
 </section>
 
 <section class="content" id="menu">
