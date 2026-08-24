@@ -4636,6 +4636,36 @@ html,body{
 }
 </style>
 
+
+<style>
+/* ===== IMÁGENES ROTATIVAS · HERO + SOBRE SUCHINALOA ===== */
+#heroRotatingImage,
+#aboutRotatingImage{
+  opacity:1;
+  transition:opacity .55s ease, transform .9s ease!important;
+  will-change:opacity,transform;
+}
+
+#heroRotatingImage.photo-out,
+#aboutRotatingImage.photo-out{
+  opacity:0!important;
+}
+
+#heroRotatingImage{
+  transform:rotate(-1.2deg) scale(1.01)!important;
+}
+#heroRotatingImage.photo-in{
+  transform:rotate(-1.2deg) scale(1.035)!important;
+}
+
+#aboutRotatingImage{
+  transform:scale(1.01)!important;
+}
+#aboutRotatingImage.photo-in{
+  transform:scale(1.035)!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -4720,7 +4750,7 @@ html,body{
     <div class="hero-real-visual" aria-hidden="true">
       <div class="hero-red-sun"></div>
       <div class="hero-brush"></div>
-      <img src="img/imagen-13.jpg" alt="">
+      <img id="heroRotatingImage" src="img/imagen-13.jpg" alt="">
     </div>
 
     <div class="hero-experience-actions">
@@ -4758,7 +4788,7 @@ html,body{
   </div>
 
   <div class="mock-about-photo">
-    <img src="img/imagen-07.jpg" alt="Suchinaloa" loading="lazy">
+    <img id="aboutRotatingImage" src="img/imagen-07.jpg" alt="Suchinaloa" loading="lazy">
   </div>
 </section>
 
@@ -6659,6 +6689,64 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
 })();
 </script>
 
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const heroPhotos = [
+    "img/imagen-13.jpg",
+    "img/imagen-03.jpg",
+    "img/imagen-05.jpg",
+    "img/imagen-09.jpg"
+  ];
+
+  const aboutPhotos = [
+    "img/imagen-07.jpg",
+    "img/imagen-04.jpg",
+    "img/imagen-08.jpg",
+    "img/imagen-11.jpg"
+  ];
+
+  function preloadPhotos(list){
+    list.forEach(function(src){
+      const img = new Image();
+      img.src = src;
+    });
+  }
+
+  function startRotator(elementId, photos, intervalMs){
+    const element = document.getElementById(elementId);
+    if(!element || !photos || photos.length < 2) return;
+
+    let index = 0;
+
+    setInterval(function(){
+      index = (index + 1) % photos.length;
+      const nextSrc = photos[index];
+
+      element.classList.add("photo-out");
+
+      setTimeout(function(){
+        element.src = nextSrc;
+        element.classList.add("photo-in");
+        element.classList.remove("photo-out");
+
+        setTimeout(function(){
+          element.classList.remove("photo-in");
+        }, 900);
+      }, 520);
+    }, intervalMs);
+  }
+
+  preloadPhotos(heroPhotos.concat(aboutPhotos));
+
+  startRotator("heroRotatingImage", heroPhotos, 5600);
+
+  setTimeout(function(){
+    startRotator("aboutRotatingImage", aboutPhotos, 6800);
+  }, 1700);
+});
+</script>
 
 </body>
 </html>
