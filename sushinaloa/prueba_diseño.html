@@ -3956,6 +3956,448 @@ body.cart-review-open .mobile-cart{
 }
 </style>
 
+
+<style>
+/* =========================================================
+   SUCHINALOA · MOCKUP REAL FOTOS
+   Réplica visual del concepto generado, usando fotos reales.
+   ========================================================= */
+:root{
+  --mk-bg:#f6f0e8;
+  --mk-paper:#fffaf4;
+  --mk-ink:#191816;
+  --mk-muted:#665f59;
+  --mk-red:#df2525;
+  --mk-red-dark:#b51717;
+  --mk-line:#ddd2c6;
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 15% 20%,rgba(218,196,168,.12),transparent 22%),
+    var(--mk-bg)!important;
+  color:var(--mk-ink)!important;
+}
+
+/* HERO */
+.hero-experience{
+  width:min(1460px,calc(100% - 24px))!important;
+  min-height:560px!important;
+  margin:10px auto 0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:#f7f1e9!important;
+}
+.hero-experience-bg{
+  opacity:.12!important;
+  filter:grayscale(.2) sepia(.12)!important;
+}
+.hero-experience-overlay{
+  background:
+    linear-gradient(90deg,rgba(247,241,233,.99) 0%,rgba(247,241,233,.95) 39%,rgba(247,241,233,.52) 63%,rgba(247,241,233,.18) 100%)!important;
+}
+.hero-experience-content{
+  position:relative!important;
+  z-index:4!important;
+  max-width:1400px!important;
+  padding:70px 7%!important;
+}
+.hero-experience-eyebrow{
+  color:var(--mk-red)!important;
+  font-size:11px!important;
+  letter-spacing:2.4px!important;
+  font-weight:900!important;
+}
+.hero-experience-copy{
+  max-width:500px!important;
+}
+.hero-experience-copy h1{
+  font-family:'Archivo Black',Impact,sans-serif!important;
+  color:#1c1a18!important;
+  text-transform:uppercase!important;
+  font-size:clamp(52px,5.6vw,80px)!important;
+  line-height:.92!important;
+  letter-spacing:-2px!important;
+  text-shadow:none!important;
+}
+.hero-experience-copy h1 br + *{color:var(--mk-red)!important}
+.hero-experience-copy p{
+  color:#4e4944!important;
+  max-width:430px!important;
+  font-size:15px!important;
+}
+.hero-order-btn{
+  background:var(--mk-red)!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:5px!important;
+  min-width:190px!important;
+  box-shadow:none!important;
+}
+.hero-order-btn span{color:#fff!important}
+.hero-experience-tag{color:#6b625b!important}
+
+/* Real photo hero visual */
+.hero-real-visual{
+  position:absolute;
+  z-index:3;
+  right:3.5%;
+  top:50%;
+  width:min(57vw,760px);
+  height:430px;
+  transform:translateY(-48%);
+  pointer-events:none;
+}
+.hero-real-visual img{
+  position:absolute;
+  z-index:3;
+  right:0;
+  bottom:0;
+  width:88%;
+  height:82%;
+  object-fit:cover;
+  object-position:center;
+  border-radius:44% 56% 38% 62% / 50% 42% 58% 50%;
+  box-shadow:0 25px 52px rgba(72,43,25,.20);
+  transform:rotate(-2deg);
+  clip-path:polygon(8% 8%,94% 0,100% 88%,72% 100%,8% 92%,0 28%);
+}
+.hero-red-sun{
+  position:absolute;
+  z-index:1;
+  width:340px;
+  height:340px;
+  right:8%;
+  top:5%;
+  border-radius:50%;
+  background:#d82020;
+}
+.hero-brush{
+  position:absolute;
+  z-index:2;
+  right:0;
+  bottom:3%;
+  width:96%;
+  height:38%;
+  background:#181716;
+  transform:rotate(-6deg) skewX(-17deg);
+  clip-path:polygon(0 40%,10% 28%,5% 54%,19% 37%,15% 63%,34% 42%,31% 67%,48% 45%,44% 72%,64% 48%,62% 75%,78% 51%,76% 71%,100% 49%,92% 74%,100% 72%,88% 86%,65% 78%,42% 90%,20% 81%,0 94%,8% 67%);
+}
+.hero-scroll-cue{display:none!important}
+
+/* ABOUT */
+.mock-about{
+  max-width:1280px;
+  margin:34px auto 0;
+  padding:30px 22px;
+  display:grid;
+  grid-template-columns:.8fr 1.3fr .8fr;
+  gap:28px;
+  align-items:center;
+}
+.mock-kicker{
+  color:#1e1c1a;
+  font-size:12px;
+  font-weight:900;
+}
+.mock-about-copy h2{
+  margin:4px 0 14px;
+  color:var(--mk-red);
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:32px;
+  line-height:1;
+}
+.mock-about-copy p{
+  color:var(--mk-muted);
+  font-size:12px;
+  line-height:1.65;
+}
+.mock-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--mk-line);
+  background:rgba(255,250,244,.72);
+}
+.mock-stats div{
+  padding:25px 14px;
+  text-align:center;
+  border-right:1px solid var(--mk-line);
+}
+.mock-stats div:last-child{border-right:0}
+.mock-stats b{
+  display:block;
+  color:#25211e;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:26px;
+}
+.mock-stats span{
+  display:block;
+  margin-top:7px;
+  color:#6f6760;
+  font-size:9px;
+  line-height:1.35;
+}
+.mock-about-photo{
+  height:190px;
+  overflow:hidden;
+}
+.mock-about-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+/* MENU TITLE */
+.mock-menu-title{
+  margin:38px auto 4px;
+  text-align:center;
+}
+.mock-menu-title span{
+  color:#1e1b19;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:30px;
+}
+.mock-menu-title h2{
+  display:inline;
+  margin-left:8px;
+  color:var(--mk-red);
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:30px;
+}
+.content{
+  max-width:1320px!important;
+  margin:0 auto 120px!important;
+  padding:0 58px!important;
+}
+.section-head{display:none!important}
+.categories{
+  justify-content:center!important;
+  padding:18px 0!important;
+  margin:0 0 10px!important;
+  background:transparent!important;
+}
+.category{
+  background:transparent!important;
+  color:#282522!important;
+  border:0!important;
+  border-radius:4px!important;
+  font-size:11px!important;
+  padding:9px 15px!important;
+}
+.category.active{
+  background:var(--mk-red)!important;
+  color:#fff!important;
+}
+
+/* FEATURED 3-SLOT CAROUSEL */
+.featured-carousel-shell{
+  position:relative;
+}
+.featured-viewport{
+  overflow:hidden;
+}
+.products{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.mock-product-card{
+  display:grid!important;
+  grid-template-columns:45% 55%!important;
+  min-height:250px!important;
+  background:rgba(255,250,244,.92)!important;
+  border:1px solid #d9d0c6!important;
+  border-radius:10px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.mock-product-photo{
+  min-height:250px;
+  background:#f0e7dd;
+}
+.mock-product-photo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+.mock-product-photo.is-empty{
+  background:#f4ede5;
+}
+.mock-product-info{
+  display:flex;
+  flex-direction:column;
+  padding:18px 16px 14px;
+}
+.mock-product-tag{
+  color:var(--mk-red);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.mock-product-info h3{
+  margin:7px 0 2px!important;
+  color:#1e1b19!important;
+  font-family:'Archivo Black',Impact,sans-serif!important;
+  font-size:20px!important;
+  line-height:1.05!important;
+}
+.mock-jp{
+  color:var(--mk-red);
+  font-size:9px;
+  margin-bottom:12px;
+}
+.mock-product-info p{
+  margin:0!important;
+  color:#625b55!important;
+  font-size:10.5px!important;
+  line-height:1.55!important;
+}
+.mock-product-bottom{
+  margin-top:auto;
+  padding-top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.mock-product-bottom .price{
+  color:var(--mk-red)!important;
+  font-size:18px!important;
+  font-weight:900!important;
+}
+.mock-add{
+  width:auto!important;
+  min-width:78px!important;
+  height:31px!important;
+  padding:0 10px!important;
+  background:#fff!important;
+  color:var(--mk-red)!important;
+  border:1px solid var(--mk-red)!important;
+  border-radius:4px!important;
+  font-size:9px!important;
+  text-transform:uppercase;
+}
+.mock-add:hover{
+  background:var(--mk-red)!important;
+  color:#fff!important;
+}
+.featured-arrow{
+  position:absolute;
+  z-index:5;
+  top:50%;
+  width:42px;
+  height:42px;
+  margin-top:-21px;
+  border-radius:50%;
+  border:1px solid #e2d8ce;
+  background:#fff;
+  color:var(--mk-red);
+  font-size:28px;
+  box-shadow:0 6px 18px rgba(56,42,31,.10);
+}
+.featured-prev{left:-50px}
+.featured-next{right:-50px}
+.featured-dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:18px;
+}
+.featured-dots button{
+  width:8px;
+  height:8px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:#d5ccc3;
+}
+.featured-dots button.active{
+  width:20px;
+  border-radius:99px;
+  background:var(--mk-red);
+}
+
+/* Header cart stays subtle */
+.topbar .cart-top{
+  background:transparent!important;
+  border:1px solid rgba(55,48,43,.22)!important;
+  color:#2b2825!important;
+  box-shadow:none!important;
+}
+
+/* Preserve drawer/cart functionality in same palette */
+.cart-drawer{
+  background:#fffaf4!important;
+}
+.mobile-cart{
+  background:rgba(255,250,244,.96)!important;
+}
+
+/* RESPONSIVE */
+@media(max-width:980px){
+  .hero-real-visual{
+    opacity:.50;
+    width:60vw;
+    right:-8%;
+  }
+  .mock-about{
+    grid-template-columns:1fr;
+  }
+  .mock-about-photo{height:260px}
+  .products{
+    grid-template-columns:1fr!important;
+  }
+  .mock-product-card{
+    grid-template-columns:38% 62%!important;
+  }
+  .featured-prev{left:4px}
+  .featured-next{right:4px}
+  .content{padding:0 18px!important}
+}
+@media(max-width:620px){
+  .hero-experience{
+    min-height:600px!important;
+  }
+  .hero-experience-content{
+    padding:50px 24px!important;
+  }
+  .hero-real-visual{
+    width:92vw;
+    height:290px;
+    right:-10%;
+    top:72%;
+    opacity:.38;
+  }
+  .hero-red-sun{
+    width:220px;
+    height:220px;
+  }
+  .mock-stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .mock-stats div{
+    padding:16px 7px;
+  }
+  .mock-product-card{
+    grid-template-columns:42% 58%!important;
+    min-height:220px!important;
+  }
+  .mock-product-photo{
+    min-height:220px;
+  }
+  .mock-product-info{
+    padding:14px 12px;
+  }
+  .mock-product-info h3{
+    font-size:17px!important;
+  }
+  .mock-product-info p{
+    font-size:9.5px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -4036,6 +4478,13 @@ body.cart-review-open .mobile-cart{
       <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
     </div>
 
+
+    <div class="hero-real-visual" aria-hidden="true">
+      <div class="hero-red-sun"></div>
+      <div class="hero-brush"></div>
+      <img src="img/imagen-13.jpg" alt="">
+    </div>
+
     <div class="hero-experience-actions">
       <button type="button" class="hero-order-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
         Ver menú
@@ -4087,6 +4536,30 @@ body.cart-review-open .mobile-cart{
   <p>Elige tu rollo, agrega extras y arma tu pedido a tu manera.</p>
 </section>
 
+
+<section class="mock-about">
+  <div class="mock-about-copy">
+    <span class="mock-kicker">SOBRE</span>
+    <h2>SUCHINALOA</h2>
+    <p>Sushi con carácter, preparado al momento y con ingredientes frescos. Una propuesta hecha para compartir y pedir fácil desde cualquier dispositivo.</p>
+  </div>
+
+  <div class="mock-stats">
+    <div><b>100%</b><span>Preparado al momento</span></div>
+    <div><b>15+</b><span>Opciones en el menú</span></div>
+    <div><b>10 km</b><span>Zona de cobertura</span></div>
+  </div>
+
+  <div class="mock-about-photo">
+    <img src="img/imagen-07.jpg" alt="¡Que Chulada!" loading="lazy">
+  </div>
+</section>
+
+<section class="mock-menu-title">
+  <span>NUESTROS</span>
+  <h2>ROLLOS</h2>
+</section>
+
 <section class="content" id="menu">
  <div class="menu-panel">
  <div class="section-head">
@@ -4107,7 +4580,14 @@ body.cart-review-open .mobile-cart{
  <button class="category" data-category="Extras" onclick="filterProducts('Extras',this)">Extras</button>
  </div>
 
- <div class="products" id="products"></div>
+ <div class="featured-carousel-shell">
+  <button class="featured-arrow featured-prev" type="button" onclick="moveFeatured(-1)" aria-label="Anterior">‹</button>
+  <div class="featured-viewport" id="featuredViewport">
+    <div class="products" id="products"></div>
+  </div>
+  <button class="featured-arrow featured-next" type="button" onclick="moveFeatured(1)" aria-label="Siguiente">›</button>
+</div>
+<div class="featured-dots" id="featuredDots"></div>
  </div>
 
  <aside class="cart-panel" id="desktopCart">
@@ -4379,43 +4859,101 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(value);
  }
 
+ let featuredCategory = "Todos";
+ let featuredStart = 0;
+ let featuredTimer = null;
+
+ function getFeaturedList(){
+   return featuredCategory==="Todos"
+     ? products
+     : products.filter(p=>p.category===featuredCategory);
+ }
+
  function renderProducts(category="Todos"){
- const container = document.getElementById("products");
- const list = category==="Todos" ? products : products.filter(p=>p.category===category);
+   featuredCategory = category;
+   featuredStart = 0;
+   renderFeaturedSlots();
+   restartFeaturedAuto();
+ }
 
- container.innerHTML = list.map(p=>`
- <article class="product product-ref">
-   <div class="product-ref-top">
-     <div class="product-ref-art">
-       ${p.photo
-         ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">`
-         : ``}
-     </div>
+ function renderFeaturedSlots(){
+   const container = document.getElementById("products");
+   const dots = document.getElementById("featuredDots");
+   if(!container) return;
 
-     <div class="product-ref-copy">
-       <div class="product-ref-meta">
-         <span>${p.tag}</span>
-         <small>${p.category}</small>
+   const list = getFeaturedList();
+
+   if(!list.length){
+     container.innerHTML = `<div class="featured-empty">No hay productos en esta categoría.</div>`;
+     if(dots) dots.innerHTML = "";
+     return;
+   }
+
+   const visible = [];
+   const count = Math.min(3,list.length);
+   for(let i=0;i<count;i++){
+     visible.push(list[(featuredStart+i)%list.length]);
+   }
+
+   container.innerHTML = visible.map(p=>`
+     <article class="product mock-product-card">
+       <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
+         ${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : ``}
        </div>
 
-       <h3>${p.name}</h3>
-       <p>${p.desc}</p>
-     </div>
-   </div>
+       <div class="mock-product-info">
+         <div class="mock-product-tag">${p.tag || p.category}</div>
+         <h3>${p.name}</h3>
+         <small class="mock-jp">スシナルoa</small>
+         <p>${p.desc}</p>
 
-   <div class="product-ref-footer">
-     <span class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</span>
+         <div class="mock-product-bottom">
+           <strong class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</strong>
+           <button
+             class="add mock-add"
+             type="button"
+             onclick="addToCart(${p.id})"
+             ${Number.isFinite(p.price) ? "" : "disabled"}
+           >Agregar</button>
+         </div>
+       </div>
+     </article>
+   `).join("");
 
-     <button
-       class="add product-ref-add"
-       type="button"
-       aria-label="${Number.isFinite(p.price) ? `Agregar ${p.name}` : `${p.name} sin precio`}"
-       onclick="addToCart(${p.id})"
-       ${Number.isFinite(p.price) ? "" : "disabled"}
-     >Agregar</button>
-   </div>
- </article>
- `).join("");
+   if(dots){
+     const pages = Math.max(1,Math.ceil(list.length/3));
+     const active = Math.floor(featuredStart/3)%pages;
+     dots.innerHTML = Array.from({length:pages},(_,i)=>
+       `<button class="${i===active ? "active" : ""}" type="button" onclick="goFeaturedPage(${i})" aria-label="Página ${i+1}"></button>`
+     ).join("");
+   }
+ }
+
+ function moveFeatured(direction){
+   const list = getFeaturedList();
+   if(!list.length) return;
+   featuredStart = (featuredStart + direction*3 + list.length) % list.length;
+   renderFeaturedSlots();
+   restartFeaturedAuto();
+ }
+
+ function goFeaturedPage(page){
+   const list = getFeaturedList();
+   if(!list.length) return;
+   featuredStart = (page*3) % list.length;
+   renderFeaturedSlots();
+   restartFeaturedAuto();
+ }
+
+ function restartFeaturedAuto(){
+   if(featuredTimer) clearInterval(featuredTimer);
+   featuredTimer = setInterval(()=>{
+     const list = getFeaturedList();
+     if(list.length>3){
+       featuredStart = (featuredStart + 3) % list.length;
+       renderFeaturedSlots();
+     }
+   },4200);
  }
 
  function filterProducts(category,btn){
