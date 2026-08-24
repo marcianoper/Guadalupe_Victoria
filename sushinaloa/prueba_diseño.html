@@ -4666,6 +4666,72 @@ html,body{
 }
 </style>
 
+
+<style>
+/* ===== TOP BAR · NUEVO LOGO CENTRADO ===== */
+.topbar{
+  position:relative!important;
+  min-height:92px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  padding:10px clamp(18px,5vw,76px)!important;
+  background:#f7f1e9!important;
+}
+
+.topbar-centered-logo{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:3!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:min(390px,48vw)!important;
+  height:76px!important;
+  pointer-events:none!important;
+}
+
+.topbar-centered-logo img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+
+/* El carrito permanece a la derecha */
+.topbar .cart-top{
+  position:relative!important;
+  z-index:5!important;
+  margin-left:auto!important;
+}
+
+/* Ocultar cualquier nombre/logo anterior que hubiera quedado */
+.topbar > .brand,
+.topbar > .topbar-brand,
+.topbar .brand-name,
+.topbar .brand-text{
+  display:none!important;
+}
+
+@media(max-width:640px){
+  .topbar{
+    min-height:78px!important;
+    padding:8px 14px!important;
+  }
+  .topbar-centered-logo{
+    width:min(245px,58vw)!important;
+    height:62px!important;
+  }
+  .topbar .cart-top{
+    transform:scale(.92);
+    transform-origin:right center;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -4718,9 +4784,11 @@ html,body{
 
 
  <header class="topbar">
+  <div class="topbar-centered-logo" aria-label="Suchinaloa">
+    <img src="logo-suchinaloa-nuevo.png" alt="Suchinaloa">
+  </div>
  <div class="topbar-inner">
- <div class="brand">
- <div class="logo official-logo"><img src="img/logo-suchinaloa-transparente.png" alt="Logo Suchinaloa"></div>
+ 
  <div>
  <strong>SUCHINALOA</strong>
  <small> · Entrega a domicilio</small>
