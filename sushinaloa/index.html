@@ -4238,7 +4238,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  throw new Error(result.error || "No se pudo crear el pago.");
  }
 
- const checkoutUrl = result.sandbox_init_point || result.init_point;
+ const checkoutUrl = result.init_point;
  if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
 
  if(status){
