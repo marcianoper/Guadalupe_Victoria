@@ -6816,5 +6816,71 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+<style>
+/* ===== AJUSTE FINAL HERO · 24 AGO 2026 ===== */
+html,body{overflow-x:hidden!important;}
+.hero-experience{
+  width:100%!important;
+  min-height:540px!important;
+  overflow:hidden!important;
+}
+.hero-experience-content{
+  width:min(1400px,100%)!important;
+  max-width:1400px!important;
+  min-height:540px!important;
+  margin:0 auto!important;
+  padding:72px clamp(28px,5vw,72px)!important;
+  box-sizing:border-box!important;
+}
+.hero-experience-eyebrow,
+.hero-experience-copy,
+.hero-experience-actions{
+  margin-left:0!important;
+  transform:none!important;
+}
+.hero-experience-copy{
+  width:44%!important;
+  max-width:560px!important;
+}
+.hero-experience-copy h1{
+  margin-left:0!important;
+  max-width:560px!important;
+  font-size:clamp(50px,5.15vw,74px)!important;
+  line-height:.94!important;
+  overflow:visible!important;
+}
+.hero-real-visual{
+  top:50%!important;
+  right:clamp(20px,4vw,64px)!important;
+  width:52%!important;
+  height:76%!important;
+  transform:translateY(-50%)!important;
+}
+.hero-real-visual img{
+  right:0!important;
+  width:88%!important;
+  height:78%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+@media(max-width:900px){
+  .hero-experience{min-height:650px!important;}
+  .hero-experience-content{
+    min-height:650px!important;
+    padding:48px 28px 315px!important;
+  }
+  .hero-experience-copy{width:100%!important;max-width:620px!important;}
+  .hero-real-visual{
+    top:auto!important;bottom:20px!important;right:2%!important;
+    width:86%!important;height:300px!important;transform:none!important;
+  }
+}
+@media(max-width:560px){
+  .hero-experience-content{padding:38px 20px 300px!important;}
+  .hero-experience-copy h1{font-size:clamp(42px,13vw,54px)!important;}
+  .hero-real-visual{width:98%!important;right:-8%!important;}
+}
+</style>
 </body>
 </html>
