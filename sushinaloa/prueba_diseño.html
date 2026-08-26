@@ -2916,7 +2916,7 @@ body.cart-review-open .mobile-cart{
 <style>
 /* =========================================================
    SUCHINALOA · DISEÑO DE REFERENCIA V2
-   Inspirado en landing editorial de sushi: crema + rojo + negro.
+   Inspirado en landing editorial de suchi: crema + rojo + negro.
    ========================================================= */
 :root{
   --ref-bg:#f3eee7;
@@ -5465,6 +5465,114 @@ footer{background:#030303!important;color:#8f784d!important}
 }
 </style>
 
+
+<style id="suchinaloa-productos-fijos">
+/* =========================================================
+   SUCHINALOA · PRODUCTOS FIJOS
+   Sin carrusel, sin cambio automático.
+   ========================================================= */
+
+.featured-arrow,
+.featured-dots{
+  display:none!important;
+}
+
+.featured-viewport{
+  overflow:visible!important;
+}
+
+.products{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:18px!important;
+  overflow:visible!important;
+  align-items:stretch!important;
+}
+
+/* Tarjetas limpias y de altura consistente */
+.mock-product-card{
+  display:flex!important;
+  flex-direction:column!important;
+  min-width:0!important;
+  min-height:100%!important;
+  background:rgba(255,250,244,.96)!important;
+  border:1px solid #d9d0c6!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+}
+
+.mock-product-photo{
+  width:100%!important;
+  height:210px!important;
+  min-height:210px!important;
+  flex:none!important;
+  background:#f0e7dd!important;
+}
+
+.mock-product-photo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+.mock-product-info{
+  display:flex!important;
+  flex-direction:column!important;
+  flex:1!important;
+  padding:17px 17px 15px!important;
+}
+
+.mock-product-info h3{
+  min-height:42px;
+}
+
+.mock-product-info p{
+  display:block!important;
+  flex:1!important;
+}
+
+.mock-product-bottom{
+  width:100%!important;
+  margin-top:auto!important;
+}
+
+/* Pantalla mediana */
+@media(max-width:1050px){
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+/* Celular */
+@media(max-width:650px){
+  .products{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+
+  .mock-product-card{
+    display:grid!important;
+    grid-template-columns:40% 60%!important;
+    min-height:205px!important;
+  }
+
+  .mock-product-photo{
+    width:100%!important;
+    height:100%!important;
+    min-height:205px!important;
+  }
+
+  .mock-product-info{
+    padding:14px 13px!important;
+  }
+
+  .mock-product-info h3{
+    min-height:0!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5557,7 +5665,7 @@ footer{background:#030303!important;color:#8f784d!important}
     <div class="hero-experience-eyebrow">SUCHINALOA · IRAPUATO</div>
 <div class="hero-experience-copy">
       <h1>Algo bien<br>se está preparando.</h1>
-      <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
+      <p>Suchi con carácter, preparado al momento y directo a tu puerta.</p>
     </div>
 
     <div class="hero-experience-actions">
@@ -5884,100 +5992,62 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  }
 
  let featuredCategory = "Todos";
- let featuredStart = 0;
- let featuredTimer = null;
 
  function getFeaturedList(){
-   return featuredCategory==="Todos"
+   return featuredCategory === "Todos"
      ? products
-     : products.filter(p=>p.category===featuredCategory);
+     : products.filter(p => p.category === featuredCategory);
  }
 
  function renderProducts(category="Todos"){
    featuredCategory = category;
-   featuredStart = 0;
-   renderFeaturedSlots();
-   restartFeaturedAuto();
- }
 
- function renderFeaturedSlots(){
    const container = document.getElementById("products");
-   const dots = document.getElementById("featuredDots");
    if(!container) return;
 
    const list = getFeaturedList();
 
    if(!list.length){
-     container.innerHTML = `<div class="featured-empty">No hay productos en esta categoría.</div>`;
-     if(dots) dots.innerHTML = "";
+     container.innerHTML = `
+       <div class="featured-empty">
+         No hay productos en esta categoría.
+       </div>`;
      return;
    }
 
-   const visible = [];
-   const count = Math.min(3,list.length);
-   for(let i=0;i<count;i++){
-     visible.push(list[(featuredStart+i)%list.length]);
-   }
-
-   container.innerHTML = visible.map(p=>`
+   // Todos los productos quedan visibles y acomodados.
+   // Ya no hay páginas, flechas, temporizador ni cambio automático.
+   container.innerHTML = list.map(p=>`
      <article class="product mock-product-card">
        <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
-         ${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : ``}
+         ${p.photo
+           ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">`
+           : ``}
        </div>
 
        <div class="mock-product-info">
          <div class="mock-product-tag">${p.tag || p.category}</div>
          <h3>${p.name}</h3>
-         <small class="mock-jp">スシナルoa</small>
+         <small class="mock-jp">SUCHI</small>
          <p>${p.desc}</p>
 
          <div class="mock-product-bottom">
-           <strong class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</strong>
+           <strong class="price">
+             ${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}
+           </strong>
+
            <button
              class="add mock-add"
              type="button"
              onclick="addToCart(${p.id})"
              ${Number.isFinite(p.price) ? "" : "disabled"}
-           >Agregar</button>
+           >
+             Agregar
+           </button>
          </div>
        </div>
      </article>
    `).join("");
-
-   if(dots){
-     const pages = Math.max(1,Math.ceil(list.length/3));
-     const active = Math.floor(featuredStart/3)%pages;
-     dots.innerHTML = Array.from({length:pages},(_,i)=>
-       `<button class="${i===active ? "active" : ""}" type="button" onclick="goFeaturedPage(${i})" aria-label="Página ${i+1}"></button>`
-     ).join("");
-   }
- }
-
- function moveFeatured(direction){
-   const list = getFeaturedList();
-   if(!list.length) return;
-   featuredStart = (featuredStart + direction*3 + list.length) % list.length;
-   renderFeaturedSlots();
-   restartFeaturedAuto();
- }
-
- function goFeaturedPage(page){
-   const list = getFeaturedList();
-   if(!list.length) return;
-   featuredStart = (page*3) % list.length;
-   renderFeaturedSlots();
-   restartFeaturedAuto();
- }
-
- function restartFeaturedAuto(){
-   if(featuredTimer) clearInterval(featuredTimer);
-   featuredTimer = setInterval(()=>{
-     const list = getFeaturedList();
-     if(list.length>3){
-       featuredStart = (featuredStart + 3) % list.length;
-       renderFeaturedSlots();
-     }
-   },4200);
  }
 
  function filterProducts(category,btn){
