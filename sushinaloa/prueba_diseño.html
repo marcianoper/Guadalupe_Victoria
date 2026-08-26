@@ -4960,383 +4960,508 @@ body{background:#f7f3ed!important}
 
 <style>
 /* =========================================================
-   SUCHINALOA · TEMA NEGRO
-   Solo cambia la apariencia de la página.
-   La impresión conserva fondo blanco.
+   SUCHINALOA · PAGO SIMPLE
+   Mantiene la paleta clara/original.
    ========================================================= */
-
-:root{
-  --dark-bg:#050505;
-  --dark-panel:#101010;
-  --dark-panel-2:#151515;
-  --dark-line:#292929;
-  --dark-text:#f7f4ef;
-  --dark-muted:#aaa39c;
-  --dark-red:#e52727;
+.payment-simple-field{
+  padding-top:2px;
 }
 
-/* Fondo principal */
-html,
-body{
-  background:var(--dark-bg) !important;
-  color:var(--dark-text) !important;
+.payment-main-choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:10px;
 }
 
-/* Encabezado */
-.topbar,
-.topbar-inner{
-  background:#050505 !important;
+.payment-main-option,
+.payment-scope-option{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  cursor:pointer;
+  border:1px solid #ddd3c8;
+  background:#fffdf9;
+  border-radius:14px;
+  padding:12px;
+  transition:.16s ease;
 }
 
-.topbar{
-  border-bottom:1px solid var(--dark-line) !important;
+.payment-main-option:hover,
+.payment-scope-option:hover{
+  border-color:#c9bcb0;
 }
 
-/* El logo original es negro: lo convertimos visualmente a blanco
-   sin modificar el archivo PNG. */
-.topbar-centered-logo img{
-  filter:grayscale(1) invert(1) brightness(1.15) contrast(1.15) !important;
-  mix-blend-mode:normal !important;
+.payment-main-option:has(input:checked),
+.payment-scope-option:has(input:checked){
+  border-color:#d92f2f;
+  background:#fff6f4;
+  box-shadow:0 0 0 1px rgba(217,47,47,.05);
 }
 
-/* Carrito superior */
-.topbar .cart-top{
-  background:#0b0b0b !important;
-  color:#fff !important;
-  border:1px solid #3a3a3a !important;
-  box-shadow:none !important;
+.payment-main-option input,
+.payment-scope-option input{
+  width:auto!important;
+  margin:3px 0 0!important;
+  accent-color:#d92f2f;
+  flex:none;
 }
 
-.topbar .cart-top *{
-  color:inherit !important;
+.payment-main-option strong,
+.payment-scope-option strong{
+  display:block;
+  color:#211d1a;
+  font-size:14px;
 }
 
-/* Horario */
-.order-hours-bar{
-  background:#070707 !important;
-  border-bottom:1px solid var(--dark-line) !important;
-  color:#bcb6b0 !important;
+.payment-main-option small,
+.payment-scope-option small{
+  display:block;
+  margin-top:2px;
+  color:#786f67;
+  font-size:11px;
+  line-height:1.35;
 }
 
-.order-hours-bar #orderHoursTitle{
-  color:#f13a35 !important;
+.card-payment-scope{
+  margin-top:10px;
+  padding:11px;
+  border-radius:14px;
+  background:#f7f2eb;
+  border:1px solid #e2d8ce;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
 
-.order-hours-dot{
-  background:#e42c2c !important;
+.card-payment-scope.is-hidden{
+  display:none!important;
 }
 
-/* Tiempo de espera */
-.wait-time-bar{
-  background:linear-gradient(135deg,#101010,#151515) !important;
-  border:1px solid #242424 !important;
-  box-shadow:0 12px 35px rgba(0,0,0,.28) !important;
-}
-
-.wait-time-icon{
-  background:#050505 !important;
-  border:1px solid #303030 !important;
-  color:#fff !important;
-}
-
-.wait-time-copy span{
-  color:#f23a34 !important;
-}
-
-.wait-time-copy strong{
-  color:#fff !important;
-}
-
-/* Hero */
-.hero-experience,
-.hero,
-main{
-  background:#050505 !important;
-}
-
-.hero-experience-copy h1,
-.hero-experience h1,
-.hero h1{
-  color:#fff !important;
-}
-
-.hero-experience-copy p,
-.hero-experience p,
-.hero p{
-  color:#aaa39c !important;
-}
-
-.hero-experience-copy .eyebrow,
-.hero .eyebrow{
-  color:#f03732 !important;
-}
-
-/* Marco de fotografía */
-.hero-experience-media,
-.hero-image,
-.hero-photo,
-.hero-visual{
-  border-color:#f1ede7 !important;
-}
-
-/* Texto de pedido en línea */
-.online-status,
-.hero-online,
-.order-online{
-  color:#f1ede7 !important;
-}
-
-/* Secciones generales */
-section,
-.menu-section,
-.about-section,
-.products-section,
-.featured-section{
-  background:#050505 !important;
-  color:#fff !important;
-}
-
-/* Títulos */
-section h1,
-section h2,
-section h3,
-.menu-section h2,
-.products-section h2{
-  color:#fff !important;
-}
-
-/* Texto secundario */
-section p,
-section small,
-.section-subtitle{
-  color:#aaa39c;
-}
-
-/* Tarjetas de producto */
-.product-card,
-.menu-card,
-.card{
-  background:#111 !important;
-  border-color:#282828 !important;
-  color:#fff !important;
-  box-shadow:0 12px 28px rgba(0,0,0,.22) !important;
-}
-
-.product-card h3,
-.product-card h4,
-.menu-card h3,
-.menu-card h4{
-  color:#fff !important;
-}
-
-.product-card p,
-.menu-card p{
-  color:#aaa39c !important;
-}
-
-.product-card .price,
-.menu-card .price{
-  color:#fff !important;
-}
-
-/* Filtros/categorías */
-.category-btn,
-.filter-btn,
-.menu-filter button{
-  background:#0d0d0d !important;
-  color:#d8d3ce !important;
-  border-color:#303030 !important;
-}
-
-.category-btn.active,
-.filter-btn.active,
-.menu-filter button.active{
-  background:#e32626 !important;
-  color:#fff !important;
-  border-color:#e32626 !important;
-}
-
-/* Carrito flotante */
-.cart-float,
-.floating-cart,
-.cart-summary-float{
-  background:#101010 !important;
-  color:#fff !important;
-  border-color:#343434 !important;
-  box-shadow:0 14px 38px rgba(0,0,0,.38) !important;
-}
-
-.cart-float *,
-.floating-cart *,
-.cart-summary-float *{
-  color:inherit;
-}
-
-/* Panel del carrito y checkout */
-.cart-drawer,
-.cart-panel,
-.cart-review,
-.checkout-panel,
-.checkout-card,
-.checkout-content{
-  background:#0e0e0e !important;
-  color:#fff !important;
-  border-color:#2b2b2b !important;
-}
-
-.cart-drawer h2,
-.cart-panel h2,
-.checkout-panel h2,
-.checkout-card h2{
-  color:#fff !important;
-}
-
-/* Formularios */
-.checkout-overlay{
-  background:rgba(0,0,0,.78) !important;
-}
-
-.checkout-overlay input,
-.checkout-overlay textarea,
-.checkout-overlay select{
-  background:#171717 !important;
-  color:#fff !important;
-  border-color:#393939 !important;
-}
-
-.checkout-overlay input::placeholder,
-.checkout-overlay textarea::placeholder{
-  color:#777 !important;
-}
-
-.checkout-overlay label{
-  color:#e7e2dc !important;
-}
-
-/* Resumen de pago */
-.checkout-summary{
-  background:#111 !important;
-  border-color:#333 !important;
-}
-
-.checkout-summary span{
-  color:#aaa39c !important;
-}
-
-.checkout-summary strong{
-  color:#fff !important;
-}
-
-.checkout-summary-total{
-  border-top-color:#333 !important;
-}
-
-.simple-pay-option{
-  background:#111 !important;
-  border-color:#333 !important;
-}
-
-.simple-pay-option:has(input:checked){
-  background:#1a0d0d !important;
-  border-color:#e32626 !important;
-}
-
-.simple-pay-option strong{
-  color:#fff !important;
-}
-
-.simple-pay-option small{
-  color:#aaa39c !important;
+.card-payment-scope-title{
+  grid-column:1/-1;
+  font-size:12px;
+  color:#665d56;
+  font-weight:800;
+  margin-bottom:1px;
 }
 
 .payment-note{
-  color:#aaa39c !important;
+  min-height:18px;
+  margin-top:9px;
+  color:#6b625a;
+  font-size:12px;
+  line-height:1.4;
 }
 
-/* Cotización de entrega */
-.delivery-estimate,
-.delivery-box,
-.location-box{
-  background:#111 !important;
-  border-color:#333 !important;
-  color:#fff !important;
+.checkout-summary{
+  margin-top:7px;
 }
 
-.delivery-estimate span{
-  color:#aaa39c !important;
+.active-order-recovery{
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:#f6f0e8;
+  border:1px solid #dfd5ca;
+  text-align:left;
 }
 
-.delivery-estimate strong{
-  color:#fff !important;
+.active-order-recovery strong{
+  display:block;
+  color:#2b2622;
+  margin-bottom:3px;
 }
 
-/* Pantalla final de pago */
-.payment-final-card{
-  background:#111 !important;
-  border-color:#333 !important;
-  color:#fff !important;
+.active-order-recovery span{
+  color:#766d65;
+  font-size:12px;
 }
 
-.payment-final-label,
-.payment-final-help{
-  color:#aaa39c !important;
+.new-order-btn{
+  border:1px solid #d7cdc3!important;
+  background:#fff!important;
+  color:#2a2521!important;
 }
 
-.payment-final-amount,
-.payment-final-breakdown strong{
-  color:#fff !important;
+@media(max-width:560px){
+  .payment-main-choice,
+  .card-payment-scope{
+    grid-template-columns:1fr;
+  }
 }
+</style>
 
-.payment-final-breakdown{
-  border-color:#333 !important;
-}
 
-.invoice-notice{
-  background:#111 !important;
-  border-color:#333 !important;
-  color:#fff !important;
-}
-
-/* Footer */
-footer{
-  background:#050505 !important;
-  color:#777 !important;
-  border-top:1px solid #222 !important;
-}
-
-/* Mantener rojos de marca */
-button,
-.add-btn,
-.submit-order,
-.payment-final-button{
-  --button-red:#e32626;
-}
-
-.submit-order,
-.payment-final-button{
-  background:#e32626 !important;
-  color:#fff !important;
-}
-
+<style>
 /* =========================================================
-   IMPRESIÓN
-   No queremos tickets negros: cocina/caja siguen en blanco.
+   SUCHINALOA · CHECKOUT COMPACTO
    ========================================================= */
-@media print{
-  html,
-  body{
-    background:#fff !important;
-    color:#000 !important;
+
+/* Panel principal más corto y respirable */
+.checkout-panel,
+.checkout-card,
+.checkout-content{
+  max-height:86vh !important;
+}
+
+.checkout-content{
+  padding:18px 20px 20px !important;
+}
+
+/* Grid más compacto */
+.checkout-form,
+.checkout-grid{
+  gap:10px 12px !important;
+}
+
+/* Campos más bajos */
+.checkout-overlay .field{
+  margin-bottom:8px !important;
+}
+
+.checkout-overlay label{
+  margin-bottom:5px !important;
+  font-size:13px !important;
+  line-height:1.2 !important;
+}
+
+.checkout-overlay input,
+.checkout-overlay select{
+  min-height:46px !important;
+  height:46px !important;
+  padding:10px 14px !important;
+  font-size:15px !important;
+  border-radius:12px !important;
+}
+
+.checkout-overlay textarea{
+  min-height:74px !important;
+  height:74px !important;
+  padding:10px 14px !important;
+  font-size:14px !important;
+  border-radius:12px !important;
+  resize:vertical !important;
+}
+
+/* Reducir el gran bloque de dirección */
+.location-box,
+.delivery-box,
+.delivery-estimate{
+  margin-top:8px !important;
+  padding:10px 12px !important;
+  border-radius:12px !important;
+}
+
+/* Botones de ubicación en una sola línea cuando haya espacio */
+.location-actions,
+.location-buttons,
+.delivery-actions{
+  display:flex !important;
+  gap:8px !important;
+  flex-wrap:wrap !important;
+  margin-top:8px !important;
+}
+
+.location-actions button,
+.location-buttons button,
+.delivery-actions button{
+  min-height:42px !important;
+  padding:9px 14px !important;
+  border-radius:11px !important;
+  font-size:13px !important;
+  flex:1 1 220px !important;
+}
+
+/* Mensaje de ubicación más discreto */
+.location-note,
+.location-warning,
+.delivery-warning,
+#locationStatus,
+#deliveryStatus{
+  margin-top:7px !important;
+  font-size:11px !important;
+  line-height:1.35 !important;
+}
+
+/* Resumen de pago más compacto */
+.checkout-summary{
+  padding:10px 12px !important;
+  gap:6px !important;
+  margin-bottom:8px !important;
+}
+
+.checkout-summary > div{
+  font-size:12px !important;
+}
+
+.checkout-summary-total{
+  padding-top:7px !important;
+  font-size:15px !important;
+}
+
+/* Forma de pago más compacta */
+.payment-main-choice{
+  gap:7px !important;
+  margin-top:8px !important;
+}
+
+.payment-main-option,
+.payment-scope-option{
+  padding:9px 10px !important;
+  border-radius:12px !important;
+}
+
+.payment-main-option strong,
+.payment-scope-option strong{
+  font-size:13px !important;
+}
+
+.payment-main-option small,
+.payment-scope-option small{
+  font-size:10px !important;
+  margin-top:1px !important;
+}
+
+.card-payment-scope{
+  margin-top:8px !important;
+  padding:9px !important;
+  gap:6px !important;
+  border-radius:12px !important;
+}
+
+.card-payment-scope-title{
+  font-size:11px !important;
+}
+
+/* Indicaciones generales más pequeñas */
+.checkout-overlay textarea[name="notes"],
+.checkout-overlay textarea[name="indicaciones"]{
+  min-height:64px !important;
+  height:64px !important;
+}
+
+/* Pie y botón final */
+.checkout-actions,
+.checkout-footer{
+  margin-top:12px !important;
+}
+
+.checkout-actions button,
+.checkout-footer button,
+.submit-order{
+  min-height:46px !important;
+  padding:11px 16px !important;
+}
+
+/* En escritorio, compactar pares de campos */
+@media(min-width:760px){
+  .checkout-form,
+  .checkout-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
   }
 
-  #kitchenTicket,
-  #kitchenTicket *,
-  .ticket,
-  .ticket *{
-    background:#fff !important;
-    color:#000 !important;
-    filter:none !important;
+  .field.full,
+  .checkout-form .full,
+  .checkout-grid .full{
+    grid-column:1/-1 !important;
   }
+
+  /* Referencias ocupa toda la fila pero sin crecer demasiado */
+  textarea[name="references"],
+  textarea[name="referencias"]{
+    min-height:68px !important;
+    height:68px !important;
+  }
+}
+
+/* Móvil: mantener lectura clara */
+@media(max-width:759px){
+  .checkout-panel,
+  .checkout-card,
+  .checkout-content{
+    max-height:92vh !important;
+  }
+
+  .checkout-content{
+    padding:14px !important;
+  }
+
+  .payment-main-choice,
+  .card-payment-scope{
+    grid-template-columns:1fr !important;
+  }
+
+  .location-actions button,
+  .location-buttons button,
+  .delivery-actions button{
+    flex:1 1 100% !important;
+  }
+}
+</style>
+
+
+<style id="suchinaloa-legacy-design-final">
+:root{
+  --bg:#050505;--panel:#0b0b0b;--gold:#e0a640;--gold-soft:#f3c66a;
+  --red:#c91717;--cream:#f7dfaa;--text:#fff3d0;--muted:#c6a86d;
+}
+body{
+  background:radial-gradient(circle at 50% 0%,rgba(153,22,22,.16),transparent 25%),
+             linear-gradient(180deg,#020202 0%,#070707 100%)!important;
+  color:var(--text)!important;
+}
+.topbar{
+  position:sticky!important;top:0!important;min-height:auto!important;height:auto!important;
+  background:rgba(0,0,0,.94)!important;border-bottom:1px solid rgba(224,166,64,.18)!important;
+  backdrop-filter:blur(10px)!important;overflow:visible!important;
+}
+.topbar-inner{
+  max-width:1180px!important;min-height:auto!important;height:auto!important;margin:auto!important;
+  padding:10px 18px!important;display:flex!important;align-items:center!important;
+  justify-content:space-between!important;
+}
+.brand{display:flex!important;align-items:center!important;gap:10px!important}
+.brand .official-logo{
+  width:44px!important;height:44px!important;border-radius:12px!important;
+  border:1px solid rgba(224,166,64,.35)!important;background:#050505!important;
+}
+.brand strong{color:var(--cream)!important;font-weight:900!important}
+.brand small{display:none!important}
+.topbar .cart-top{
+  position:static!important;transform:none!important;margin:0!important;
+  border:1px solid rgba(224,166,64,.60)!important;background:#090909!important;
+  color:var(--gold-soft)!important;border-radius:15px!important;padding:10px 14px!important;
+}
+.topbar-centered-logo{display:none!important}
+
+.order-hours-bar{
+  width:100%!important;min-height:0!important;margin:0!important;padding:9px 14px!important;
+  background:#080808!important;border-bottom:1px solid rgba(224,166,64,.16)!important;
+  color:#d8bd84!important;font-size:12px!important;
+}
+.order-hours-bar #orderHoursText{color:#a98d60!important}
+.order-hours-bar.is-open #orderHoursTitle{color:#7ce2a8!important}
+.order-hours-bar.is-closed #orderHoursTitle{color:#ff8e8e!important}
+
+.wait-time-bar{
+  max-width:1180px!important;width:calc(100% - 36px)!important;min-height:0!important;
+  margin:12px auto 0!important;padding:10px 14px!important;background:#0b0b0b!important;
+  border:1px solid rgba(224,166,64,.28)!important;border-radius:14px!important;box-shadow:none!important;
+}
+.wait-time-icon{width:36px!important;height:36px!important;background:#17110d!important;color:var(--gold)!important;font-size:17px!important}
+.wait-time-copy span{color:#b88d43!important;font-size:9px!important}
+.wait-time-copy strong{color:#ffe4a0!important;font-size:17px!important}
+
+.hero-experience{
+  position:relative!important;width:100%!important;max-width:none!important;min-height:82vh!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;background:#030303!important;
+}
+.hero-experience-bg{
+  position:absolute!important;inset:-4%!important;z-index:-3!important;
+  background-image:url("img/imagen-13.jpg")!important;background-size:cover!important;
+  background-position:center 48%!important;filter:saturate(.96) contrast(1.05) brightness(.78)!important;
+}
+.hero-experience-overlay{
+  position:absolute!important;inset:0!important;z-index:-2!important;
+  background:radial-gradient(circle at 72% 48%,rgba(176,20,18,.10),transparent 34%),
+             linear-gradient(90deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.80) 34%,rgba(0,0,0,.45) 58%,rgba(0,0,0,.18) 78%,rgba(0,0,0,.42) 100%)!important;
+}
+.hero-experience-content{
+  position:relative!important;z-index:2!important;width:min(1180px,calc(100% - 36px))!important;
+  min-height:82vh!important;margin:0 auto!important;padding:88px 0 86px!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;
+}
+.hero-experience-eyebrow{color:#d9a646!important}
+.hero-experience-copy{max-width:620px!important}
+.hero-experience-copy h1{
+  margin:0!important;color:#fff0c7!important;font-size:clamp(44px,6.1vw,82px)!important;
+  line-height:.92!important;letter-spacing:-3.4px!important;font-weight:950!important;
+}
+.hero-experience-copy p{
+  max-width:520px!important;margin:20px 0 0!important;color:#e5cfa1!important;
+  font-size:16px!important;line-height:1.55!important;
+}
+.hero-real-visual,.mock-about,.rollos-heading{display:none!important}
+
+.content{
+  max-width:1180px!important;margin:30px auto 120px!important;padding:0 18px!important;
+  display:block!important;color:#f7e7c7!important;
+}
+.section-head{display:flex!important;margin:18px 0 12px!important}
+.section-head h2{display:block!important;margin:0!important;color:var(--gold-soft)!important;font-size:28px!important}
+.categories{
+  display:flex!important;gap:12px!important;overflow-x:auto!important;padding:8px 0 16px!important;
+  margin:0 0 6px!important;position:sticky!important;top:64px!important;z-index:30!important;
+  background:linear-gradient(#050505 78%,rgba(5,5,5,0))!important;
+}
+.category{
+  flex:0 0 auto!important;border-radius:999px!important;padding:11px 18px!important;
+  color:var(--gold-soft)!important;background:#090909!important;
+  border:1px solid rgba(224,166,64,.62)!important;font-weight:800!important;
+}
+.category.active{background:linear-gradient(180deg,#cf1c1c,#9d0909)!important;color:#fff7dc!important;border-color:#e12b2b!important}
+.products{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;overflow:visible!important;
+}
+.product{
+  width:auto!important;min-width:0!important;max-width:none!important;min-height:250px!important;
+  display:grid!important;grid-template-columns:42% 58%!important;
+  background:linear-gradient(180deg,#0a0a0a,#0e0e0e)!important;
+  border:1px solid rgba(224,166,64,.58)!important;color:var(--text)!important;
+  border-radius:20px!important;overflow:hidden!important;
+}
+.product-art{width:100%!important;height:100%!important;min-height:100%!important;border-right:1px solid rgba(224,166,64,.14)!important}
+.product-art img{width:100%!important;height:100%!important;object-fit:cover!important}
+.product-body{padding:18px 18px 16px!important}
+.product h3{color:#fff7dd!important;font-size:22px!important}
+.product p{display:block!important;color:#e4c98f!important;font-size:14px!important}
+.product-tag{display:inline-flex!important;color:var(--gold)!important}
+.price{color:var(--gold)!important;font-size:23px!important}
+.add{
+  min-width:118px!important;width:auto!important;height:44px!important;padding:0 15px!important;
+  border-radius:12px!important;background:linear-gradient(180deg,#cf1d1d,#940707)!important;
+  color:#fff3d0!important;border:1px solid #e22b2b!important;font-size:15px!important;
+}
+.add::after{content:" Agregar"!important}
+
+.cart-panel{display:none!important}
+.mobile-cart{
+  display:flex!important;position:fixed!important;left:50%!important;transform:translateX(-50%)!important;
+  bottom:14px!important;width:min(960px,calc(100% - 28px))!important;min-height:72px!important;
+  background:linear-gradient(180deg,#0b0b0b,#060606)!important;color:var(--gold-soft)!important;
+  border:1px solid rgba(224,166,64,.70)!important;border-radius:20px!important;z-index:80!important;
+}
+
+.overlay{background:rgba(0,0,0,.76)!important;backdrop-filter:blur(6px)!important}
+.modal{background:#090909!important;color:var(--text)!important;border:1px solid rgba(224,166,64,.36)!important;border-radius:24px!important}
+.modal-head{background:#080808!important;border-bottom:1px solid rgba(224,166,64,.22)!important}
+.modal-head h2,.field label{color:var(--gold-soft)!important}
+.close{background:#111!important;border:1px solid rgba(224,166,64,.35)!important;color:var(--gold-soft)!important}
+.field input,.field select,.field textarea{background:#0f0f0f!important;border:1px solid rgba(224,166,64,.38)!important;color:#fff5d8!important}
+.checkout-summary,.payment-main-option,.payment-scope-option,.card-payment-scope{
+  background:#0d0d0d!important;color:#fff2d2!important;border-color:rgba(224,166,64,.34)!important;
+}
+.checkout-summary span,.payment-main-option small,.payment-scope-option small{color:#b89c6b!important}
+.checkout-summary strong,.payment-main-option strong,.payment-scope-option strong{color:#ffe5a5!important}
+.payment-main-option:has(input:checked),.payment-scope-option:has(input:checked){border-color:#d12f2f!important;background:#160b0b!important}
+.payment-note{background:rgba(224,166,64,.08)!important;color:#e6c78d!important;border:1px solid rgba(224,166,64,.18)!important}
+.submit-order{background:linear-gradient(180deg,#cb1c1c,#900707)!important;color:#fff6d8!important;border:1px solid #df2525!important}
+footer{background:#030303!important;color:#8f784d!important}
+
+@media(max-width:820px){.products{grid-template-columns:1fr!important}}
+@media(max-width:720px){
+  .hero-experience{min-height:76vh!important}
+  .hero-experience-content{min-height:76vh!important;width:calc(100% - 24px)!important;padding:70px 8px 78px!important;justify-content:flex-end!important}
+  .hero-experience-bg{background-position:60% center!important}
+  .hero-experience-overlay{background:linear-gradient(180deg,rgba(0,0,0,.20) 0%,rgba(0,0,0,.38) 38%,rgba(0,0,0,.92) 84%,#030303 100%)!important}
+}
+@media(max-width:560px){
+  .product{grid-template-columns:38% 62%!important;min-height:205px!important}
+  .product-body{padding:14px 13px!important}.product h3{font-size:18px!important}.product p{font-size:12px!important}
+  .add{min-width:96px!important;height:39px!important;padding:0 10px!important;font-size:13px!important}
+  .wait-time-bar{width:calc(100% - 20px)!important}
 }
 </style>
 
@@ -5392,14 +5517,12 @@ button,
 
 
  <header class="topbar">
-  <div class="topbar-centered-logo" aria-label="Suchinaloa">
-    <img src="img/logo-suchinaloa.png" alt="Suchinaloa">
-  </div>
  <div class="topbar-inner">
- 
+ <div class="brand">
+ <div class="logo official-logo"><img src="img/logo-suchinaloa-transparente.png" alt="Logo Suchinaloa"></div>
  <div>
- <strong></strong>
- <small></small>
+ <strong>SUCHINALOA</strong>
+ <small> · Entrega a domicilio</small>
  </div>
  </div>
  <button class="cart-top" onclick="scrollToCart()">
@@ -5437,13 +5560,6 @@ button,
       <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
     </div>
 
-
-    <div class="hero-real-visual" aria-hidden="true">
-      <div class="hero-red-sun"></div>
-      <div class="hero-brush"></div>
-      <img id="heroRotatingImage" src="img/imagen-13.jpg" alt="">
-    </div>
-
     <div class="hero-experience-actions">
       <button type="button" class="hero-order-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
         Ver menú
@@ -5461,30 +5577,6 @@ button,
     <span>DESLIZA</span>
     <i></i>
   </div>
-
-</section>
-
-
-<section class="mock-about">
-  <div class="mock-about-copy">
-    <span class="mock-kicker">SOBRE</span>
-    <h2>SUCHINALOA</h2>
-    <p>Sushi con carácter, preparado al momento y con ingredientes frescos. Una propuesta hecha para compartir y pedir fácil desde cualquier dispositivo.</p>
-  </div>
-
-  <div class="mock-stats">
-    <div><b>100%</b><span>Preparado al momento</span></div>
-    <div><b>15+</b><span>Opciones en el menú</span></div>
-    <div><b>10 km</b><span>Zona de cobertura</span></div>
-  </div>
-
-  <div class="mock-about-photo">
-    <img id="aboutRotatingImage" src="img/imagen-07.jpg" alt="Suchinaloa" loading="lazy">
-  </div>
-</section>
-
-<section class="rollos-heading">
-  <h2>NUESTROS <b>ROLLOS</b></h2>
 </section>
 
 <section class="content" id="menu">
@@ -5504,17 +5596,9 @@ button,
  <button class="category" data-category="El Especial" onclick="filterProducts('El Especial',this)">El Especial</button>
  <button class="category" data-category="Natural" onclick="filterProducts('Natural',this)">Natural</button>
  <button class="category" data-category="Bebidas" onclick="filterProducts('Bebidas',this)">Bebidas</button>
- <button class="category" data-category="Extras" onclick="filterProducts('Extras',this)">Extras</button>
  </div>
 
- <div class="featured-carousel-shell">
-  <button class="featured-arrow featured-prev" type="button" onclick="moveFeatured(-1)" aria-label="Anterior">‹</button>
-  <div class="featured-viewport" id="featuredViewport">
-    <div class="products" id="products"></div>
-  </div>
-  <button class="featured-arrow featured-next" type="button" onclick="moveFeatured(1)" aria-label="Siguiente">›</button>
-</div>
-<div class="featured-dots" id="featuredDots"></div>
+ <div class="products" id="products"></div>
  </div>
 
  <aside class="cart-panel" id="desktopCart">
@@ -5527,7 +5611,7 @@ button,
  </section>
  </main>
 
- <button class="mobile-cart" id="mobileCart" onclick="openCartReview()" aria-label="Ver pedido">
+ <button class="mobile-cart" id="mobileCart" onclick="openCheckout()" aria-label="Ver pedido">
  <span class="mobile-cart-left">
  <span class="mobile-cart-icon">🛍️</span>
  <span class="mobile-cart-copy">
@@ -5545,28 +5629,7 @@ button,
  <span class="mobile-cart-total" id="mobileTotal">$0</span>
  </button>
 
- 
-
-<div class="cart-drawer-backdrop hidden" id="cartReviewOverlay" onclick="handleCartBackdrop(event)">
-  <aside class="cart-drawer" id="cartDrawer" aria-label="Tu pedido">
-    <div class="cart-drawer-head">
-      <div>
-        <span class="cart-drawer-kicker">TU PEDIDO</span>
-        <h2>Carrito</h2>
-        <small>Revisa cantidades o elimina productos.</small>
-      </div>
-      <button class="cart-drawer-close" type="button" onclick="closeCartReview()" aria-label="Cerrar carrito">×</button>
-    </div>
-
-    <div class="cart-drawer-body">
-      <div id="cartReviewBody"></div>
-    </div>
-  </aside>
-</div>
-
-</div>
-
-<div class="overlay hidden" id="checkoutOverlay">
+ <div class="overlay hidden" id="checkoutOverlay">
  <div class="modal">
  <div class="modal-head">
  <h2>Datos de entrega</h2>
@@ -5625,8 +5688,8 @@ button,
  </div>
 
  
-<div class="field full">
-  <label>Resumen de pago</label>
+<div class="field full payment-simple-field">
+  <label>Forma de pago</label>
 
   <div class="checkout-summary" id="checkoutSummary">
     <div><span>Alimentos</span><strong id="checkoutFoodTotal">$0</strong></div>
@@ -5634,28 +5697,49 @@ button,
     <div class="checkout-summary-total"><span>Total</span><strong id="checkoutGrandTotal">$0</strong></div>
   </div>
 
-  <div class="simple-pay-choice">
-    <label class="simple-pay-option">
-      <input type="radio" name="payment_scope" value="todo" checked onchange="actualizarPagoCheckout()" />
+  <div class="payment-main-choice">
+    <label id="cashPaymentChoice" class="payment-main-option">
+      <input type="radio" name="payment" value="Efectivo" onchange="actualizarPagoCheckout()" />
       <span>
-        <strong>Pagar todo ahora</strong>
-        <small>Alimentos + envío en un solo pago.</small>
+        <strong>💵 Efectivo</strong>
+        <small>Pagas todo al recibir.</small>
       </span>
     </label>
 
-    <label class="simple-pay-option">
-      <input type="radio" name="payment_scope" value="separado" onchange="actualizarPagoCheckout()" />
+    <label class="payment-main-option">
+      <input type="radio" name="payment" value="Mercado Pago" checked onchange="actualizarPagoCheckout()" />
       <span>
-        <strong>Pagar por separado</strong>
-        <small>Alimentos ahora y envío al repartidor.</small>
+        <strong>💳 Tarjeta</strong>
+        <small>Paga con Mercado Pago.</small>
       </span>
     </label>
   </div>
 
-  <input type="hidden" name="payment" value="Mercado Pago" />
+  <div id="cardPaymentScope" class="card-payment-scope">
+    <div class="card-payment-scope-title">¿Qué quieres pagar con tarjeta?</div>
 
-  <div id="paymentMethodNote" class="payment-note">
-    Se cobrará el total de alimentos y envío con Mercado Pago.
+    <label class="payment-scope-option">
+      <input type="radio" name="payment_scope" value="todo" checked onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>Alimentos + envío</strong>
+        <small>Todo en un solo pago.</small>
+      </span>
+    </label>
+
+    <label class="payment-scope-option">
+      <input type="radio" name="payment_scope" value="separado" onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>Solo alimentos</strong>
+        <small>El envío se paga al repartidor.</small>
+      </span>
+    </label>
+  </div>
+
+  <div id="paymentMethodNote" class="payment-note"></div>
+
+  <div class="cash-admin">
+    <span>ADMIN · Opción de pago en efectivo</span>
+    <button id="cashToggleBtn" class="cash-toggle" type="button" onclick="toggleEfectivo()">DESACTIVAR EFECTIVO</button>
   </div>
 
   <div class="cash-admin rain-admin">
@@ -5701,8 +5785,8 @@ let ULTIMO_CALCULO_ESPERA = null;
  {id:11,name:"Machin Roll",category:"Rollo Horneado",price:165,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
  {id:12,name:"Suchinaloa",category:"El Especial",price:180,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
  {id:13,name:"Avocado Roll",category:"Natural",price:125,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
- {id:14,name:"Té de Jazmín Saboraté · Individual",category:"Bebidas",price:null,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación individual. Precio por definir."},
- {id:17,name:"Té de Jazmín Saboraté · 950 ml",category:"Bebidas",price:null,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
+ {id:14,name:"Té de Jazmín · 1 litro",category:"Bebidas",price:40,emoji:"🧋",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín, presentación de 1 litro."},
+ {id:17,name:"Té de Jazmín · 500 ml",category:"Bebidas",price:30,emoji:"🧋",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín, presentación de medio litro."},
  {id:15,name:"Extra de Salsa",category:"Extras",price:15,emoji:"🥣",tag:"EXTRA",desc:"Porción extra de salsa para acompañar tu pedido."},
  {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."}
  ];
@@ -5712,6 +5796,9 @@ let ULTIMO_CALCULO_ESPERA = null;
  let lastOrderPayload = null;
  let pedidoFinalizado = false;
  let checkoutFormOriginal = "";
+
+ const ACTIVE_ORDER_KEY = "suchinaloaActiveOrderV1";
+ const ACTIVE_ORDER_MAX_AGE_MS = 8 * 60 * 60 * 1000; // 8 horas
 
  // Configuración local del equipo/negocio.
  // El botón del formulario guarda esta preferencia en localStorage.
@@ -5782,7 +5869,7 @@ let ULTIMO_CALCULO_ESPERA = null;
  // Si la página se abre en otro dispositivo, cambia 127.0.0.1 por la IP
  // local de la computadora de cocina, por ejemplo: 192.168.1.50
  const MERCADOPAGO_LINK = "http://link.mercadopago.com.mx/suchinaloa";
-const MERCADOPAGO_SERVER_URL = "https://simply-renovator-batting.ngrok-free.dev";
+const MERCADOPAGO_SERVER_URL = "https://variable-seldom-prevail.ngrok-free.dev";
 
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
@@ -5949,59 +6036,76 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  function renderCart(){
  const body=document.getElementById("cartBody");
- const count=cart.reduce((s,i)=>s+i.qty,0);
+ const count=cart.reduce((sum,item)=>sum+item.qty,0);
  const totals=getTotals();
 
  document.getElementById("topCount").textContent=count;
  document.getElementById("mobileCount").textContent=count;
  document.getElementById("mobileTotal").textContent=money(totals.total);
 
- const mobileSubtitle = document.getElementById("mobileCartSubtitle");
+ const mobileSubtitle=document.getElementById("mobileCartSubtitle");
  if(mobileSubtitle){
- mobileSubtitle.textContent = count
- ? `${count} producto${count===1?"":"s"} · ${money(totals.total)}`
- : "Agrega productos para comenzar";
+   mobileSubtitle.textContent=count
+     ? `${count} producto${count===1?"":"s"} · ${money(totals.total)}`
+     : "Agrega productos para comenzar";
  }
 
- document.getElementById("cartCountText").textContent=`${count} producto${count===1?"":"s"}`;
+ document.getElementById("cartCountText").textContent=
+   `${count} producto${count===1?"":"s"}`;
 
  if(!cart.length){
- body.innerHTML=`
- <div class="empty">
- <div class="big">🛒</div>
- <strong>Tu carrito está vacío</strong>
- <p>Agrega algunos productos para comenzar.</p>
- </div>`;
- return;
+   body.innerHTML=`
+     <div class="empty">
+       <div class="big">🛒</div>
+       <strong>Tu carrito está vacío</strong>
+       <p>Agrega algunos productos para comenzar.</p>
+     </div>`;
+   return;
  }
 
  body.innerHTML=`
- <div class="cart-list">
- ${cart.map(item=>{
- const p=products.find(x=>x.id===item.id);
- return `
- <div class="cart-item">
- <div class="cart-item-top">
- <div><strong>${p.name}</strong><small>${money(p.price)} c/u</small></div>
- <strong>${money(p.price*item.qty)}</strong>
- </div>
- <div class="cart-controls">
- <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
- <strong>${item.qty}</strong>
- <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
- <button class="remove" onclick="removeItem(${p.id})">Eliminar</button>
- </div>
- </div>`;
- }).join("")}
- </div>
- <div class="totals">
- <div class="total-row"><span>Subtotal</span><strong>${money(totals.subtotal)}</strong></div>
- <div class="total-row"><span>Envío provisional</span><strong>${money(totals.delivery)}</strong></div>
- <div class="total-row grand"><span>Total</span><span>${money(totals.total)}</span></div>
- </div>
- <button class="checkout" onclick="openCheckout()">Continuar pedido</button>`;
- }
+   <div class="cart-list">
+     ${cart.map(item=>{
+       const p=products.find(x=>x.id===item.id);
+       if(!p) return "";
+       return `
+         <div class="cart-item">
+           <div class="cart-item-top">
+             <div>
+               <strong>${p.name}</strong>
+               <small>${money(p.price)} c/u</small>
+             </div>
+             <strong>${money(p.price*item.qty)}</strong>
+           </div>
+           <div class="cart-controls">
+             <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+             <strong>${item.qty}</strong>
+             <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+             <button class="remove" onclick="removeItem(${p.id})">Eliminar</button>
+           </div>
+         </div>`;
+     }).join("")}
+   </div>
 
+   <div class="totals">
+     <div class="total-row">
+       <span>Subtotal</span>
+       <strong>${money(totals.subtotal)}</strong>
+     </div>
+     <div class="total-row">
+       <span>Envío provisional</span>
+       <strong>${money(totals.delivery)}</strong>
+     </div>
+     <div class="total-row grand">
+       <span>Total</span>
+       <span>${money(totals.total)}</span>
+     </div>
+   </div>
+
+   <button class="checkout" onclick="openCheckout()">
+     Continuar pedido
+   </button>`;
+ }
 
  function renderCartReview(){
    const host = document.getElementById("cartReviewBody");
@@ -6068,13 +6172,20 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  function openCartReview(){
    if(!cart.length){
-     document.getElementById("menu").scrollIntoView({behavior:"smooth",block:"start"});
+     document.getElementById("menu").scrollIntoView({
+       behavior:"smooth",
+       block:"start"
+     });
      return;
    }
+
    renderCartReview();
+
    const backdrop = document.getElementById("cartReviewOverlay");
    const drawer = document.getElementById("cartDrawer");
+
    backdrop.classList.remove("hidden");
+
    requestAnimationFrame(()=>{
      backdrop.classList.add("is-open");
      drawer.classList.add("is-open");
@@ -6125,24 +6236,42 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  }
 
  async function openCheckout(){
+ const active = leerPedidoActivo();
+
+ if(active?.payload?.pedido_id){
+   restaurarVariablesPedido(active);
+   const remote = await consultarEstadoPedidoActivo(lastOrderPayload.pedido_id);
+   const estadoPago = lastOrderPayload.pago?.metodo === "Efectivo"
+     ? "efectivo"
+     : (
+         remote?.estado_pago === "pagado" ||
+         remote?.mercado_pago_status === "approved"
+           ? "pagado"
+           : "pendiente"
+       );
+   mostrarPedidoFinal(estadoPago, true);
+   return;
+ }
+
  if(!horarioPedidosActivo()){
    mostrarAvisoHorario();
    return;
  }
+
  if(!cart.length){
- document.getElementById("menu").scrollIntoView({behavior:"smooth"});
- return;
+   document.getElementById("menu").scrollIntoView({behavior:"smooth"});
+   return;
  }
 
  if(pedidoFinalizado){
- resetCheckoutForNewOrder();
+   resetCheckoutForNewOrder();
  }
 
  await calcularTiempoEsperaActual();
 
  document.getElementById("checkoutOverlay").classList.remove("hidden");
  document.body.classList.add("checkout-open");
- setTimeout(()=>{ actualizarControlLluvia(); actualizarPagoCheckout(); obtenerUbicacion(false); },150);
+ setTimeout(()=>{ aplicarEstadoEfectivo(); actualizarControlLluvia(); actualizarPagoCheckout(); obtenerUbicacion(false); },150);
  document.body.style.overflow="hidden";
  }
 
@@ -6151,13 +6280,23 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  document.body.classList.remove("checkout-open");
  document.body.style.overflow="";
 
- if(pedidoFinalizado){
- resetCheckoutForNewOrder();
- }
+ // IMPORTANTE:
+ // Cerrar solo oculta la ventana. El pedido activo NO se borra ni
+ // se reinicia; así el cliente puede volver a abrirlo inmediatamente.
+ renderCart();
  }
 
  function scrollToCart(){
  openCartReview();
+ }
+
+ async function verPedidoActual(){
+   const active = leerPedidoActivo();
+   if(active?.payload?.pedido_id){
+     await openCheckout();
+     return;
+   }
+   openCartReview();
  }
 
  function toggleChange(value){}
@@ -6392,20 +6531,29 @@ ${document.getElementById("kitchenTicket").innerHTML}
  function aplicarEstadoEfectivo(){
  const choice = document.getElementById("cashPaymentChoice");
  const button = document.getElementById("cashToggleBtn");
- const adminBox = document.querySelector(".cash-admin");
- if(!choice || !button) return;
+ const adminBoxes = document.querySelectorAll(".cash-admin");
 
- if(adminBox){
- adminBox.style.display = MODO_ADMIN ? "flex" : "none";
+ adminBoxes.forEach(box=>{
+   if(!box.classList.contains("rain-admin")){
+     box.style.display = MODO_ADMIN ? "flex" : "none";
+   }
+ });
+
+ if(choice){
+   choice.style.display = EFECTIVO_HABILITADO ? "flex" : "none";
+
+   const cashRadio = choice.querySelector('input[value="Efectivo"]');
+
+   if(!EFECTIVO_HABILITADO && cashRadio?.checked){
+     const mp = document.querySelector('input[name="payment"][value="Mercado Pago"]');
+     if(mp) mp.checked = true;
+   }
  }
 
- choice.style.display = EFECTIVO_HABILITADO ? "flex" : "none";
- button.textContent = EFECTIVO_HABILITADO ? "DESACTIVAR EFECTIVO" : "HABILITAR EFECTIVO";
-
- const cashRadio = choice.querySelector('input[value="Efectivo"]');
- if(!EFECTIVO_HABILITADO && cashRadio?.checked){
- const mp = document.querySelector('input[name="payment"][value="Mercado Pago"]');
- if(mp) mp.checked = true;
+ if(button){
+   button.textContent = EFECTIVO_HABILITADO
+     ? "DESACTIVAR EFECTIVO"
+     : "HABILITAR EFECTIVO";
  }
 
  actualizarPagoCheckout();
@@ -6418,7 +6566,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function actualizarPagoCheckout(){
+ const payment = document.querySelector('input[name="payment"]:checked')?.value || "Mercado Pago";
  const scope = document.querySelector('input[name="payment_scope"]:checked')?.value || "todo";
+ const cardScope = document.getElementById("cardPaymentScope");
  const note = document.getElementById("paymentMethodNote");
  const totals = getTotals();
 
@@ -6427,13 +6577,31 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const grand = document.getElementById("checkoutGrandTotal");
 
  if(food) food.textContent = money(totals.subtotal);
- if(delivery) delivery.textContent = Number.isFinite(deliveryQuote.cost) ? money(totals.delivery) : "Por calcular";
- if(grand) grand.textContent = Number.isFinite(deliveryQuote.cost) ? money(totals.total) : money(totals.subtotal);
+ if(delivery){
+   delivery.textContent = Number.isFinite(deliveryQuote.cost)
+     ? money(totals.delivery)
+     : "Por calcular";
+ }
+ if(grand){
+   grand.textContent = Number.isFinite(deliveryQuote.cost)
+     ? money(totals.total)
+     : money(totals.subtotal);
+ }
+
+ const isCash = payment === "Efectivo";
+
+ if(cardScope){
+   cardScope.classList.toggle("is-hidden", isCash);
+ }
 
  if(note){
-   note.textContent = scope === "todo"
-     ? "Se cobrará alimentos + envío en un solo pago con Mercado Pago."
-     : "Se cobrarán los alimentos con Mercado Pago y el envío se paga al repartidor.";
+   if(isCash){
+     note.textContent = "Alimentos y envío se pagan en efectivo al recibir.";
+   }else if(scope === "todo"){
+     note.textContent = "La tarjeta cobrará alimentos + envío.";
+   }else{
+     note.textContent = "La tarjeta cobrará solo alimentos; el envío se paga al repartidor.";
+   }
  }
  }
 
@@ -7040,6 +7208,277 @@ Favor de confirmar quién toma el envío.`;
 
  let paymentPollTimer = null;
 
+
+ function guardarPedidoActivo(){
+   if(!lastOrderPayload?.pedido_id) return;
+
+   const data = {
+     version:1,
+     savedAt:Date.now(),
+     waitTime:TIEMPO_ESPERA,
+     payload:lastOrderPayload,
+     deliveryMessage:lastDeliveryMessage,
+     kitchenHtml:document.getElementById("kitchenTicket")?.innerHTML || ""
+   };
+
+   localStorage.setItem(ACTIVE_ORDER_KEY, JSON.stringify(data));
+ }
+
+ function borrarPedidoActivo(){
+   localStorage.removeItem(ACTIVE_ORDER_KEY);
+ }
+
+ function leerPedidoActivo(){
+   try{
+     const raw = localStorage.getItem(ACTIVE_ORDER_KEY);
+     if(!raw) return null;
+
+     const data = JSON.parse(raw);
+
+     if(!data?.payload?.pedido_id){
+       borrarPedidoActivo();
+       return null;
+     }
+
+     if(
+       Number.isFinite(Number(data.savedAt)) &&
+       Date.now() - Number(data.savedAt) > ACTIVE_ORDER_MAX_AGE_MS
+     ){
+       borrarPedidoActivo();
+       return null;
+     }
+
+     return data;
+   }catch(error){
+     console.warn("Pedido activo local:", error);
+     borrarPedidoActivo();
+     return null;
+   }
+ }
+
+ function restaurarVariablesPedido(data){
+   if(!data?.payload?.pedido_id) return false;
+
+   lastOrderPayload = data.payload;
+   lastDeliveryMessage = data.deliveryMessage || "";
+   pedidoFinalizado = true;
+
+   if(data.waitTime){
+     TIEMPO_ESPERA = data.waitTime;
+   }
+
+   const ticket = document.getElementById("kitchenTicket");
+   if(ticket && data.kitchenHtml){
+     ticket.innerHTML = data.kitchenHtml;
+   }
+
+   return true;
+ }
+
+ function htmlPedidoFinal(estadoPago="pendiente"){
+   const pago = lastOrderPayload?.pago || {};
+   const esEfectivo = pago.metodo === "Efectivo";
+   const pagado = estadoPago === "pagado" || estadoPago === "approved";
+   const pagoTodo = pago.modalidad_pago === "todo";
+
+   const titulo = esEfectivo
+     ? "¡Pedido recibido!"
+     : (pagado ? "¡Pago recibido!" : "¡Pedido recibido!");
+
+   const intro = esEfectivo
+     ? "Tu pedido está confirmado y se pagará en efectivo al recibir."
+     : (pagado
+         ? "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo."
+         : "Tu pedido está registrado. Completa el pago para confirmar tu orden.");
+
+   const breakdown = `
+     <div class="payment-final-breakdown">
+       <div>
+         <span>Alimentos</span>
+         <strong>${money(pago.subtotal_alimentos || 0)}</strong>
+       </div>
+       <div>
+         <span>Envío</span>
+         <strong>${money(pago.moto_envio || 0)}${
+           !esEfectivo && !pagoTodo ? " al repartidor" : ""
+         }</strong>
+       </div>
+     </div>`;
+
+   let card = "";
+
+   if(esEfectivo){
+     card = `
+       <div class="payment-final-card">
+         <div class="payment-final-kicker">PAGO AL RECIBIR</div>
+         <div class="payment-final-label">Total en efectivo</div>
+         <div class="payment-final-amount">${money(pago.total || 0)}</div>
+         ${breakdown}
+         <div id="paymentStatus" class="payment-final-status ok">
+           ✓ Pedido confirmado · Paga al recibir.
+         </div>
+         <div class="payment-final-help">
+           Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.
+         </div>
+       </div>`;
+   }else if(pagado){
+     card = `
+       <div class="payment-final-card payment-confirmed">
+         <div class="payment-final-kicker">PAGO RECIBIDO</div>
+         <div class="payment-final-label">Pagado con tarjeta</div>
+         <div class="payment-final-amount">${money(pago.total_mercadopago || 0)}</div>
+         ${breakdown}
+         <div id="paymentStatus" class="payment-final-status ok">
+           ✓ Pago recibido y confirmado por Mercado Pago.
+         </div>
+         <div class="payment-confirmed-banner">
+           Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.
+         </div>
+       </div>`;
+   }else{
+     card = `
+       <div class="payment-final-card">
+         <div class="payment-final-kicker">CONFIRMA TU PEDIDO</div>
+         <div class="payment-final-label">Total a pagar con tarjeta</div>
+         <div class="payment-final-amount">${money(pago.total_mercadopago || 0)}</div>
+         ${breakdown}
+
+         <button id="mercadoPagoBtn" class="payment-final-button" onclick="openMercadoPago()">
+           <span class="payment-final-button-icon">💳</span>
+           <span>
+             <small>Continuar al pago seguro</small>
+             PAGAR CON MERCADO PAGO
+           </span>
+           <b>›</b>
+         </button>
+
+         <div id="paymentStatus" class="payment-final-status waiting">
+           Pedido registrado · Esperando pago
+         </div>
+
+         <div class="payment-final-help">
+           ${pagoTodo
+             ? "El pago con tarjeta incluye alimentos + envío."
+             : "La tarjeta paga los alimentos; el envío se paga al repartidor."}
+         </div>
+       </div>`;
+   }
+
+   return `
+     <div class="success">
+       <div class="success-icon">✓</div>
+       <h2>${titulo}</h2>
+       <p>${intro}</p>
+       <div class="order-number">${escapeHtml(lastOrderPayload.pedido_id)}</div>
+       <div class="order-wait-time">
+         <span>⏱ Tiempo estimado de espera</span>
+         <strong>${TIEMPO_ESPERA}</strong>
+       </div>
+
+       ${card}
+
+       <div class="invoice-notice">
+         <strong>¿Requieres factura?</strong>
+         <span>Favor de enviar tus datos fiscales a</span>
+         <a href="mailto:suchinaloa1@gmail.com">suchinaloa1@gmail.com</a>
+       </div>
+
+       <div class="active-order-recovery">
+         <strong>Tu carrito queda guardado hasta confirmar el pago.</strong>
+         <span>Si cierras o recargas la página, tus productos seguirán disponibles en el carrito.</span>
+       </div>
+
+       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+         <button type="button" onclick="closeCheckout()" style="background:#111">Cerrar</button>
+         <button type="button" class="new-order-btn" onclick="iniciarNuevoPedido()">Hacer otro pedido</button>
+       </div>
+     </div>
+     <div id="sendStatus" class="send-status"></div>`;
+ }
+
+ function mostrarPedidoFinal(estadoPago="pendiente", abrir=true){
+   const content = document.getElementById("checkoutContent");
+   if(!content || !lastOrderPayload) return;
+
+   content.innerHTML = htmlPedidoFinal(estadoPago);
+
+   if(abrir){
+     document.getElementById("checkoutOverlay")?.classList.remove("hidden");
+     document.body.classList.add("checkout-open");
+     document.body.style.overflow = "hidden";
+   }
+
+   if(
+     lastOrderPayload.pago?.metodo !== "Efectivo" &&
+     estadoPago !== "pagado" &&
+     estadoPago !== "approved"
+   ){
+     iniciarMonitoreoPago(lastOrderPayload.pedido_id);
+   }
+ }
+
+ async function consultarEstadoPedidoActivo(pedidoId){
+   try{
+     const {data,error} = await supabaseClient
+       .from("comandas_sushi")
+       .select("pedido_id,estado_pago,mercado_pago_status,estado,estado_whatsapp")
+       .eq("pedido_id",pedidoId)
+       .maybeSingle();
+
+     if(error) throw error;
+     return data || null;
+   }catch(error){
+     console.warn("No se pudo consultar pedido activo:", error);
+     return null;
+   }
+ }
+
+ async function recuperarPedidoActivo(){
+   const saved = leerPedidoActivo();
+   if(!saved) return false;
+
+   if(!restaurarVariablesPedido(saved)){
+     return false;
+   }
+
+   const remote = await consultarEstadoPedidoActivo(
+     lastOrderPayload.pedido_id
+   );
+
+   let estadoPago = "pendiente";
+
+   if(lastOrderPayload.pago?.metodo === "Efectivo"){
+     estadoPago = "efectivo";
+   }else if(
+     remote?.estado_pago === "pagado" ||
+     remote?.mercado_pago_status === "approved"
+   ){
+     estadoPago = "pagado";
+   }
+
+   mostrarPedidoFinal(estadoPago, true);
+   return true;
+ }
+
+ function iniciarNuevoPedido(){
+   if(paymentPollTimer){
+     clearInterval(paymentPollTimer);
+     paymentPollTimer = null;
+   }
+
+   borrarPedidoActivo();
+   cart = [];
+   saveCart();
+   resetCheckoutForNewOrder();
+   closeCheckout();
+   renderCart();
+
+   document.getElementById("menu")?.scrollIntoView({
+     behavior:"smooth",
+     block:"start"
+   });
+ }
+
  async function registrarPedidoPendiente(){
  if(!lastOrderPayload || !lastOrderPayload.pedido_id){
  throw new Error("No hay un pedido preparado.");
@@ -7081,7 +7520,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  estado_pago: esEfectivo ? "efectivo_al_recibir" : "pendiente",
 
- // En Mercado Pago se cobra SOLO alimentos; la entrega queda en efectivo.
+ // El total esperado depende de la modalidad elegida: todo o solo alimentos.
  total_esperado: Number(
  esEfectivo
  ? 0
@@ -7098,6 +7537,12 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function aplicarEstadoPagoConfirmado(){
+   // El pago ya quedó confirmado: ahora sí limpiamos el carrito guardado.
+   cart = [];
+   saveCart();
+   renderCart();
+   borrarPedidoActivo();
+
    const success = document.querySelector("#checkoutContent .success");
    if(!success || success.dataset.pagoConfirmado === "1") return;
    success.dataset.pagoConfirmado = "1";
@@ -7126,7 +7571,11 @@ ${document.getElementById("kitchenTicket").innerHTML}
    }
 
    const help = document.querySelector("#checkoutContent .payment-final-help");
-   if(help) help.textContent = "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo. La entrega se paga en efectivo al repartidor.";
+   if(help){
+     help.textContent = lastOrderPayload?.pago?.modalidad_pago === "separado"
+       ? "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo. El envío se paga al repartidor."
+       : "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.";
+   }
 
    const card = document.querySelector("#checkoutContent .payment-final-card");
    if(card && !card.querySelector(".payment-confirmed-banner")){
@@ -7292,9 +7741,15 @@ ${document.getElementById("kitchenTicket").innerHTML}
  subtotal_alimentos:totals.subtotal,
  moto_envio:totals.delivery,
  total:totals.total,
- modalidad_pago:data.payment_scope || "todo",
- total_mercadopago:(data.payment_scope || "todo") === "todo" ? totals.total : totals.subtotal,
- total_efectivo:(data.payment_scope || "todo") === "todo" ? 0 : totals.delivery
+ modalidad_pago:data.payment === "Efectivo"
+   ? "efectivo"
+   : (data.payment_scope || "todo"),
+ total_mercadopago:data.payment === "Efectivo"
+   ? 0
+   : ((data.payment_scope || "todo") === "todo" ? totals.total : totals.subtotal),
+ total_efectivo:data.payment === "Efectivo"
+   ? totals.total
+   : ((data.payment_scope || "todo") === "todo" ? 0 : totals.delivery)
  }
  };
 
@@ -7309,68 +7764,18 @@ ${document.getElementById("kitchenTicket").innerHTML}
  return;
  }
 
- document.getElementById("checkoutContent").innerHTML=`
- <div class="success">
- <div class="success-icon">✓</div>
- <h2>¡Pedido recibido!</h2>
- <p>Tu pedido está registrado. Completa el pago para confirmar tu orden.</p>
- <div class="order-number">${order}</div>
- <div class="order-wait-time"><span>⏱ Tiempo estimado de espera</span><strong>${TIEMPO_ESPERA}</strong></div>
+ guardarPedidoActivo();
 
- <div class="payment-final-card">
- <div class="payment-final-kicker">CONFIRMA TU PEDIDO</div>
- <div class="payment-final-label">Total a pagar con Mercado Pago</div>
- <div class="payment-final-amount">${money(lastOrderPayload.pago.total_mercadopago)}</div>
+ const estadoInicial = lastOrderPayload.pago.metodo === "Efectivo"
+   ? "efectivo"
+   : "pendiente";
 
- <div class="payment-final-breakdown">
-   <div>
-     <span>Alimentos</span>
-     <strong>${money(totals.subtotal)}</strong>
-   </div>
-   <div>
-     <span>Envío</span>
-     <strong>${money(totals.delivery)}${lastOrderPayload.pago.modalidad_pago === "separado" ? " al repartidor" : ""}</strong>
-   </div>
- </div>
+ mostrarPedidoFinal(estadoInicial, false);
 
- <button id="mercadoPagoBtn" class="payment-final-button" onclick="openMercadoPago()">
-   <span class="payment-final-button-icon">💳</span>
-   <span>
-     <small>Continuar al pago seguro</small>
-     PAGAR CON MERCADO PAGO
-   </span>
-   <b>›</b>
- </button>
-
- <div id="paymentStatus" class="payment-final-status waiting">
-   Pedido registrado · Esperando pago
- </div>
-
- <div class="payment-final-help">
-   ${lastOrderPayload.pago.modalidad_pago === "todo"
-     ? "El pago se confirma automáticamente e incluye alimentos + envío."
-     : "El pago se confirma automáticamente. El envío se paga al repartidor."}
- </div>
- </div>
-
- <div class="invoice-notice">
-   <strong>¿Requieres factura?</strong>
-   <span>Favor de enviar tus datos fiscales a</span>
-   <a href="mailto:suchinaloa1@gmail.com">suchinaloa1@gmail.com</a>
- </div>
-</div>
-<div id="sendStatus" class="send-status"></div>
- </div>
-
- <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
- 
- <button onclick="finishDemo()" style="background:#111">Cerrar</button>
- </div>
- </div>`;
-
- // Mercado Pago queda esperando confirmación; efectivo se libera de inmediato al receptor.
- cart=[];
+ // El carrito permanece guardado hasta que el pago quede confirmado.
+ // Así, si el cliente recarga o cierra la pestaña, sus productos siguen ahí.
  saveCart();
+ renderCart();
  }
 
  function finishDemo(){
@@ -7389,6 +7794,11 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
  prepararUbicacionManual();
  renderProducts();
  renderCart();
+
+ // Al volver a abrir o recargar la página mostramos la tienda normal.
+ // El carrito ya se recupera desde localStorage mediante loadCart().
+ // Si existe un pedido pendiente, se conservará para retomarlo al continuar.
+
  </script>
 
 
