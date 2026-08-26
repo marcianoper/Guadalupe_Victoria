@@ -4957,6 +4957,389 @@ body{background:#f7f3ed!important}
 @media(max-width:600px){.topbar{min-height:105px!important;height:105px!important}.topbar-inner{min-height:105px!important;height:105px!important;padding:0 10px!important}.topbar-centered-logo{width:min(340px,64vw)!important;height:84px!important}.topbar .cart-top{right:6px!important;transform:translateY(-50%) scale(.80)!important}.order-hours-bar{min-height:52px!important;font-size:12px!important}.order-hours-bar #orderHoursTitle,.order-hours-bar #orderHoursText{font-size:12px!important}.wait-time-bar{width:calc(100% - 20px)!important;min-height:76px!important;margin:10px auto 4px!important;padding:12px 14px!important}.wait-time-icon{width:42px!important;height:42px!important}.wait-time-copy strong{font-size:19px!important}}
 </style>
 
+
+<style>
+/* =========================================================
+   SUCHINALOA · TEMA NEGRO
+   Solo cambia la apariencia de la página.
+   La impresión conserva fondo blanco.
+   ========================================================= */
+
+:root{
+  --dark-bg:#050505;
+  --dark-panel:#101010;
+  --dark-panel-2:#151515;
+  --dark-line:#292929;
+  --dark-text:#f7f4ef;
+  --dark-muted:#aaa39c;
+  --dark-red:#e52727;
+}
+
+/* Fondo principal */
+html,
+body{
+  background:var(--dark-bg) !important;
+  color:var(--dark-text) !important;
+}
+
+/* Encabezado */
+.topbar,
+.topbar-inner{
+  background:#050505 !important;
+}
+
+.topbar{
+  border-bottom:1px solid var(--dark-line) !important;
+}
+
+/* El logo original es negro: lo convertimos visualmente a blanco
+   sin modificar el archivo PNG. */
+.topbar-centered-logo img{
+  filter:grayscale(1) invert(1) brightness(1.15) contrast(1.15) !important;
+  mix-blend-mode:normal !important;
+}
+
+/* Carrito superior */
+.topbar .cart-top{
+  background:#0b0b0b !important;
+  color:#fff !important;
+  border:1px solid #3a3a3a !important;
+  box-shadow:none !important;
+}
+
+.topbar .cart-top *{
+  color:inherit !important;
+}
+
+/* Horario */
+.order-hours-bar{
+  background:#070707 !important;
+  border-bottom:1px solid var(--dark-line) !important;
+  color:#bcb6b0 !important;
+}
+
+.order-hours-bar #orderHoursTitle{
+  color:#f13a35 !important;
+}
+
+.order-hours-dot{
+  background:#e42c2c !important;
+}
+
+/* Tiempo de espera */
+.wait-time-bar{
+  background:linear-gradient(135deg,#101010,#151515) !important;
+  border:1px solid #242424 !important;
+  box-shadow:0 12px 35px rgba(0,0,0,.28) !important;
+}
+
+.wait-time-icon{
+  background:#050505 !important;
+  border:1px solid #303030 !important;
+  color:#fff !important;
+}
+
+.wait-time-copy span{
+  color:#f23a34 !important;
+}
+
+.wait-time-copy strong{
+  color:#fff !important;
+}
+
+/* Hero */
+.hero-experience,
+.hero,
+main{
+  background:#050505 !important;
+}
+
+.hero-experience-copy h1,
+.hero-experience h1,
+.hero h1{
+  color:#fff !important;
+}
+
+.hero-experience-copy p,
+.hero-experience p,
+.hero p{
+  color:#aaa39c !important;
+}
+
+.hero-experience-copy .eyebrow,
+.hero .eyebrow{
+  color:#f03732 !important;
+}
+
+/* Marco de fotografía */
+.hero-experience-media,
+.hero-image,
+.hero-photo,
+.hero-visual{
+  border-color:#f1ede7 !important;
+}
+
+/* Texto de pedido en línea */
+.online-status,
+.hero-online,
+.order-online{
+  color:#f1ede7 !important;
+}
+
+/* Secciones generales */
+section,
+.menu-section,
+.about-section,
+.products-section,
+.featured-section{
+  background:#050505 !important;
+  color:#fff !important;
+}
+
+/* Títulos */
+section h1,
+section h2,
+section h3,
+.menu-section h2,
+.products-section h2{
+  color:#fff !important;
+}
+
+/* Texto secundario */
+section p,
+section small,
+.section-subtitle{
+  color:#aaa39c;
+}
+
+/* Tarjetas de producto */
+.product-card,
+.menu-card,
+.card{
+  background:#111 !important;
+  border-color:#282828 !important;
+  color:#fff !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.22) !important;
+}
+
+.product-card h3,
+.product-card h4,
+.menu-card h3,
+.menu-card h4{
+  color:#fff !important;
+}
+
+.product-card p,
+.menu-card p{
+  color:#aaa39c !important;
+}
+
+.product-card .price,
+.menu-card .price{
+  color:#fff !important;
+}
+
+/* Filtros/categorías */
+.category-btn,
+.filter-btn,
+.menu-filter button{
+  background:#0d0d0d !important;
+  color:#d8d3ce !important;
+  border-color:#303030 !important;
+}
+
+.category-btn.active,
+.filter-btn.active,
+.menu-filter button.active{
+  background:#e32626 !important;
+  color:#fff !important;
+  border-color:#e32626 !important;
+}
+
+/* Carrito flotante */
+.cart-float,
+.floating-cart,
+.cart-summary-float{
+  background:#101010 !important;
+  color:#fff !important;
+  border-color:#343434 !important;
+  box-shadow:0 14px 38px rgba(0,0,0,.38) !important;
+}
+
+.cart-float *,
+.floating-cart *,
+.cart-summary-float *{
+  color:inherit;
+}
+
+/* Panel del carrito y checkout */
+.cart-drawer,
+.cart-panel,
+.cart-review,
+.checkout-panel,
+.checkout-card,
+.checkout-content{
+  background:#0e0e0e !important;
+  color:#fff !important;
+  border-color:#2b2b2b !important;
+}
+
+.cart-drawer h2,
+.cart-panel h2,
+.checkout-panel h2,
+.checkout-card h2{
+  color:#fff !important;
+}
+
+/* Formularios */
+.checkout-overlay{
+  background:rgba(0,0,0,.78) !important;
+}
+
+.checkout-overlay input,
+.checkout-overlay textarea,
+.checkout-overlay select{
+  background:#171717 !important;
+  color:#fff !important;
+  border-color:#393939 !important;
+}
+
+.checkout-overlay input::placeholder,
+.checkout-overlay textarea::placeholder{
+  color:#777 !important;
+}
+
+.checkout-overlay label{
+  color:#e7e2dc !important;
+}
+
+/* Resumen de pago */
+.checkout-summary{
+  background:#111 !important;
+  border-color:#333 !important;
+}
+
+.checkout-summary span{
+  color:#aaa39c !important;
+}
+
+.checkout-summary strong{
+  color:#fff !important;
+}
+
+.checkout-summary-total{
+  border-top-color:#333 !important;
+}
+
+.simple-pay-option{
+  background:#111 !important;
+  border-color:#333 !important;
+}
+
+.simple-pay-option:has(input:checked){
+  background:#1a0d0d !important;
+  border-color:#e32626 !important;
+}
+
+.simple-pay-option strong{
+  color:#fff !important;
+}
+
+.simple-pay-option small{
+  color:#aaa39c !important;
+}
+
+.payment-note{
+  color:#aaa39c !important;
+}
+
+/* Cotización de entrega */
+.delivery-estimate,
+.delivery-box,
+.location-box{
+  background:#111 !important;
+  border-color:#333 !important;
+  color:#fff !important;
+}
+
+.delivery-estimate span{
+  color:#aaa39c !important;
+}
+
+.delivery-estimate strong{
+  color:#fff !important;
+}
+
+/* Pantalla final de pago */
+.payment-final-card{
+  background:#111 !important;
+  border-color:#333 !important;
+  color:#fff !important;
+}
+
+.payment-final-label,
+.payment-final-help{
+  color:#aaa39c !important;
+}
+
+.payment-final-amount,
+.payment-final-breakdown strong{
+  color:#fff !important;
+}
+
+.payment-final-breakdown{
+  border-color:#333 !important;
+}
+
+.invoice-notice{
+  background:#111 !important;
+  border-color:#333 !important;
+  color:#fff !important;
+}
+
+/* Footer */
+footer{
+  background:#050505 !important;
+  color:#777 !important;
+  border-top:1px solid #222 !important;
+}
+
+/* Mantener rojos de marca */
+button,
+.add-btn,
+.submit-order,
+.payment-final-button{
+  --button-red:#e32626;
+}
+
+.submit-order,
+.payment-final-button{
+  background:#e32626 !important;
+  color:#fff !important;
+}
+
+/* =========================================================
+   IMPRESIÓN
+   No queremos tickets negros: cocina/caja siguen en blanco.
+   ========================================================= */
+@media print{
+  html,
+  body{
+    background:#fff !important;
+    color:#000 !important;
+  }
+
+  #kitchenTicket,
+  #kitchenTicket *,
+  .ticket,
+  .ticket *{
+    background:#fff !important;
+    color:#000 !important;
+    filter:none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
