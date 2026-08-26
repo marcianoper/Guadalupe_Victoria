@@ -1100,7 +1100,7 @@ body{
  display:none!important;
 }
 
-/* CATEGORÍA */
+/* CATEGORÍAS */
 .categories{
  display:flex!important;
  gap:12px!important;
@@ -5051,7 +5051,7 @@ body{background:#f7f3ed!important}
     <div class="hero-experience-eyebrow">SUCHINALOA · IRAPUATO</div>
 <div class="hero-experience-copy">
       <h1>Algo bien<br>se está preparando.</h1>
-      <p>Suchi con carácter, preparado al momento y directo a tu puerta.</p>
+      <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
     </div>
 
 
@@ -5086,7 +5086,7 @@ body{background:#f7f3ed!important}
   <div class="mock-about-copy">
     <span class="mock-kicker">SOBRE</span>
     <h2>SUCHINALOA</h2>
-    <p>Suchi con carácter, preparado al momento y con ingredientes frescos. Una propuesta hecha para compartir y pedir fácil desde cualquier dispositivo.</p>
+    <p>Sushi con carácter, preparado al momento y con ingredientes frescos. Una propuesta hecha para compartir y pedir fácil desde cualquier dispositivo.</p>
   </div>
 
   <div class="mock-stats">
@@ -5801,23 +5801,72 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  return `SU-${codigo}`;
  }
 
- function buildKitchenTicket(order,customerNotes){
+ function buildKitchenTicket(order,customerNotes,data,totals){
  const now=new Date();
+
  const lines=cart.map(item=>{
  const p=products.find(x=>x.id===item.id);
  return `<div style="margin:10px 0"><b style="font-size:16px">${item.qty} x ${p.name}</b></div>`;
  }).join("");
+
+ const metodo = data?.payment || "No especificado";
+ const modalidad = data?.payment_scope || "todo";
+
+ let pagoTitulo = "";
+ let pagoDetalle = "";
+ let pagoTotal = "";
+
+ if(metodo === "Efectivo"){
+   pagoTitulo = "EFECTIVO";
+   pagoDetalle = `Alimentos + envío al recibir`;
+   pagoTotal = money(totals.total);
+ }else if(modalidad === "todo"){
+   pagoTitulo = "TARJETA / MERCADO PAGO";
+   pagoDetalle = `Alimentos + envío pagados`;
+   pagoTotal = money(totals.total);
+ }else{
+   pagoTitulo = "TARJETA / MERCADO PAGO";
+   pagoDetalle = `Solo alimentos pagados`;
+   pagoTotal = money(totals.subtotal);
+ }
+
+ const envioDetalle = metodo === "Efectivo"
+   ? `Envío incluido en efectivo: ${money(totals.delivery)}`
+   : modalidad === "todo"
+     ? `Envío pagado: ${money(totals.delivery)}`
+     : `Envío pendiente al repartidor: ${money(totals.delivery)}`;
+
  return `
  <div style="text-align:center;font-weight:900;font-size:19px">SUCHINALOA</div>
- <div style="text-align:center;margin-top:4px">COMANDA DE COCINA</div>
+ <div style="text-align:center;margin-top:4px">COMANDA</div>
  <hr>
+
  <div style="text-align:center;font-size:22px;font-weight:900">${order}</div>
  <div style="text-align:center">${now.toLocaleDateString("es-MX")} · ${now.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}</div>
+
  <hr>
+
+ <div style="
+   border:3px solid #000;
+   padding:8px 7px;
+   margin:8px 0 10px;
+   text-align:center;
+ ">
+   <div style="font-size:13px;font-weight:900">FORMA DE PAGO</div>
+   <div style="font-size:20px;font-weight:900;margin-top:3px">${pagoTitulo}</div>
+   <div style="font-size:16px;font-weight:900;margin-top:3px">${pagoDetalle}</div>
+   <div style="font-size:18px;font-weight:900;margin-top:5px">PAGO: ${pagoTotal}</div>
+   <div style="font-size:14px;font-weight:800;margin-top:3px">${envioDetalle}</div>
+ </div>
+
+ <hr>
+
  ${lines}
+
  <hr>
  <div><b>OBSERVACIONES:</b></div>
  <div style="min-height:30px">${customerNotes||"Sin observaciones"}</div>
+
  <hr>
  <div style="text-align:center;font-weight:900">FIN DE COMANDA</div>`;
  }
@@ -6505,10 +6554,28 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }).join("\n");
 
  const payment = data.payment || "No especificado";
- const esMercadoPago = payment === "Mercado Pago";
- const paymentDetail = esMercadoPago
- ? `💳 Alimentos pagados por Mercado Pago: ${money(totals.subtotal)}\n🛵 A pagar al moto envío a cobrar en efectivo: ${money(totals.delivery)}`
- : `💵 Total a cobrar en efectivo: ${money(totals.total)}`;
+ const modalidad = data.payment_scope || "todo";
+
+ let paymentDetail = "";
+
+ if(payment === "Efectivo"){
+   paymentDetail =
+     `💵 EFECTIVO AL RECIBIR\n` +
+     `Alimentos: ${money(totals.subtotal)}\n` +
+     `Envío: ${money(totals.delivery)}\n` +
+     `Total a cobrar: ${money(totals.total)}`;
+ }else if(modalidad === "todo"){
+   paymentDetail =
+     `💳 TARJETA / MERCADO PAGO\n` +
+     `✅ Alimentos pagados: ${money(totals.subtotal)}\n` +
+     `✅ Envío pagado: ${money(totals.delivery)}\n` +
+     `Total pagado: ${money(totals.total)}`;
+ }else{
+   paymentDetail =
+     `💳 TARJETA / MERCADO PAGO\n` +
+     `✅ Solo alimentos pagados: ${money(totals.subtotal)}\n` +
+     `🛵 Envío pendiente al repartidor: ${money(totals.delivery)}`;
+ }
 
  const locationText = data.location
  ? `\n📍 Ubicación:\n${data.location}`
@@ -6820,7 +6887,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const order=generateOrderNumber();
  const orderItems=cart.map(item=>({...item}));
  const totals=getTotals();
- const kitchenHtml=buildKitchenTicket(order,data.notes);
+ const kitchenHtml=buildKitchenTicket(order,data.notes,data,totals);
 
  lastDeliveryMessage=buildDeliveryMessage(order,data,orderItems,totals);
  lastOrderPayload={
@@ -6897,7 +6964,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
  </div>
 
  <div class="payment-final-help">
-   El pago se confirma automáticamente. La entrega se paga en efectivo al repartidor.
+   ${lastOrderPayload.pago.modalidad_pago === "todo"
+     ? "El pago se confirma automáticamente e incluye alimentos + envío."
+     : "El pago se confirma automáticamente. El envío se paga al repartidor."}
  </div>
  </div>
 
