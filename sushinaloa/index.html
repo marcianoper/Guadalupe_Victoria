@@ -5092,6 +5092,214 @@ body{background:#f7f3ed!important}
 }
 </style>
 
+
+<style>
+/* =========================================================
+   SUCHINALOA · CHECKOUT COMPACTO
+   ========================================================= */
+
+/* Panel principal más corto y respirable */
+.checkout-panel,
+.checkout-card,
+.checkout-content{
+  max-height:86vh !important;
+}
+
+.checkout-content{
+  padding:18px 20px 20px !important;
+}
+
+/* Grid más compacto */
+.checkout-form,
+.checkout-grid{
+  gap:10px 12px !important;
+}
+
+/* Campos más bajos */
+.checkout-overlay .field{
+  margin-bottom:8px !important;
+}
+
+.checkout-overlay label{
+  margin-bottom:5px !important;
+  font-size:13px !important;
+  line-height:1.2 !important;
+}
+
+.checkout-overlay input,
+.checkout-overlay select{
+  min-height:46px !important;
+  height:46px !important;
+  padding:10px 14px !important;
+  font-size:15px !important;
+  border-radius:12px !important;
+}
+
+.checkout-overlay textarea{
+  min-height:74px !important;
+  height:74px !important;
+  padding:10px 14px !important;
+  font-size:14px !important;
+  border-radius:12px !important;
+  resize:vertical !important;
+}
+
+/* Reducir el gran bloque de dirección */
+.location-box,
+.delivery-box,
+.delivery-estimate{
+  margin-top:8px !important;
+  padding:10px 12px !important;
+  border-radius:12px !important;
+}
+
+/* Botones de ubicación en una sola línea cuando haya espacio */
+.location-actions,
+.location-buttons,
+.delivery-actions{
+  display:flex !important;
+  gap:8px !important;
+  flex-wrap:wrap !important;
+  margin-top:8px !important;
+}
+
+.location-actions button,
+.location-buttons button,
+.delivery-actions button{
+  min-height:42px !important;
+  padding:9px 14px !important;
+  border-radius:11px !important;
+  font-size:13px !important;
+  flex:1 1 220px !important;
+}
+
+/* Mensaje de ubicación más discreto */
+.location-note,
+.location-warning,
+.delivery-warning,
+#locationStatus,
+#deliveryStatus{
+  margin-top:7px !important;
+  font-size:11px !important;
+  line-height:1.35 !important;
+}
+
+/* Resumen de pago más compacto */
+.checkout-summary{
+  padding:10px 12px !important;
+  gap:6px !important;
+  margin-bottom:8px !important;
+}
+
+.checkout-summary > div{
+  font-size:12px !important;
+}
+
+.checkout-summary-total{
+  padding-top:7px !important;
+  font-size:15px !important;
+}
+
+/* Forma de pago más compacta */
+.payment-main-choice{
+  gap:7px !important;
+  margin-top:8px !important;
+}
+
+.payment-main-option,
+.payment-scope-option{
+  padding:9px 10px !important;
+  border-radius:12px !important;
+}
+
+.payment-main-option strong,
+.payment-scope-option strong{
+  font-size:13px !important;
+}
+
+.payment-main-option small,
+.payment-scope-option small{
+  font-size:10px !important;
+  margin-top:1px !important;
+}
+
+.card-payment-scope{
+  margin-top:8px !important;
+  padding:9px !important;
+  gap:6px !important;
+  border-radius:12px !important;
+}
+
+.card-payment-scope-title{
+  font-size:11px !important;
+}
+
+/* Indicaciones generales más pequeñas */
+.checkout-overlay textarea[name="notes"],
+.checkout-overlay textarea[name="indicaciones"]{
+  min-height:64px !important;
+  height:64px !important;
+}
+
+/* Pie y botón final */
+.checkout-actions,
+.checkout-footer{
+  margin-top:12px !important;
+}
+
+.checkout-actions button,
+.checkout-footer button,
+.submit-order{
+  min-height:46px !important;
+  padding:11px 16px !important;
+}
+
+/* En escritorio, compactar pares de campos */
+@media(min-width:760px){
+  .checkout-form,
+  .checkout-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .field.full,
+  .checkout-form .full,
+  .checkout-grid .full{
+    grid-column:1/-1 !important;
+  }
+
+  /* Referencias ocupa toda la fila pero sin crecer demasiado */
+  textarea[name="references"],
+  textarea[name="referencias"]{
+    min-height:68px !important;
+    height:68px !important;
+  }
+}
+
+/* Móvil: mantener lectura clara */
+@media(max-width:759px){
+  .checkout-panel,
+  .checkout-card,
+  .checkout-content{
+    max-height:92vh !important;
+  }
+
+  .checkout-content{
+    padding:14px !important;
+  }
+
+  .payment-main-choice,
+  .card-payment-scope{
+    grid-template-columns:1fr !important;
+  }
+
+  .location-actions button,
+  .location-buttons button,
+  .delivery-actions button{
+    flex:1 1 100% !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
