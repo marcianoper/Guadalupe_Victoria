@@ -2916,7 +2916,7 @@ body.cart-review-open .mobile-cart{
 <style>
 /* =========================================================
    SUCHINALOA · DISEÑO DE REFERENCIA V2
-   Inspirado en landing editorial de sushi: crema + rojo + negro.
+   Inspirado en landing editorial de suchi: crema + rojo + negro.
    ========================================================= */
 :root{
   --ref-bg:#f3eee7;
@@ -5300,6 +5300,431 @@ body{background:#f7f3ed!important}
 }
 </style>
 
+
+<style id="suchinaloa-legacy-design-final">
+:root{
+  --bg:#050505;--panel:#0b0b0b;--gold:#e0a640;--gold-soft:#f3c66a;
+  --red:#c91717;--cream:#f7dfaa;--text:#fff3d0;--muted:#c6a86d;
+}
+body{
+  background:radial-gradient(circle at 50% 0%,rgba(153,22,22,.16),transparent 25%),
+             linear-gradient(180deg,#020202 0%,#070707 100%)!important;
+  color:var(--text)!important;
+}
+.topbar{
+  position:sticky!important;top:0!important;min-height:auto!important;height:auto!important;
+  background:rgba(0,0,0,.94)!important;border-bottom:1px solid rgba(224,166,64,.18)!important;
+  backdrop-filter:blur(10px)!important;overflow:visible!important;
+}
+.topbar-inner{
+  max-width:1180px!important;min-height:auto!important;height:auto!important;margin:auto!important;
+  padding:10px 18px!important;display:flex!important;align-items:center!important;
+  justify-content:space-between!important;
+}
+.brand{display:flex!important;align-items:center!important;gap:10px!important}
+.brand .official-logo{
+  width:44px!important;height:44px!important;border-radius:12px!important;
+  border:1px solid rgba(224,166,64,.35)!important;background:#050505!important;
+}
+.brand strong{color:var(--cream)!important;font-weight:900!important}
+.brand small{display:none!important}
+.topbar .cart-top{
+  position:static!important;transform:none!important;margin:0!important;
+  border:1px solid rgba(224,166,64,.60)!important;background:#090909!important;
+  color:var(--gold-soft)!important;border-radius:15px!important;padding:10px 14px!important;
+}
+.topbar-centered-logo{display:none!important}
+
+.order-hours-bar{
+  width:100%!important;min-height:0!important;margin:0!important;padding:9px 14px!important;
+  background:#080808!important;border-bottom:1px solid rgba(224,166,64,.16)!important;
+  color:#d8bd84!important;font-size:12px!important;
+}
+.order-hours-bar #orderHoursText{color:#a98d60!important}
+.order-hours-bar.is-open #orderHoursTitle{color:#7ce2a8!important}
+.order-hours-bar.is-closed #orderHoursTitle{color:#ff8e8e!important}
+
+.wait-time-bar{
+  max-width:1180px!important;width:calc(100% - 36px)!important;min-height:0!important;
+  margin:12px auto 0!important;padding:10px 14px!important;background:#0b0b0b!important;
+  border:1px solid rgba(224,166,64,.28)!important;border-radius:14px!important;box-shadow:none!important;
+}
+.wait-time-icon{width:36px!important;height:36px!important;background:#17110d!important;color:var(--gold)!important;font-size:17px!important}
+.wait-time-copy span{color:#b88d43!important;font-size:9px!important}
+.wait-time-copy strong{color:#ffe4a0!important;font-size:17px!important}
+
+.hero-experience{
+  position:relative!important;width:100%!important;max-width:none!important;min-height:82vh!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;background:#030303!important;
+}
+.hero-experience-bg{
+  position:absolute!important;inset:-4%!important;z-index:-3!important;
+  background-image:url("img/imagen-13.jpg")!important;background-size:cover!important;
+  background-position:center 48%!important;filter:saturate(.96) contrast(1.05) brightness(.78)!important;
+}
+.hero-experience-overlay{
+  position:absolute!important;inset:0!important;z-index:-2!important;
+  background:radial-gradient(circle at 72% 48%,rgba(176,20,18,.10),transparent 34%),
+             linear-gradient(90deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.80) 34%,rgba(0,0,0,.45) 58%,rgba(0,0,0,.18) 78%,rgba(0,0,0,.42) 100%)!important;
+}
+.hero-experience-content{
+  position:relative!important;z-index:2!important;width:min(1180px,calc(100% - 36px))!important;
+  min-height:82vh!important;margin:0 auto!important;padding:88px 0 86px!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;
+}
+.hero-experience-eyebrow{color:#d9a646!important}
+.hero-experience-copy{max-width:620px!important}
+.hero-experience-copy h1{
+  margin:0!important;color:#fff0c7!important;font-size:clamp(44px,6.1vw,82px)!important;
+  line-height:.92!important;letter-spacing:-3.4px!important;font-weight:950!important;
+}
+.hero-experience-copy p{
+  max-width:520px!important;margin:20px 0 0!important;color:#e5cfa1!important;
+  font-size:16px!important;line-height:1.55!important;
+}
+.hero-real-visual,.mock-about,.rollos-heading{display:none!important}
+
+.content{
+  max-width:1180px!important;margin:30px auto 120px!important;padding:0 18px!important;
+  display:block!important;color:#f7e7c7!important;
+}
+.section-head{display:flex!important;margin:18px 0 12px!important}
+.section-head h2{display:block!important;margin:0!important;color:var(--gold-soft)!important;font-size:28px!important}
+.categories{
+  display:flex!important;gap:12px!important;overflow-x:auto!important;padding:8px 0 16px!important;
+  margin:0 0 6px!important;position:sticky!important;top:64px!important;z-index:30!important;
+  background:linear-gradient(#050505 78%,rgba(5,5,5,0))!important;
+}
+.category{
+  flex:0 0 auto!important;border-radius:999px!important;padding:11px 18px!important;
+  color:var(--gold-soft)!important;background:#090909!important;
+  border:1px solid rgba(224,166,64,.62)!important;font-weight:800!important;
+}
+.category.active{background:linear-gradient(180deg,#cf1c1c,#9d0909)!important;color:#fff7dc!important;border-color:#e12b2b!important}
+.products{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;overflow:visible!important;
+}
+.product{
+  width:auto!important;min-width:0!important;max-width:none!important;min-height:250px!important;
+  display:grid!important;grid-template-columns:42% 58%!important;
+  background:linear-gradient(180deg,#0a0a0a,#0e0e0e)!important;
+  border:1px solid rgba(224,166,64,.58)!important;color:var(--text)!important;
+  border-radius:20px!important;overflow:hidden!important;
+}
+.product-art{width:100%!important;height:100%!important;min-height:100%!important;border-right:1px solid rgba(224,166,64,.14)!important}
+.product-art img{width:100%!important;height:100%!important;object-fit:cover!important}
+.product-body{padding:18px 18px 16px!important}
+.product h3{color:#fff7dd!important;font-size:22px!important}
+.product p{display:block!important;color:#e4c98f!important;font-size:14px!important}
+.product-tag{display:inline-flex!important;color:var(--gold)!important}
+.price{color:var(--gold)!important;font-size:23px!important}
+.add{
+  min-width:118px!important;width:auto!important;height:44px!important;padding:0 15px!important;
+  border-radius:12px!important;background:linear-gradient(180deg,#cf1d1d,#940707)!important;
+  color:#fff3d0!important;border:1px solid #e22b2b!important;font-size:15px!important;
+}
+.add::after{content:" Agregar"!important}
+
+.cart-panel{display:none!important}
+.mobile-cart{
+  display:flex!important;position:fixed!important;left:50%!important;transform:translateX(-50%)!important;
+  bottom:14px!important;width:min(960px,calc(100% - 28px))!important;min-height:72px!important;
+  background:linear-gradient(180deg,#0b0b0b,#060606)!important;color:var(--gold-soft)!important;
+  border:1px solid rgba(224,166,64,.70)!important;border-radius:20px!important;z-index:80!important;
+}
+
+.overlay{background:rgba(0,0,0,.76)!important;backdrop-filter:blur(6px)!important}
+.modal{background:#090909!important;color:var(--text)!important;border:1px solid rgba(224,166,64,.36)!important;border-radius:24px!important}
+.modal-head{background:#080808!important;border-bottom:1px solid rgba(224,166,64,.22)!important}
+.modal-head h2,.field label{color:var(--gold-soft)!important}
+.close{background:#111!important;border:1px solid rgba(224,166,64,.35)!important;color:var(--gold-soft)!important}
+.field input,.field select,.field textarea{background:#0f0f0f!important;border:1px solid rgba(224,166,64,.38)!important;color:#fff5d8!important}
+.checkout-summary,.payment-main-option,.payment-scope-option,.card-payment-scope{
+  background:#0d0d0d!important;color:#fff2d2!important;border-color:rgba(224,166,64,.34)!important;
+}
+.checkout-summary span,.payment-main-option small,.payment-scope-option small{color:#b89c6b!important}
+.checkout-summary strong,.payment-main-option strong,.payment-scope-option strong{color:#ffe5a5!important}
+.payment-main-option:has(input:checked),.payment-scope-option:has(input:checked){border-color:#d12f2f!important;background:#160b0b!important}
+.payment-note{background:rgba(224,166,64,.08)!important;color:#e6c78d!important;border:1px solid rgba(224,166,64,.18)!important}
+.submit-order{background:linear-gradient(180deg,#cb1c1c,#900707)!important;color:#fff6d8!important;border:1px solid #df2525!important}
+footer{background:#030303!important;color:#8f784d!important}
+
+@media(max-width:820px){.products{grid-template-columns:1fr!important}}
+@media(max-width:720px){
+  .hero-experience{min-height:76vh!important}
+  .hero-experience-content{min-height:76vh!important;width:calc(100% - 24px)!important;padding:70px 8px 78px!important;justify-content:flex-end!important}
+  .hero-experience-bg{background-position:60% center!important}
+  .hero-experience-overlay{background:linear-gradient(180deg,rgba(0,0,0,.20) 0%,rgba(0,0,0,.38) 38%,rgba(0,0,0,.92) 84%,#030303 100%)!important}
+}
+@media(max-width:560px){
+  .product{grid-template-columns:38% 62%!important;min-height:205px!important}
+  .product-body{padding:14px 13px!important}.product h3{font-size:18px!important}.product p{font-size:12px!important}
+  .add{min-width:96px!important;height:39px!important;padding:0 10px!important;font-size:13px!important}
+  .wait-time-bar{width:calc(100% - 20px)!important}
+}
+</style>
+
+
+<style id="suchinaloa-productos-fijos">
+/* =========================================================
+   SUCHINALOA · PRODUCTOS FIJOS
+   Sin carrusel, sin cambio automático.
+   ========================================================= */
+
+.featured-arrow,
+.featured-dots{
+  display:none!important;
+}
+
+.featured-viewport{
+  overflow:visible!important;
+}
+
+.products{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:18px!important;
+  overflow:visible!important;
+  align-items:stretch!important;
+}
+
+/* Tarjetas limpias y de altura consistente */
+.mock-product-card{
+  display:flex!important;
+  flex-direction:column!important;
+  min-width:0!important;
+  min-height:100%!important;
+  background:rgba(255,250,244,.96)!important;
+  border:1px solid #d9d0c6!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+}
+
+.mock-product-photo{
+  width:100%!important;
+  height:210px!important;
+  min-height:210px!important;
+  flex:none!important;
+  background:#f0e7dd!important;
+}
+
+.mock-product-photo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+.mock-product-info{
+  display:flex!important;
+  flex-direction:column!important;
+  flex:1!important;
+  padding:17px 17px 15px!important;
+}
+
+.mock-product-info h3{
+  min-height:42px;
+}
+
+.mock-product-info p{
+  display:block!important;
+  flex:1!important;
+}
+
+.mock-product-bottom{
+  width:100%!important;
+  margin-top:auto!important;
+}
+
+/* Pantalla mediana */
+@media(max-width:1050px){
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+/* Celular */
+@media(max-width:650px){
+  .products{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+
+  .mock-product-card{
+    display:grid!important;
+    grid-template-columns:40% 60%!important;
+    min-height:205px!important;
+  }
+
+  .mock-product-photo{
+    width:100%!important;
+    height:100%!important;
+    min-height:205px!important;
+  }
+
+  .mock-product-info{
+    padding:14px 13px!important;
+  }
+
+  .mock-product-info h3{
+    min-height:0!important;
+  }
+}
+</style>
+
+
+<style id="ajuste-productos-horizontal-negro">
+/* PRODUCTOS COMO ANTES:
+   foto a la izquierda + información a la derecha + fondo negro */
+
+.products{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+  align-items:stretch!important;
+}
+
+.mock-product-card{
+  display:grid!important;
+  grid-template-columns:42% 58%!important;
+  min-height:255px!important;
+  background:#080808!important;
+  border:1px solid rgba(224,166,64,.52)!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+  color:#fff!important;
+}
+
+.mock-product-photo{
+  width:100%!important;
+  height:100%!important;
+  min-height:255px!important;
+  background:#111!important;
+  border-right:1px solid rgba(224,166,64,.16)!important;
+}
+
+.mock-product-photo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+.mock-product-info{
+  display:flex!important;
+  flex-direction:column!important;
+  padding:18px!important;
+  background:#080808!important;
+  color:#fff!important;
+}
+
+.mock-product-tag{
+  color:#ef3030!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  letter-spacing:.8px!important;
+  text-transform:uppercase!important;
+}
+
+.mock-product-info h3{
+  color:#fff!important;
+  font-size:22px!important;
+  line-height:1.12!important;
+  margin:9px 0 5px!important;
+  min-height:0!important;
+}
+
+.mock-jp{
+  color:#ef3030!important;
+  margin-bottom:12px!important;
+}
+
+.mock-product-info p{
+  color:#e5e5e5!important;
+  font-size:14px!important;
+  line-height:1.5!important;
+  margin:0 0 16px!important;
+  flex:1!important;
+}
+
+.mock-product-bottom{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-top:auto!important;
+}
+
+.mock-product-bottom .price{
+  color:#ef3030!important;
+  font-size:22px!important;
+  font-weight:950!important;
+}
+
+.mock-add{
+  min-width:118px!important;
+  height:43px!important;
+  padding:0 16px!important;
+  border-radius:12px!important;
+  background:#c91414!important;
+  border:1px solid #e62a2a!important;
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+
+/* Quitar el "Agregar" duplicado heredado de estilos anteriores */
+.mock-add::after{
+  content:""!important;
+}
+
+@media(max-width:900px){
+  .products{
+    grid-template-columns:1fr!important;
+  }
+
+  .mock-product-card{
+    grid-template-columns:40% 60%!important;
+  }
+}
+
+@media(max-width:560px){
+  .mock-product-card{
+    grid-template-columns:39% 61%!important;
+    min-height:205px!important;
+  }
+
+  .mock-product-photo{
+    min-height:205px!important;
+  }
+
+  .mock-product-info{
+    padding:13px!important;
+  }
+
+  .mock-product-info h3{
+    font-size:18px!important;
+  }
+
+  .mock-product-info p{
+    font-size:12px!important;
+    line-height:1.4!important;
+  }
+
+  .mock-product-bottom .price{
+    font-size:18px!important;
+  }
+
+  .mock-add{
+    min-width:88px!important;
+    height:38px!important;
+    padding:0 10px!important;
+    font-size:12px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5352,14 +5777,12 @@ body{background:#f7f3ed!important}
 
 
  <header class="topbar">
-  <div class="topbar-centered-logo" aria-label="Suchinaloa">
-    <img src="img/logo-suchinaloa.png" alt="Suchinaloa">
-  </div>
  <div class="topbar-inner">
- 
+ <div class="brand">
+ <div class="logo official-logo"><img src="img/logo-suchinaloa-transparente.png" alt="Logo Suchinaloa"></div>
  <div>
- <strong></strong>
- <small></small>
+ <strong>SUCHINALOA</strong>
+ <small> · Entrega a domicilio</small>
  </div>
  </div>
  <button class="cart-top" onclick="scrollToCart()">
@@ -5394,14 +5817,7 @@ body{background:#f7f3ed!important}
     <div class="hero-experience-eyebrow">SUCHINALOA · IRAPUATO</div>
 <div class="hero-experience-copy">
       <h1>Algo bien<br>se está preparando.</h1>
-      <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
-    </div>
-
-
-    <div class="hero-real-visual" aria-hidden="true">
-      <div class="hero-red-sun"></div>
-      <div class="hero-brush"></div>
-      <img id="heroRotatingImage" src="img/imagen-13.jpg" alt="">
+      <p>Suchi con carácter, preparado al momento y directo a tu puerta.</p>
     </div>
 
     <div class="hero-experience-actions">
@@ -5421,30 +5837,6 @@ body{background:#f7f3ed!important}
     <span>DESLIZA</span>
     <i></i>
   </div>
-
-</section>
-
-
-<section class="mock-about">
-  <div class="mock-about-copy">
-    <span class="mock-kicker">SOBRE</span>
-    <h2>SUCHINALOA</h2>
-    <p>Sushi con carácter, preparado al momento y con ingredientes frescos. Una propuesta hecha para compartir y pedir fácil desde cualquier dispositivo.</p>
-  </div>
-
-  <div class="mock-stats">
-    <div><b>100%</b><span>Preparado al momento</span></div>
-    <div><b>15+</b><span>Opciones en el menú</span></div>
-    <div><b>10 km</b><span>Zona de cobertura</span></div>
-  </div>
-
-  <div class="mock-about-photo">
-    <img id="aboutRotatingImage" src="img/imagen-07.jpg" alt="Suchinaloa" loading="lazy">
-  </div>
-</section>
-
-<section class="rollos-heading">
-  <h2>NUESTROS <b>ROLLOS</b></h2>
 </section>
 
 <section class="content" id="menu">
@@ -5464,17 +5856,9 @@ body{background:#f7f3ed!important}
  <button class="category" data-category="El Especial" onclick="filterProducts('El Especial',this)">El Especial</button>
  <button class="category" data-category="Natural" onclick="filterProducts('Natural',this)">Natural</button>
  <button class="category" data-category="Bebidas" onclick="filterProducts('Bebidas',this)">Bebidas</button>
- <button class="category" data-category="Extras" onclick="filterProducts('Extras',this)">Extras</button>
  </div>
 
- <div class="featured-carousel-shell">
-  <button class="featured-arrow featured-prev" type="button" onclick="moveFeatured(-1)" aria-label="Anterior">‹</button>
-  <div class="featured-viewport" id="featuredViewport">
-    <div class="products" id="products"></div>
-  </div>
-  <button class="featured-arrow featured-next" type="button" onclick="moveFeatured(1)" aria-label="Siguiente">›</button>
-</div>
-<div class="featured-dots" id="featuredDots"></div>
+ <div class="products" id="products"></div>
  </div>
 
  <aside class="cart-panel" id="desktopCart">
@@ -5487,7 +5871,7 @@ body{background:#f7f3ed!important}
  </section>
  </main>
 
- <button class="mobile-cart" id="mobileCart" onclick="openCartReview()" aria-label="Ver pedido">
+ <button class="mobile-cart" id="mobileCart" onclick="openCheckout()" aria-label="Ver pedido">
  <span class="mobile-cart-left">
  <span class="mobile-cart-icon">🛍️</span>
  <span class="mobile-cart-copy">
@@ -5505,28 +5889,7 @@ body{background:#f7f3ed!important}
  <span class="mobile-cart-total" id="mobileTotal">$0</span>
  </button>
 
- 
-
-<div class="cart-drawer-backdrop hidden" id="cartReviewOverlay" onclick="handleCartBackdrop(event)">
-  <aside class="cart-drawer" id="cartDrawer" aria-label="Tu pedido">
-    <div class="cart-drawer-head">
-      <div>
-        <span class="cart-drawer-kicker">TU PEDIDO</span>
-        <h2>Carrito</h2>
-        <small>Revisa cantidades o elimina productos.</small>
-      </div>
-      <button class="cart-drawer-close" type="button" onclick="closeCartReview()" aria-label="Cerrar carrito">×</button>
-    </div>
-
-    <div class="cart-drawer-body">
-      <div id="cartReviewBody"></div>
-    </div>
-  </aside>
-</div>
-
-</div>
-
-<div class="overlay hidden" id="checkoutOverlay">
+ <div class="overlay hidden" id="checkoutOverlay">
  <div class="modal">
  <div class="modal-head">
  <h2>Datos de entrega</h2>
@@ -5671,19 +6034,19 @@ let ULTIMO_CALCULO_ESPERA = null;
  const products = [
  {id:1,name:"Arroz Frito Gohan",category:"Entradas",price:150,emoji:"🍚",photo:"img/imagen-03.jpg",tag:"ENTRADA",desc:"Arroz frito preparado con tocino, queso crema, cebollín, pollo y carne de res; sazonado con soya natural y zanahoria, coronado con tampico y aguacate."},
  {id:2,name:"Orden Chiles Güeros Rellenos",category:"Entradas",price:135,emoji:"🌶️",photo:"img/imagen-04.jpg",tag:"3 PIEZAS",desc:"3 chiles güeros rellenos de tampico y queso crema, empanizados y coronados con salsa de anguila y chipotle."},
- {id:3,name:"Mar y Tierra",category:"Rollos Empanizados",price:110,emoji:"🍣",photo:"img/imagen-05.jpg",tag:"EMPANIZADO",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, camarón y res."},
- {id:4,name:"Yaquesita",category:"Rollos Empanizados",price:165,emoji:"🧀",photo:"img/imagen-06.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón y surimi; coronado con mozzarella, queso crema, chimichurri, salsa sriracha y ajonjolí."},
- {id:5,name:"¡Que Chulada!",category:"Rollos Empanizados",price:170,emoji:"🍤",photo:"img/imagen-07.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y surimi; coronado con queso especial de la casa, tampico y camarones empanizados, bañado en salsa de anguila y ajonjolí."},
- {id:6,name:"Que Rollo",category:"Rollos Empanizados",price:170,emoji:"🥓",photo:"img/imagen-08.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y res; coronado con tampico y trozos de tocino frito."},
- {id:7,name:"Al-Bien",category:"Rollos Empanizados",price:170,emoji:"🥢",photo:"img/imagen-09.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, surimi y camarón; coronado con tampico, salsa de anguila, chipotle y sriracha."},
- {id:8,name:"Túmbate el Rollo",category:"Rollos Empanizados",price:195,emoji:"🍗",photo:"img/imagen-10.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón, res y surimi; coronado con tampico y pollo empanizado, bañado en BBQ y ranch con ajonjolí."},
- {id:9,name:"Rollo Culichi",category:"Rollos Empanizados",price:205,emoji:"🌶️",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, res, pollo y chile güero; coronado con queso especial de la casa, tampico, tocino picado y ajonjolí."},
- {id:10,name:"Que Chilo",category:"Rollos Empanizados",price:160,emoji:"🍣",photo:"img/imagen-11.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate y camarón; coronado con tampico, tocino, salsa de anguila y aderezo ranch."},
- {id:11,name:"Machin Roll",category:"Rollo Horneado",price:215,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
- {id:12,name:"Suchinaloa",category:"El Especial",price:250,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
- {id:13,name:"Avocado Roll",category:"Natural",price:135,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
- {id:14,name:"Té de Jazmín Saboraté · litro",category:"Bebidas",price:40,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación individual. Precio por definir."},
- {id:17,name:"Té de Jazmín Saboraté · medio",category:"Bebidas",price:30,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
+ {id:3,name:"Mar y Tierra",category:"Rollos Empanizados",price:115,emoji:"🍣",photo:"img/imagen-05.jpg",tag:"EMPANIZADO",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, camarón y res."},
+ {id:4,name:"Yaquesita",category:"Rollos Empanizados",price:170,emoji:"🧀",photo:"img/imagen-06.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón y surimi; coronado con mozzarella, queso crema, chimichurri, salsa sriracha y ajonjolí."},
+ {id:5,name:"¡Que Chulada!",category:"Rollos Empanizados",price:175,emoji:"🍤",photo:"img/imagen-07.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y surimi; coronado con queso especial de la casa, tampico y camarones empanizados, bañado en salsa de anguila y ajonjolí."},
+ {id:6,name:"Que Rollo",category:"Rollos Empanizados",price:175,emoji:"🥓",photo:"img/imagen-08.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y res; coronado con tampico y trozos de tocino frito."},
+ {id:7,name:"Algo-Bien",category:"Rollos Empanizados",price:175,emoji:"🥢",photo:"img/imagen-09.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, surimi y camarón; coronado con tampico, salsa de anguila, chipotle y sriracha."},
+ {id:8,name:"Túmbate el Rollo",category:"Rollos Empanizados",price:200,emoji:"🍗",photo:"img/imagen-10.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón, res y surimi; coronado con tampico y pollo empanizado, bañado en BBQ y ranch con ajonjolí."},
+ {id:9,name:"Rollo Culichi",category:"Rollos Empanizados",price:210,emoji:"🌶️",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, res, pollo y chile güero; coronado con queso especial de la casa, tampico, tocino picado y ajonjolí."},
+ {id:10,name:"Que Chilo",category:"Rollos Empanizados",price:165,emoji:"🍣",photo:"img/imagen-11.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate y camarón; coronado con tampico, tocino, salsa de anguila y aderezo ranch."},
+ {id:11,name:"Machin Roll",category:"Rollo Horneado",price:220,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
+ {id:12,name:"Suchinaloa",category:"El Especial",price:255,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
+ {id:13,name:"Avocado Roll",category:"Natural",price:140,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
+ {id:14,name:"Té de Jazmín · 1 litro",category:"Bebidas",price:40,emoji:"🧋",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín, presentación de 1 litro."},
+ {id:17,name:"Té de Jazmín · 500 ml",category:"Bebidas",price:30,emoji:"🧋",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín, presentación de medio litro."},
  {id:15,name:"Extra de Salsa",category:"Extras",price:15,emoji:"🥣",tag:"EXTRA",desc:"Porción extra de salsa para acompañar tu pedido."},
  {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."}
  ];
@@ -5781,100 +6144,62 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  }
 
  let featuredCategory = "Todos";
- let featuredStart = 0;
- let featuredTimer = null;
 
  function getFeaturedList(){
-   return featuredCategory==="Todos"
+   return featuredCategory === "Todos"
      ? products
-     : products.filter(p=>p.category===featuredCategory);
+     : products.filter(p => p.category === featuredCategory);
  }
 
  function renderProducts(category="Todos"){
    featuredCategory = category;
-   featuredStart = 0;
-   renderFeaturedSlots();
-   restartFeaturedAuto();
- }
 
- function renderFeaturedSlots(){
    const container = document.getElementById("products");
-   const dots = document.getElementById("featuredDots");
    if(!container) return;
 
    const list = getFeaturedList();
 
    if(!list.length){
-     container.innerHTML = `<div class="featured-empty">No hay productos en esta categoría.</div>`;
-     if(dots) dots.innerHTML = "";
+     container.innerHTML = `
+       <div class="featured-empty">
+         No hay productos en esta categoría.
+       </div>`;
      return;
    }
 
-   const visible = [];
-   const count = Math.min(3,list.length);
-   for(let i=0;i<count;i++){
-     visible.push(list[(featuredStart+i)%list.length]);
-   }
-
-   container.innerHTML = visible.map(p=>`
+   // Todos los productos quedan visibles y acomodados.
+   // Ya no hay páginas, flechas, temporizador ni cambio automático.
+   container.innerHTML = list.map(p=>`
      <article class="product mock-product-card">
        <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
-         ${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : ``}
+         ${p.photo
+           ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">`
+           : ``}
        </div>
 
        <div class="mock-product-info">
          <div class="mock-product-tag">${p.tag || p.category}</div>
          <h3>${p.name}</h3>
-         <small class="mock-jp">スシナルoa</small>
+         <small class="mock-jp">SUCHI</small>
          <p>${p.desc}</p>
 
          <div class="mock-product-bottom">
-           <strong class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</strong>
+           <strong class="price">
+             ${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}
+           </strong>
+
            <button
              class="add mock-add"
              type="button"
              onclick="addToCart(${p.id})"
              ${Number.isFinite(p.price) ? "" : "disabled"}
-           >Agregar</button>
+           >
+             Agregar
+           </button>
          </div>
        </div>
      </article>
    `).join("");
-
-   if(dots){
-     const pages = Math.max(1,Math.ceil(list.length/3));
-     const active = Math.floor(featuredStart/3)%pages;
-     dots.innerHTML = Array.from({length:pages},(_,i)=>
-       `<button class="${i===active ? "active" : ""}" type="button" onclick="goFeaturedPage(${i})" aria-label="Página ${i+1}"></button>`
-     ).join("");
-   }
- }
-
- function moveFeatured(direction){
-   const list = getFeaturedList();
-   if(!list.length) return;
-   featuredStart = (featuredStart + direction*3 + list.length) % list.length;
-   renderFeaturedSlots();
-   restartFeaturedAuto();
- }
-
- function goFeaturedPage(page){
-   const list = getFeaturedList();
-   if(!list.length) return;
-   featuredStart = (page*3) % list.length;
-   renderFeaturedSlots();
-   restartFeaturedAuto();
- }
-
- function restartFeaturedAuto(){
-   if(featuredTimer) clearInterval(featuredTimer);
-   featuredTimer = setInterval(()=>{
-     const list = getFeaturedList();
-     if(list.length>3){
-       featuredStart = (featuredStart + 3) % list.length;
-       renderFeaturedSlots();
-     }
-   },4200);
  }
 
  function filterProducts(category,btn){
@@ -7509,7 +7834,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  throw new Error(result.error || "No se pudo crear el pago.");
  }
 
- const checkoutUrl =  result.init_point;
+ const checkoutUrl = result.sandbox_init_point || result.init_point;
  if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
 
  if(status){
