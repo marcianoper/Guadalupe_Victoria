@@ -5933,59 +5933,76 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  function renderCart(){
  const body=document.getElementById("cartBody");
- const count=cart.reduce((s,i)=>s+i.qty,0);
+ const count=cart.reduce((sum,item)=>sum+item.qty,0);
  const totals=getTotals();
 
  document.getElementById("topCount").textContent=count;
  document.getElementById("mobileCount").textContent=count;
  document.getElementById("mobileTotal").textContent=money(totals.total);
 
- const mobileSubtitle = document.getElementById("mobileCartSubtitle");
+ const mobileSubtitle=document.getElementById("mobileCartSubtitle");
  if(mobileSubtitle){
- mobileSubtitle.textContent = count
- ? `${count} producto${count===1?"":"s"} · ${money(totals.total)}`
- : "Agrega productos para comenzar";
+   mobileSubtitle.textContent=count
+     ? `${count} producto${count===1?"":"s"} · ${money(totals.total)}`
+     : "Agrega productos para comenzar";
  }
 
- document.getElementById("cartCountText").textContent=`${count} producto${count===1?"":"s"}`;
+ document.getElementById("cartCountText").textContent=
+   `${count} producto${count===1?"":"s"}`;
 
  if(!cart.length){
- body.innerHTML=`
- <div class="empty">
- <div class="big">🛒</div>
- <strong>Tu carrito está vacío</strong>
- <p>Agrega algunos productos para comenzar.</p>
- </div>`;
- return;
+   body.innerHTML=`
+     <div class="empty">
+       <div class="big">🛒</div>
+       <strong>Tu carrito está vacío</strong>
+       <p>Agrega algunos productos para comenzar.</p>
+     </div>`;
+   return;
  }
 
  body.innerHTML=`
- <div class="cart-list">
- ${cart.map(item=>{
- const p=products.find(x=>x.id===item.id);
- return `
- <div class="cart-item">
- <div class="cart-item-top">
- <div><strong>${p.name}</strong><small>${money(p.price)} c/u</small></div>
- <strong>${money(p.price*item.qty)}</strong>
- </div>
- <div class="cart-controls">
- <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
- <strong>${item.qty}</strong>
- <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
- <button class="remove" onclick="removeItem(${p.id})">Eliminar</button>
- </div>
- </div>`;
- }).join("")}
- </div>
- <div class="totals">
- <div class="total-row"><span>Subtotal</span><strong>${money(totals.subtotal)}</strong></div>
- <div class="total-row"><span>Envío provisional</span><strong>${money(totals.delivery)}</strong></div>
- <div class="total-row grand"><span>Total</span><span>${money(totals.total)}</span></div>
- </div>
- <button class="checkout" onclick="openCheckout()">Continuar pedido</button>`;
- }
+   <div class="cart-list">
+     ${cart.map(item=>{
+       const p=products.find(x=>x.id===item.id);
+       if(!p) return "";
+       return `
+         <div class="cart-item">
+           <div class="cart-item-top">
+             <div>
+               <strong>${p.name}</strong>
+               <small>${money(p.price)} c/u</small>
+             </div>
+             <strong>${money(p.price*item.qty)}</strong>
+           </div>
+           <div class="cart-controls">
+             <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+             <strong>${item.qty}</strong>
+             <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+             <button class="remove" onclick="removeItem(${p.id})">Eliminar</button>
+           </div>
+         </div>`;
+     }).join("")}
+   </div>
 
+   <div class="totals">
+     <div class="total-row">
+       <span>Subtotal</span>
+       <strong>${money(totals.subtotal)}</strong>
+     </div>
+     <div class="total-row">
+       <span>Envío provisional</span>
+       <strong>${money(totals.delivery)}</strong>
+     </div>
+     <div class="total-row grand">
+       <span>Total</span>
+       <span>${money(totals.total)}</span>
+     </div>
+   </div>
+
+   <button class="checkout" onclick="openCheckout()">
+     Continuar pedido
+   </button>`;
+ }
 
  function renderCartReview(){
    const host = document.getElementById("cartReviewBody");
@@ -6052,13 +6069,20 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  function openCartReview(){
    if(!cart.length){
-     document.getElementById("menu").scrollIntoView({behavior:"smooth",block:"start"});
+     document.getElementById("menu").scrollIntoView({
+       behavior:"smooth",
+       block:"start"
+     });
      return;
    }
+
    renderCartReview();
+
    const backdrop = document.getElementById("cartReviewOverlay");
    const drawer = document.getElementById("cartDrawer");
+
    backdrop.classList.remove("hidden");
+
    requestAnimationFrame(()=>{
      backdrop.classList.add("is-open");
      drawer.classList.add("is-open");
@@ -6153,13 +6177,23 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  document.body.classList.remove("checkout-open");
  document.body.style.overflow="";
 
- if(pedidoFinalizado){
- resetCheckoutForNewOrder();
- }
+ // IMPORTANTE:
+ // Cerrar solo oculta la ventana. El pedido activo NO se borra ni
+ // se reinicia; así el cliente puede volver a abrirlo inmediatamente.
+ renderCart();
  }
 
  function scrollToCart(){
  openCartReview();
+ }
+
+ async function verPedidoActual(){
+   const active = leerPedidoActivo();
+   if(active?.payload?.pedido_id){
+     await openCheckout();
+     return;
+   }
+   openCartReview();
  }
 
  function toggleChange(value){}
@@ -7247,8 +7281,8 @@ Favor de confirmar quién toma el envío.`;
        </div>
 
        <div class="active-order-recovery">
-         <strong>Este pedido queda guardado en este dispositivo.</strong>
-         <span>Si cierras esta pestaña y vuelves a entrar, podrás regresar a esta misma orden.</span>
+         <strong>Tu carrito queda guardado hasta confirmar el pago.</strong>
+         <span>Si cierras o recargas la página, tus productos seguirán disponibles en el carrito.</span>
        </div>
 
        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
@@ -7400,7 +7434,12 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function aplicarEstadoPagoConfirmado(){
-   guardarPedidoActivo();
+   // El pago ya quedó confirmado: ahora sí limpiamos el carrito guardado.
+   cart = [];
+   saveCart();
+   renderCart();
+   borrarPedidoActivo();
+
    const success = document.querySelector("#checkoutContent .success");
    if(!success || success.dataset.pagoConfirmado === "1") return;
    success.dataset.pagoConfirmado = "1";
@@ -7630,9 +7669,8 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  mostrarPedidoFinal(estadoInicial, false);
 
- // El carrito se vacía para evitar una segunda orden accidental,
- // pero el pedido completo ya quedó persistido en ACTIVE_ORDER_KEY.
- cart=[];
+ // El carrito permanece guardado hasta que el pago quede confirmado.
+ // Así, si el cliente recarga o cierra la pestaña, sus productos siguen ahí.
  saveCart();
  renderCart();
  }
@@ -7654,11 +7692,10 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
  renderProducts();
  renderCart();
 
- // Si el cliente cerró la pestaña después de registrar el pedido,
- // recuperamos automáticamente esa misma orden al volver.
- setTimeout(()=>{
-   recuperarPedidoActivo();
- },350);
+ // Al volver a abrir o recargar la página mostramos la tienda normal.
+ // El carrito ya se recupera desde localStorage mediante loadCart().
+ // Si existe un pedido pendiente, se conservará para retomarlo al continuar.
+
  </script>
 
 
