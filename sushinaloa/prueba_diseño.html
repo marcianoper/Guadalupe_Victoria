@@ -4820,6 +4820,124 @@ html,body{
 }
 </style>
 
+
+<style>
+/* =========================================================
+   AJUSTE FINAL DEL HEADER / LOGO SUCHINALOA
+   Logo grande, centrado y carrito a la derecha
+   ========================================================= */
+
+.topbar{
+  position:relative !important;
+  width:100% !important;
+  min-height:130px !important;
+  background:#f6f3ee !important;
+  border-bottom:1px solid #ddd4ca !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
+}
+
+.topbar-inner{
+  position:relative !important;
+  width:100% !important;
+  max-width:none !important;
+  min-height:130px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+/* Logo principal */
+.topbar-centered-logo{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+
+  width:min(520px,48vw) !important;
+  height:115px !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+
+  margin:0 !important;
+  padding:0 !important;
+  z-index:2 !important;
+}
+
+.topbar-centered-logo img{
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:115px !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* Carrito superior */
+.topbar .cart-top{
+  position:absolute !important;
+  right:5% !important;
+  top:50% !important;
+  left:auto !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+  z-index:4 !important;
+}
+
+/* TABLET */
+@media(max-width:900px){
+  .topbar,
+  .topbar-inner{
+    min-height:115px !important;
+  }
+
+  .topbar-centered-logo{
+    width:min(430px,55vw) !important;
+    height:95px !important;
+  }
+
+  .topbar-centered-logo img{
+    max-height:95px !important;
+  }
+
+  .topbar .cart-top{
+    right:24px !important;
+  }
+}
+
+/* CELULAR */
+@media(max-width:600px){
+  .topbar,
+  .topbar-inner{
+    min-height:95px !important;
+  }
+
+  .topbar-centered-logo{
+    width:min(290px,58vw) !important;
+    height:76px !important;
+  }
+
+  .topbar-centered-logo img{
+    max-height:76px !important;
+  }
+
+  .topbar .cart-top{
+    right:8px !important;
+    transform:translateY(-50%) scale(.84) !important;
+    transform-origin:right center !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
