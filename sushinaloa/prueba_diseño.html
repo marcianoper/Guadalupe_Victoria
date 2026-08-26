@@ -4732,6 +4732,94 @@ html,body{
 }
 </style>
 
+
+<style>
+.order-hours-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:10px 16px;background:#f4efe6;border-bottom:1px solid rgba(0,0,0,.08);color:#28231f;font-family:"DM Sans",system-ui,sans-serif;font-size:14px;position:relative;z-index:25}.order-hours-dot{width:9px;height:9px;border-radius:50%;background:#999;flex:none}.order-hours-bar.is-open .order-hours-dot{background:#17884f}.order-hours-bar.is-closed .order-hours-dot{background:#d52c2c}.order-hours-bar.is-open #orderHoursTitle{color:#126c40}.order-hours-bar.is-closed #orderHoursTitle{color:#b42318}.order-hours-bar #orderHoursText{color:#6d655e}body.orders-closed .cart-review-continue,body.orders-closed .checkout,body.orders-closed .submit-order{opacity:.5!important;cursor:not-allowed!important}@media(max-width:600px){.order-hours-bar{flex-wrap:wrap;gap:5px 8px;font-size:12px;text-align:center;padding:8px 12px}}
+</style>
+
+
+<style>
+/* ===== TIEMPO DE ESPERA DINÁMICO ===== */
+.wait-time-bar{max-width:1180px;margin:12px auto 0;padding:12px 18px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.74);border:1px solid rgba(28,25,22,.10);border-radius:16px;font-family:"DM Sans",system-ui,sans-serif;box-shadow:0 8px 24px rgba(43,32,20,.06)}
+.wait-time-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#1d1a18;color:#fff;font-size:20px;flex:none}
+.wait-time-copy{min-width:0;display:grid;gap:1px}
+.wait-time-copy span{font-size:10px;font-weight:800;letter-spacing:1.3px;color:#8b2b27}
+.wait-time-copy strong{font-size:19px;line-height:1.15;color:#1d1a18}
+.wait-time-bar.busy{border-color:rgba(189,35,31,.24)}
+.wait-time-bar.busy .wait-time-icon{background:#b82b27}
+.wait-time-bar.very-busy{border-color:rgba(160,25,20,.4);background:#fff7f4}
+.wait-time-bar.very-busy .wait-time-icon{background:#991e1b}
+@media(max-width:600px){.wait-time-bar{margin:8px 10px 0;padding:10px 12px;border-radius:14px}.wait-time-icon{width:36px;height:36px;font-size:17px}.wait-time-copy strong{font-size:17px}}
+</style>
+
+
+<style>
+/* ===== CHECKOUT SIMPLE: DESGLOSE + 2 FORMAS DE PAGO ===== */
+.checkout-summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:12px;
+  border:1px solid #ddd1c5;
+  border-radius:14px;
+  background:#fff;
+  margin-bottom:10px;
+}
+.checkout-summary > div{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:13px;
+}
+.checkout-summary span{color:#7c736b}
+.checkout-summary strong{color:#1d1a18}
+.checkout-summary-total{
+  grid-column:1/-1;
+  padding-top:9px;
+  border-top:1px solid #e6ddd4;
+  font-size:16px!important;
+  font-weight:900;
+}
+.simple-pay-choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.simple-pay-option{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  padding:11px;
+  border:1px solid #d9cec3;
+  border-radius:13px;
+  background:#fff;
+  cursor:pointer;
+}
+.simple-pay-option:has(input:checked){
+  border-color:#d12f2f;
+  background:#fff7f6;
+}
+.simple-pay-option input{
+  width:auto!important;
+  margin-top:3px;
+}
+.simple-pay-option strong{
+  display:block;
+  color:#24201d;
+  font-size:13px;
+}
+.simple-pay-option small{
+  display:block;
+  margin-top:3px;
+  color:#786f67;
+  font-size:11px;
+  line-height:1.35;
+}
+@media(max-width:560px){
+  .simple-pay-choice{grid-template-columns:1fr}
+}
+</style>
+
 </head>
 <body>
 
@@ -4799,6 +4887,21 @@ html,body{
  </button>
  </div>
  </header>
+
+<div id="orderHoursBar" class="order-hours-bar" role="status" aria-live="polite">
+  <span id="orderHoursDot" class="order-hours-dot"></span>
+  <strong id="orderHoursTitle">Revisando horario...</strong>
+  <span id="orderHoursText"></span>
+</div>
+
+<div id="waitTimeBar" class="wait-time-bar" role="status" aria-live="polite">
+  <div class="wait-time-icon">⏱</div>
+  <div class="wait-time-copy">
+    <span>TIEMPO DE ESPERA ACTUAL</span>
+    <strong id="waitTimeValue">Calculando...</strong>
+  </div>
+</div>
+
 
  <main>
  
@@ -5001,40 +5104,47 @@ html,body{
  </div>
  </div>
 
- <div class="field full">
- <label>Método de pago</label>
- <div class="payment-options">
- <label class="payment-choice">
- <input type="radio" name="payment" value="Mercado Pago" checked onchange="actualizarPagoCheckout()" />
- <span>
- <strong>💳 Tarjeta / Mercado Pago</strong>
- <small>El pago electrónico cubre únicamente los alimentos. La entrega se paga en efectivo al repartidor.</small>
- </span>
- </label>
+ 
+<div class="field full">
+  <label>Resumen de pago</label>
 
- <label id="cashPaymentChoice" class="payment-choice">
- <input type="radio" name="payment" value="Efectivo" onchange="actualizarPagoCheckout()" />
- <span>
- <strong>💵 Efectivo</strong>
- <small>Pagas alimentos y entrega en efectivo al recibir tu pedido.</small>
- </span>
- </label>
- </div>
+  <div class="checkout-summary" id="checkoutSummary">
+    <div><span>Alimentos</span><strong id="checkoutFoodTotal">$0</strong></div>
+    <div><span>Envío</span><strong id="checkoutDeliveryTotal">—</strong></div>
+    <div class="checkout-summary-total"><span>Total</span><strong id="checkoutGrandTotal">$0</strong></div>
+  </div>
 
- <div id="paymentMethodNote" class="payment-note">
- Mercado Pago cobrará únicamente los alimentos. El envío se paga en efectivo al repartidor.
- </div>
+  <div class="simple-pay-choice">
+    <label class="simple-pay-option">
+      <input type="radio" name="payment_scope" value="todo" checked onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>Pagar todo ahora</strong>
+        <small>Alimentos + envío en un solo pago.</small>
+      </span>
+    </label>
 
- <div class="cash-admin">
- <span>ADMIN · Opción de pago en efectivo</span>
- <button id="cashToggleBtn" class="cash-toggle" type="button" onclick="toggleEfectivo()">DESACTIVAR EFECTIVO</button>
- </div>
- <div class="cash-admin rain-admin">
-   <span>ADMIN · Tarifa de reparto</span>
-   <button id="rainToggleBtn" class="cash-toggle" type="button" onclick="toggleLluvia()">NORMAL</button>
- </div>
- </div>
- <div class="field full">
+    <label class="simple-pay-option">
+      <input type="radio" name="payment_scope" value="separado" onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>Pagar por separado</strong>
+        <small>Alimentos ahora y envío al repartidor.</small>
+      </span>
+    </label>
+  </div>
+
+  <input type="hidden" name="payment" value="Mercado Pago" />
+
+  <div id="paymentMethodNote" class="payment-note">
+    Se cobrará el total de alimentos y envío con Mercado Pago.
+  </div>
+
+  <div class="cash-admin rain-admin">
+    <span>ADMIN · Tarifa de reparto</span>
+    <button id="rainToggleBtn" class="cash-toggle" type="button" onclick="toggleLluvia()">NORMAL</button>
+  </div>
+</div>
+
+<div class="field full">
  <label>Indicaciones generales</label>
  <textarea name="notes" placeholder="Ej. Marcar al llegar, no tocar el timbre..."></textarea>
  </div>
@@ -5054,7 +5164,9 @@ html,body{
  <script src="config.js"></script>
 
 <script>
- const TIEMPO_ESPERA = "45–60 min";
+ let TIEMPO_ESPERA = "40–50 min";
+let ULTIMA_CARGA_COCINA = null;
+let ULTIMO_CALCULO_ESPERA = null;
  const products = [
  {id:1,name:"Arroz Frito Gohan",category:"Entradas",price:85,emoji:"🍚",photo:"img/imagen-03.jpg",tag:"ENTRADA",desc:"Arroz frito preparado con tocino, queso crema, cebollín, pollo y carne de res; sazonado con soya natural y zanahoria, coronado con tampico y aguacate."},
  {id:2,name:"Orden Chiles Güeros Rellenos",category:"Entradas",price:75,emoji:"🌶️",photo:"img/imagen-04.jpg",tag:"3 PIEZAS",desc:"3 chiles güeros rellenos de tampico y queso crema, empanizados y coronados con salsa de anguila y chipotle."},
@@ -5069,7 +5181,8 @@ html,body{
  {id:11,name:"Machin Roll",category:"Rollo Horneado",price:165,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
  {id:12,name:"Suchinaloa",category:"El Especial",price:180,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
  {id:13,name:"Avocado Roll",category:"Natural",price:125,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
- {id:14,name:"Té de Jazmín Saboraté",category:"Bebidas",price:null,emoji:"🍵",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
+ {id:14,name:"Té de Jazmín Saboraté · Individual",category:"Bebidas",price:null,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación individual. Precio por definir."},
+ {id:17,name:"Té de Jazmín Saboraté · 950 ml",category:"Bebidas",price:null,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
  {id:15,name:"Extra de Salsa",category:"Extras",price:15,emoji:"🥣",tag:"EXTRA",desc:"Porción extra de salsa para acompañar tu pedido."},
  {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."}
  ];
@@ -5309,7 +5422,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  subtotal,
  delivery,
  total,
- totalMercadoPago: subtotal, // Mercado Pago cobra únicamente alimentos.
+ totalMercadoPago: subtotal,
  totalEfectivo: total
  };
  }
@@ -5468,6 +5581,10 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  }
 
  function continueFromCart(){
+   if(!horarioPedidosActivo()){
+     mostrarAvisoHorario();
+     return;
+   }
    closeCartReview();
    openCheckout();
  }
@@ -5487,7 +5604,11 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  if(changeField) changeField.classList.add("hidden");
  }
 
- function openCheckout(){
+ async function openCheckout(){
+ if(!horarioPedidosActivo()){
+   mostrarAvisoHorario();
+   return;
+ }
  if(!cart.length){
  document.getElementById("menu").scrollIntoView({behavior:"smooth"});
  return;
@@ -5497,9 +5618,11 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  resetCheckoutForNewOrder();
  }
 
+ await calcularTiempoEsperaActual();
+
  document.getElementById("checkoutOverlay").classList.remove("hidden");
  document.body.classList.add("checkout-open");
- setTimeout(()=>{ aplicarEstadoEfectivo(); actualizarControlLluvia(); obtenerUbicacion(false); },150);
+ setTimeout(()=>{ actualizarControlLluvia(); actualizarPagoCheckout(); obtenerUbicacion(false); },150);
  document.body.style.overflow="hidden";
  }
 
@@ -5641,6 +5764,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 </head>
 <body>
 ${document.getElementById("kitchenTicket").innerHTML}
+
+
+
 </body>
 </html>`;
 
@@ -5723,14 +5849,22 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function actualizarPagoCheckout(){
- const selected = document.querySelector('input[name="payment"]:checked')?.value || "Mercado Pago";
+ const scope = document.querySelector('input[name="payment_scope"]:checked')?.value || "todo";
  const note = document.getElementById("paymentMethodNote");
- if(!note) return;
+ const totals = getTotals();
 
- if(selected === "Efectivo"){
- note.textContent = "Pago en efectivo: alimentos + entrega se pagan al recibir.";
- }else{
- note.textContent = "Mercado Pago cobrará únicamente los alimentos. La entrega se paga en efectivo al repartidor.";
+ const food = document.getElementById("checkoutFoodTotal");
+ const delivery = document.getElementById("checkoutDeliveryTotal");
+ const grand = document.getElementById("checkoutGrandTotal");
+
+ if(food) food.textContent = money(totals.subtotal);
+ if(delivery) delivery.textContent = Number.isFinite(deliveryQuote.cost) ? money(totals.delivery) : "Por calcular";
+ if(grand) grand.textContent = Number.isFinite(deliveryQuote.cost) ? money(totals.total) : money(totals.subtotal);
+
+ if(note){
+   note.textContent = scope === "todo"
+     ? "Se cobrará alimentos + envío en un solo pago con Mercado Pago."
+     : "Se cobrarán los alimentos con Mercado Pago y el envío se paga al repartidor.";
  }
  }
 
@@ -5795,6 +5929,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  cost.textContent = Number.isFinite(deliveryQuote.cost)
    ? money(deliveryQuote.cost)
    : "—";
+ actualizarPagoCheckout();
  }
 
  async function consultarGoogleRoutes(destination){
@@ -6385,7 +6520,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
    if(title) title.textContent = "¡Pago recibido!";
 
    const intro = document.querySelector("#checkoutContent .success > p");
-   if(intro) intro.textContent = "Tu pago fue confirmado correctamente. Tu pedido ya se está elaborando.";
+   if(intro) intro.textContent = "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.";
 
    const icon = document.querySelector("#checkoutContent .success-icon");
    if(icon) icon.textContent = "✓";
@@ -6404,13 +6539,13 @@ ${document.getElementById("kitchenTicket").innerHTML}
    }
 
    const help = document.querySelector("#checkoutContent .payment-final-help");
-   if(help) help.textContent = "Tu orden está confirmada. El pedido está en elaboración y el repartidor se comunicará contigo. La entrega se paga en efectivo al repartidor.";
+   if(help) help.textContent = "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo. La entrega se paga en efectivo al repartidor.";
 
    const card = document.querySelector("#checkoutContent .payment-final-card");
    if(card && !card.querySelector(".payment-confirmed-banner")){
      const banner = document.createElement("div");
      banner.className = "payment-confirmed-banner";
-     banner.textContent = "Todo listo. Estamos elaborando tu pedido. El repartidor se comunicará contigo cuando salga a entrega.";
+     banner.textContent = "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.";
      card.appendChild(banner);
    }
  }
@@ -6510,6 +6645,15 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  async function submitOrder(event){
  event.preventDefault();
+
+ if(!horarioPedidosActivo()){
+   mostrarAvisoHorario();
+   actualizarEstadoHorario();
+   return;
+ }
+
+ await calcularTiempoEsperaActual();
+
  const formData=new FormData(event.target);
  const data=Object.fromEntries(formData.entries());
 
@@ -6561,8 +6705,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
  subtotal_alimentos:totals.subtotal,
  moto_envio:totals.delivery,
  total:totals.total,
- total_mercadopago:data.payment === "Mercado Pago" ? totals.totalMercadoPago : 0,
- total_efectivo:data.payment === "Mercado Pago" ? totals.delivery : totals.total
+ modalidad_pago:data.payment_scope || "todo",
+ total_mercadopago:(data.payment_scope || "todo") === "todo" ? totals.total : totals.subtotal,
+ total_efectivo:(data.payment_scope || "todo") === "todo" ? 0 : totals.delivery
  }
  };
 
@@ -6586,37 +6731,18 @@ ${document.getElementById("kitchenTicket").innerHTML}
  <div class="order-wait-time"><span>⏱ Tiempo estimado de espera</span><strong>${TIEMPO_ESPERA}</strong></div>
 
  <div class="payment-final-card">
- ${
- data.payment === "Efectivo"
- ? `
- <div class="payment-final-kicker">PAGO AL RECIBIR</div>
- <div class="payment-final-amount">${money(totals.total)}</div>
-
- <div class="payment-final-breakdown">
-   <div><span>Alimentos</span><strong>${money(totals.subtotal)}</strong></div>
-   <div><span>A pagar al moto envío</span><strong>${money(totals.delivery)}</strong></div>
- </div>
-
- <div id="paymentStatus" class="payment-final-status ok">
-   ✓ Pedido confirmado. Paga en efectivo al recibir.
- </div>
- <div class="order-process-notice">
-   🍣 Tu pedido ya se está elaborando. El repartidor se comunicará contigo cuando salga a entrega.
- </div>
- `
- : `
  <div class="payment-final-kicker">CONFIRMA TU PEDIDO</div>
  <div class="payment-final-label">Total a pagar con Mercado Pago</div>
- <div class="payment-final-amount">${money(totals.totalMercadoPago)}</div>
+ <div class="payment-final-amount">${money(lastOrderPayload.pago.total_mercadopago)}</div>
 
  <div class="payment-final-breakdown">
    <div>
      <span>Alimentos</span>
-     <strong>${money(totals.totalMercadoPago)}</strong>
+     <strong>${money(totals.subtotal)}</strong>
    </div>
    <div>
-     <span>A pagar al moto envío</span>
-     <strong>${money(totals.delivery)} en efectivo</strong>
+     <span>Envío</span>
+     <strong>${money(totals.delivery)}${lastOrderPayload.pago.modalidad_pago === "separado" ? " al repartidor" : ""}</strong>
    </div>
  </div>
 
@@ -6636,8 +6762,6 @@ ${document.getElementById("kitchenTicket").innerHTML}
  <div class="payment-final-help">
    El pago se confirma automáticamente. La entrega se paga en efectivo al repartidor.
  </div>
- `
- }
  </div>
 
  <div class="invoice-notice">
@@ -6882,5 +7006,93 @@ html,body{overflow-x:hidden!important;}
   .hero-real-visual{width:98%!important;right:-8%!important;}
 }
 </style>
+
+<script>
+const SUCHINALOA_TIMEZONE = "America/Mexico_City";
+const PEDIDOS_INICIO_MIN = 13 * 60;
+const PEDIDOS_CIERRE_MIN = 19 * 60 + 30;
+const OPERACION_CIERRE_MIN = 20 * 60;
+function horaSuchinaloa(){const partes=new Intl.DateTimeFormat("es-MX",{timeZone:SUCHINALOA_TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const valor=tipo=>Number(partes.find(p=>p.type===tipo)?.value||0);return{hora:valor("hour"),minuto:valor("minute"),segundo:valor("second")};}
+function minutosActualesSuchinaloa(){const t=horaSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
+function horarioPedidosActivo(){const min=minutosActualesSuchinaloa();return min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;}
+function estadoHorarioSuchinaloa(){const min=minutosActualesSuchinaloa();if(min<PEDIDOS_INICIO_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Recibimos pedidos hoy de 1:00 pm a 7:30 pm."};if(min<PEDIDOS_CIERRE_MIN)return{abierto:true,titulo:"Pedidos abiertos",texto:"Estamos recibiendo pedidos hasta las 7:30 pm."};if(min<OPERACION_CIERRE_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Ya cerramos pedidos por hoy. El servicio continúa hasta las 8:00 pm."};return{abierto:false,titulo:"Pedidos cerrados",texto:"Volvemos a recibir pedidos mañana a la 1:00 pm."};}
+function mostrarAvisoHorario(){const e=estadoHorarioSuchinaloa();alert(e.abierto?"Estamos recibiendo pedidos.":"En este momento no estamos recibiendo pedidos. Nuestro horario para ordenar es de 1:00 pm a 7:30 pm.");}
+function actualizarEstadoHorario(){const e=estadoHorarioSuchinaloa();const bar=document.getElementById("orderHoursBar"),title=document.getElementById("orderHoursTitle"),text=document.getElementById("orderHoursText");if(bar){bar.classList.toggle("is-open",e.abierto);bar.classList.toggle("is-closed",!e.abierto)}if(title)title.textContent=e.titulo;if(text)text.textContent=e.texto;document.body.classList.toggle("orders-closed",!e.abierto);document.querySelectorAll(".cart-review-continue,.checkout,.submit-order").forEach(btn=>{btn.disabled=!e.abierto;if(btn.classList.contains("cart-review-continue"))btn.title=e.abierto?"":"Pedidos disponibles de 1:00 pm a 7:30 pm";});}
+document.addEventListener("DOMContentLoaded",()=>{actualizarEstadoHorario();setInterval(actualizarEstadoHorario,15000);});
+</script>
+
+<script>
+const ESPERA_VENTANA_MIN = 75;
+const ESPERA_REFRESCO_MS = 60000;
+
+function pesoPedidoPorAntiguedad(minutos){
+  if(minutos <= 20) return 1.00;
+  if(minutos <= 40) return 0.75;
+  if(minutos <= 60) return 0.45;
+  if(minutos <= 75) return 0.20;
+  return 0;
+}
+
+function rangoEsperaPorCarga(carga){
+  if(carga < 1.5) return {texto:"30–40 min", nivel:"normal"};
+  if(carga < 2.5) return {texto:"40–50 min", nivel:"normal"};
+  if(carga < 3.5) return {texto:"50–60 min", nivel:"busy"};
+  if(carga < 4.5) return {texto:"60–75 min", nivel:"busy"};
+  if(carga < 6.0) return {texto:"75–90 min", nivel:"very-busy"};
+  return {texto:"90–120 min", nivel:"very-busy"};
+}
+
+function pedidoCuentaParaEspera(row){
+  const estadoPago=String(row.estado_pago||"").toLowerCase();
+  const mpStatus=String(row.mercado_pago_status||"").toLowerCase();
+  return estadoPago==="pagado" || estadoPago==="efectivo_al_recibir" || mpStatus==="approved";
+}
+
+async function calcularTiempoEsperaActual(){
+  const value=document.getElementById("waitTimeValue");
+  const bar=document.getElementById("waitTimeBar");
+  try{
+    const desde=new Date(Date.now()-ESPERA_VENTANA_MIN*60*1000).toISOString();
+    const {data,error}=await supabaseClient
+      .from("comandas_sushi")
+      .select("pedido_id,created_at,estado_pago,mercado_pago_status")
+      .gte("created_at",desde)
+      .order("created_at",{ascending:false});
+    if(error) throw error;
+
+    const ahora=Date.now();
+    const pedidos=(data||[]).filter(pedidoCuentaParaEspera);
+    let carga=0;
+    pedidos.forEach(row=>{
+      const creado=new Date(row.created_at).getTime();
+      if(!Number.isFinite(creado)) return;
+      carga+=pesoPedidoPorAntiguedad(Math.max(0,(ahora-creado)/60000));
+    });
+
+    const rango=rangoEsperaPorCarga(carga);
+    TIEMPO_ESPERA=rango.texto;
+    ULTIMA_CARGA_COCINA=carga;
+    ULTIMO_CALCULO_ESPERA=new Date();
+
+    if(value) value.textContent=rango.texto;
+    if(bar){
+      bar.classList.remove("busy","very-busy");
+      if(rango.nivel!=="normal") bar.classList.add(rango.nivel);
+    }
+    return rango.texto;
+  }catch(error){
+    console.warn("No se pudo calcular el tiempo de espera:",error);
+    TIEMPO_ESPERA="40–50 min";
+    if(value) value.textContent=TIEMPO_ESPERA;
+    return TIEMPO_ESPERA;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  calcularTiempoEsperaActual();
+  setInterval(calcularTiempoEsperaActual,ESPERA_REFRESCO_MS);
+});
+</script>
+
 </body>
 </html>
