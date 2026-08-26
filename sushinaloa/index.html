@@ -4,7 +4,12 @@
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <meta name="theme-color" content="#111111" />
- <title>Suchinaloa — Pedido en línea</title>
+ <title>Suchinaloa</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
  <style>
  :root{
  --bg:#f6f3ee;
@@ -2768,6 +2773,2325 @@ html.intro-lock body{
 .order-process-notice{margin:14px 0 0;padding:13px 15px;border-radius:14px;background:rgba(25,135,84,.10);border:1px solid rgba(41,199,116,.24);color:#68dc99;font-weight:850;line-height:1.45;text-align:center}
 @media(max-width:560px){.order-wait-time{align-items:flex-start;flex-direction:column}}
 </style>
+
+<style>
+.cart-review-modal{
+  width:min(620px,100%)!important;
+}
+.cart-review-subtitle{
+  display:block;
+  color:#b99b66;
+  font-size:11px;
+  margin-top:4px;
+  font-weight:650;
+}
+.cart-review-list{
+  display:grid;
+  gap:12px;
+}
+.cart-review-item{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px 14px;
+  padding:15px;
+  border-radius:16px;
+  border:1px solid rgba(224,166,64,.28);
+  background:#0c0c0c;
+}
+.cart-review-item-info{
+  min-width:0;
+}
+.cart-review-item-info strong{
+  display:block;
+  color:#fff1cc;
+  font-size:15px;
+}
+.cart-review-item-info small{
+  display:block;
+  margin-top:4px;
+  color:#b99b66;
+  font-size:12px;
+}
+.cart-review-item-total{
+  color:#e4ad45;
+  font-weight:950;
+  font-size:16px;
+  white-space:nowrap;
+}
+.cart-review-controls{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding-top:3px;
+}
+.cart-review-controls > span{
+  min-width:25px;
+  text-align:center;
+  color:#fff1cc;
+  font-weight:900;
+}
+.cart-review-qty{
+  width:36px;
+  height:36px;
+  border-radius:11px;
+  border:1px solid rgba(224,166,64,.42);
+  background:#15110c;
+  color:#f4c45a;
+  font-size:20px;
+  font-weight:900;
+}
+.cart-review-remove{
+  margin-left:auto;
+  min-height:36px;
+  padding:0 12px;
+  border-radius:11px;
+  border:1px solid rgba(202,28,28,.50);
+  background:rgba(150,9,9,.18);
+  color:#ff7474;
+  font-size:12px;
+  font-weight:900;
+}
+.cart-review-totals{
+  display:grid;
+  gap:9px;
+  margin-top:18px;
+  padding-top:15px;
+  border-top:1px solid rgba(224,166,64,.24);
+}
+.cart-review-totals > div{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  color:#bda06b;
+}
+.cart-review-grand{
+  margin-top:4px;
+  padding-top:11px;
+  border-top:1px solid rgba(224,166,64,.18);
+  color:#fff0c7!important;
+  font-size:17px;
+  font-weight:950;
+}
+.cart-review-continue{
+  width:100%;
+  min-height:54px;
+  margin-top:18px;
+  padding:0 18px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  border-radius:14px;
+  border:1px solid #e52b2b;
+  background:linear-gradient(180deg,#cf1d1d,#920707);
+  color:#fff2d2;
+  font-size:16px;
+  font-weight:950;
+}
+.cart-review-continue span{
+  font-size:25px;
+}
+.cart-review-empty{
+  padding:35px 10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  text-align:center;
+  color:#bda06b;
+}
+.cart-review-empty-icon{font-size:42px}
+.cart-review-empty strong{color:#fff0c7;font-size:17px}
+body.cart-review-open .mobile-cart{
+  display:none!important;
+}
+@media(max-width:560px){
+  .cart-review-item{padding:13px}
+  .cart-review-modal{border-radius:20px!important}
+  .cart-review-remove{padding:0 10px}
+}
+</style>
+
+<style>
+/* =========================================================
+   SUCHINALOA · DISEÑO DE REFERENCIA V2
+   Inspirado en landing editorial de sushi: crema + rojo + negro.
+   ========================================================= */
+:root{
+  --ref-bg:#f3eee7;
+  --ref-paper:#fbf8f3;
+  --ref-paper-2:#ebe2d8;
+  --ref-ink:#25211e;
+  --ref-muted:#726a63;
+  --ref-red:#e53935;
+  --ref-red-dark:#b92321;
+  --ref-line:#d7cec4;
+  --ref-body:'DM Sans',system-ui,sans-serif;
+  --ref-display:'Archivo Black',Impact,sans-serif;
+}
+
+html,body{
+  background:var(--ref-bg)!important;
+  color:var(--ref-ink)!important;
+}
+body{font-family:var(--ref-body)!important}
+button,input,select,textarea{font-family:var(--ref-body)!important}
+
+/* HEADER */
+.topbar{
+  background:rgba(251,248,243,.97)!important;
+  border-bottom:1px solid var(--ref-line)!important;
+  color:var(--ref-ink)!important;
+  box-shadow:none!important;
+}
+.topbar-inner{max-width:1240px!important}
+.brand strong{
+  color:var(--ref-ink)!important;
+  font-family:var(--ref-display)!important;
+  font-size:19px!important;
+}
+.brand .official-logo{
+  border-radius:6px!important;
+  background:#fff!important;
+  border:1px solid var(--ref-line)!important;
+}
+.cart-top{
+  background:#fff!important;
+  color:var(--ref-ink)!important;
+  border:1px solid #cfc5ba!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+.cart-badge{background:var(--ref-red)!important}
+
+/* HERO — más parecido a la referencia */
+.hero-experience{
+  width:min(1240px,calc(100% - 28px))!important;
+  min-height:520px!important;
+  margin:18px auto 0!important;
+  border-radius:8px!important;
+  overflow:hidden!important;
+  background:var(--ref-red)!important;
+  box-shadow:none!important;
+}
+.hero-experience-bg{
+  opacity:1!important;
+  filter:saturate(.92) contrast(1.02)!important;
+}
+.hero-experience-overlay{
+  background:
+    linear-gradient(90deg,rgba(196,39,36,.93) 0%,rgba(210,47,43,.82) 42%,rgba(210,47,43,.33) 70%,rgba(87,20,18,.24) 100%)!important;
+}
+.hero-experience-content{
+  max-width:1240px!important;
+  padding:60px 7%!important;
+}
+.hero-experience-eyebrow{
+  color:#ffe8d9!important;
+  font-weight:800!important;
+  letter-spacing:2.6px!important;
+}
+.hero-experience-copy{
+  max-width:590px!important;
+}
+.hero-experience-copy h1{
+  margin:10px 0 18px!important;
+  color:#fff7f0!important;
+  font-family:var(--ref-display)!important;
+  font-size:clamp(54px,6.3vw,86px)!important;
+  line-height:.91!important;
+  letter-spacing:-1.8px!important;
+  text-transform:uppercase!important;
+  text-shadow:none!important;
+}
+.hero-experience-copy p{
+  color:#ffe7dc!important;
+  max-width:480px!important;
+  font-size:15px!important;
+}
+.hero-order-btn{
+  background:#fff7f0!important;
+  color:#b62421!important;
+  border:0!important;
+  border-radius:999px!important;
+  padding:12px 18px!important;
+  box-shadow:none!important;
+}
+.hero-order-btn span{color:#b62421!important}
+.hero-experience-tag{color:#ffe5d8!important}
+.hero-scroll-cue{display:none!important}
+
+/* STORY / ABOUT */
+.brand-story{
+  max-width:1240px;
+  margin:52px auto 0;
+  padding:0 22px;
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:32px;
+  align-items:stretch;
+}
+.brand-story-grid{
+  display:grid;
+  grid-template-columns:.9fr 1.15fr;
+  gap:26px 36px;
+  align-content:center;
+}
+.brand-story-title{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  font-family:var(--ref-display);
+  font-style:normal;
+  line-height:.92;
+  font-size:34px;
+}
+.brand-story-title span{color:var(--ref-ink)}
+.brand-story-title strong{color:var(--ref-red)}
+.brand-story-title em{color:var(--ref-ink);font-style:normal}
+.brand-story-copy{
+  color:var(--ref-muted);
+  font-size:13px;
+  line-height:1.7;
+}
+.brand-story-copy p{margin:0 0 12px}
+.brand-story-jp{
+  color:var(--ref-red);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+.brand-story-stats{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--ref-line);
+  background:var(--ref-paper);
+}
+.brand-story-stats div{
+  padding:18px;
+  text-align:center;
+  border-right:1px solid var(--ref-line);
+}
+.brand-story-stats div:last-child{border-right:0}
+.brand-story-stats strong{
+  display:block;
+  font-family:var(--ref-display);
+  font-size:26px;
+  color:var(--ref-ink);
+}
+.brand-story-stats span{
+  display:block;
+  margin-top:5px;
+  color:var(--ref-muted);
+  font-size:10px;
+}
+.brand-story-photo{
+  min-height:270px;
+  overflow:hidden;
+  border-radius:8px;
+}
+.brand-story-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* MENU INTRO */
+.menu-intro{
+  max-width:1240px;
+  margin:64px auto 18px;
+  padding:0 22px;
+  text-align:center;
+}
+.menu-intro > span{
+  color:var(--ref-red);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+.menu-intro h2{
+  margin:8px 0 8px;
+  font-family:var(--ref-display);
+  font-size:clamp(32px,4vw,54px);
+  line-height:.98;
+  color:var(--ref-ink);
+}
+.menu-intro h2 b{color:var(--ref-red)}
+.menu-intro p{
+  margin:0;
+  color:var(--ref-muted);
+  font-size:13px;
+}
+
+/* MENU */
+.content{
+  max-width:1240px!important;
+  margin:0 auto 120px!important;
+  padding:0 22px!important;
+  color:var(--ref-ink)!important;
+}
+.section-head{display:none!important}
+.categories{
+  position:sticky!important;
+  top:64px!important;
+  z-index:30!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:12px 0 18px!important;
+  margin-bottom:12px!important;
+  background:linear-gradient(var(--ref-bg) 80%,rgba(243,238,231,0))!important;
+}
+.category{
+  background:var(--ref-paper)!important;
+  color:#49423c!important;
+  border:1px solid #ccc0b4!important;
+  border-radius:999px!important;
+  padding:8px 13px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+.category.active{
+  background:var(--ref-red)!important;
+  border-color:var(--ref-red)!important;
+  color:#fff!important;
+}
+
+/* TARJETAS — acercamiento más literal a la columna derecha */
+.products{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.product{
+  min-height:205px!important;
+  display:grid!important;
+  grid-template-columns:36% 64%!important;
+  background:var(--ref-paper)!important;
+  color:var(--ref-ink)!important;
+  border:1px solid var(--ref-line)!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.product:hover{
+  transform:none!important;
+  border-color:#bdb0a4!important;
+  box-shadow:0 10px 24px rgba(70,53,40,.06)!important;
+}
+.product-art{
+  width:100%!important;
+  min-height:100%!important;
+  background:#eee5db!important;
+  border-right:1px solid #dfd5ca!important;
+}
+.product-art img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+.product-body{
+  padding:16px 16px 14px!important;
+  background:transparent!important;
+}
+.product-tag{
+  margin:0 0 8px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--ref-red)!important;
+  font-size:9px!important;
+  letter-spacing:1px!important;
+}
+.product h3{
+  margin:0 0 7px!important;
+  color:var(--ref-ink)!important;
+  font-family:var(--ref-display)!important;
+  font-size:20px!important;
+  line-height:1.05!important;
+  letter-spacing:-.35px!important;
+}
+.product p{
+  color:var(--ref-muted)!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  margin:0 0 10px!important;
+}
+.product-bottom{
+  align-items:center!important;
+}
+.price{
+  color:var(--ref-ink)!important;
+  font-size:18px!important;
+  font-weight:800!important;
+}
+.add{
+  min-width:96px!important;
+  width:auto!important;
+  height:36px!important;
+  padding:0 12px!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  color:var(--ref-red)!important;
+  border:1px solid var(--ref-red)!important;
+  font-size:12px!important;
+}
+.add:hover{
+  background:var(--ref-red)!important;
+  color:#fff!important;
+}
+
+/* FLOAT CART */
+.mobile-cart{
+  background:#fffaf5!important;
+  color:var(--ref-ink)!important;
+  border:1px solid #cfc4b8!important;
+  box-shadow:0 12px 28px rgba(55,42,31,.14)!important;
+  border-radius:14px!important;
+}
+.mobile-cart-icon{color:var(--ref-red)!important}
+.mobile-cart-copy strong{color:var(--ref-ink)!important}
+.mobile-cart-copy small{color:var(--ref-muted)!important}
+.mobile-cart-action{
+  background:var(--ref-red)!important;
+  border:1px solid var(--ref-red)!important;
+  color:#fff!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+.mobile-cart-badge{
+  background:var(--ref-red)!important;
+  border-color:#fffaf5!important;
+}
+
+/* MODALS / FORMS */
+.overlay{
+  background:rgba(44,35,29,.58)!important;
+  backdrop-filter:blur(5px)!important;
+}
+.modal{
+  background:var(--ref-paper)!important;
+  color:var(--ref-ink)!important;
+  border:1px solid var(--ref-line)!important;
+  box-shadow:0 26px 70px rgba(56,40,27,.20)!important;
+}
+.modal-head{
+  background:var(--ref-paper)!important;
+  border-bottom:1px solid var(--ref-line)!important;
+}
+.modal-head h2{
+  color:var(--ref-ink)!important;
+  font-family:var(--ref-display)!important;
+}
+.close{
+  background:#fff!important;
+  color:var(--ref-ink)!important;
+  border:1px solid #d3c7bb!important;
+}
+.field label{color:#4f4841!important}
+.field input,.field select,.field textarea{
+  background:#fff!important;
+  color:var(--ref-ink)!important;
+  border:1px solid #d1c5b8!important;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--ref-red)!important;
+  box-shadow:0 0 0 3px rgba(229,57,53,.08)!important;
+}
+.field input::placeholder,.field textarea::placeholder{color:#a59c93!important}
+.location-btn,.location-btn-secondary,.cash-toggle{
+  background:#fff!important;
+  color:var(--ref-ink)!important;
+  border:1px solid #d1c5b8!important;
+}
+.payment-choice{
+  background:#fff!important;
+  color:var(--ref-ink)!important;
+  border:1px solid #d1c5b8!important;
+}
+.payment-choice small,.location-status{color:var(--ref-muted)!important}
+.submit-order,.checkout,.cart-review-continue,.payment-final-button{
+  background:var(--ref-red)!important;
+  color:#fff!important;
+  border:1px solid var(--ref-red)!important;
+  border-radius:999px!important;
+}
+
+/* CART REVIEW */
+.cart-review-item{
+  background:#fff!important;
+  border:1px solid var(--ref-line)!important;
+}
+.cart-review-item-info strong,.cart-review-grand{color:var(--ref-ink)!important}
+.cart-review-item-info small,.cart-review-totals>div{color:var(--ref-muted)!important}
+.cart-review-item-total{color:var(--ref-red)!important}
+.cart-review-qty{
+  background:#fff!important;
+  color:var(--ref-ink)!important;
+  border-color:#cfc3b7!important;
+}
+.cart-review-remove{
+  background:#fff2f1!important;
+  color:var(--ref-red-dark)!important;
+  border-color:#edc0bd!important;
+}
+
+/* PAYMENT SUCCESS */
+.success,.payment-final-card{color:var(--ref-ink)!important}
+.success h2{color:var(--ref-ink)!important}
+.success p,.payment-final-help{color:var(--ref-muted)!important}
+.success-icon{
+  background:#f0e9df!important;
+  color:var(--ref-red)!important;
+  border:1px solid #d8cdc1!important;
+}
+.success.payment-confirmed .success-icon{
+  background:#eaf7ef!important;
+  color:#198754!important;
+  border-color:#b9ddc7!important;
+}
+.success.payment-confirmed h2{color:#198754!important}
+.payment-final-card{
+  background:#fff!important;
+  border:1px solid var(--ref-line)!important;
+}
+.payment-final-kicker{color:var(--ref-red)!important}
+.payment-final-amount{color:var(--ref-ink)!important}
+.payment-final-breakdown>div{
+  background:#f4ede5!important;
+  border:1px solid #ddd1c5!important;
+}
+.payment-final-breakdown span{color:#7f766e!important}
+.payment-final-breakdown strong{color:var(--ref-ink)!important}
+.invoice-notice{
+  background:#f1e7dc!important;
+  border:1px solid #dccdbd!important;
+}
+.invoice-notice strong{color:var(--ref-red)!important}
+.invoice-notice span{color:var(--ref-muted)!important}
+.invoice-notice a{color:var(--ref-red-dark)!important}
+
+/* FOOTER */
+footer{
+  background:#292622!important;
+  color:#d8cec3!important;
+  border:0!important;
+}
+
+/* MOBILE */
+@media(max-width:760px){
+  .hero-experience{
+    width:calc(100% - 18px)!important;
+    min-height:540px!important;
+    margin-top:9px!important;
+  }
+  .hero-experience-content{
+    padding:52px 24px!important;
+  }
+  .brand-story{
+    grid-template-columns:1fr;
+    padding:0 14px;
+    margin-top:36px;
+  }
+  .brand-story-grid{
+    grid-template-columns:1fr;
+  }
+  .brand-story-stats{
+    grid-column:auto;
+  }
+  .brand-story-photo{
+    min-height:220px;
+  }
+  .menu-intro{
+    margin-top:48px;
+    padding:0 14px;
+  }
+  .content{
+    padding:0 10px!important;
+  }
+  .categories{
+    justify-content:flex-start!important;
+    top:58px!important;
+  }
+  .products{
+    grid-template-columns:1fr!important;
+  }
+  .product{
+    grid-template-columns:39% 61%!important;
+    min-height:190px!important;
+  }
+  .product h3{font-size:18px!important}
+}
+
+@media(max-width:480px){
+  .brand-story-stats{
+    grid-template-columns:1fr 1fr 1fr;
+  }
+  .brand-story-stats div{
+    padding:12px 8px;
+  }
+  .brand-story-stats strong{
+    font-size:19px;
+  }
+  .brand-story-stats span{
+    font-size:8px;
+  }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   PRODUCTOS · MÁS FIELES A LA REFERENCIA
+   ========================================================= */
+.products{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+}
+
+.product.product-ref{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:300px!important;
+  padding:0!important;
+  background:#fbf8f3!important;
+  border:1px solid #d7cec4!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease!important;
+}
+
+.product.product-ref:hover{
+  transform:translateY(-2px)!important;
+  border-color:#bfb3a8!important;
+  box-shadow:0 12px 28px rgba(69,52,40,.07)!important;
+}
+
+.product-ref-top{
+  display:grid;
+  grid-template-columns:40% 60%;
+  min-height:236px;
+}
+
+.product-ref-art{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  padding:18px 10px 12px 16px;
+  background:#f6efe7;
+  overflow:hidden;
+}
+
+.product-ref-art::after{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:12%;
+  height:12%;
+  border-radius:50%;
+  background:rgba(54,43,34,.08);
+  filter:blur(10px);
+  z-index:0;
+}
+
+.product-ref-art img{
+  position:relative;
+  z-index:1;
+  width:100%!important;
+  height:190px!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:10px!important;
+  transform:none!important;
+}
+
+.product-ref-art .product-emoji{
+  position:relative;
+  z-index:1;
+  font-size:72px;
+}
+
+.product-ref-copy{
+  min-width:0;
+  padding:20px 20px 14px 18px;
+  background:#fbf8f3;
+}
+
+.product-ref-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.product-ref-meta span{
+  color:#e53935;
+  font-size:10px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+
+.product-ref-meta small{
+  color:#8c837b;
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.product.product-ref h3{
+  margin:0 0 9px!important;
+  color:#25211e!important;
+  font-family:'Archivo Black',Impact,sans-serif!important;
+  font-size:22px!important;
+  line-height:1.08!important;
+  letter-spacing:-.45px!important;
+}
+
+.product.product-ref p{
+  margin:0!important;
+  color:#716961!important;
+  font-size:11.5px!important;
+  line-height:1.55!important;
+}
+
+.product-ref-footer{
+  margin-top:auto;
+  min-height:62px;
+  padding:12px 16px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  border-top:1px solid #e2d9cf;
+  background:#fffaf5;
+}
+
+.product-ref-footer .price{
+  color:#25211e!important;
+  font-size:19px!important;
+  font-weight:800!important;
+}
+
+.product-ref-add{
+  min-width:auto!important;
+  width:auto!important;
+  height:34px!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#e53935!important;
+  border:1px solid #e53935!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+}
+
+.product-ref-add span{
+  font-size:14px;
+  line-height:1;
+}
+
+.product-ref-add b{
+  font-weight:800;
+}
+
+.product-ref-add:hover{
+  background:#e53935!important;
+  color:#fff!important;
+}
+
+.product-ref-add:disabled{
+  background:#eee7df!important;
+  color:#8f877e!important;
+  border-color:#d6cdc4!important;
+  cursor:not-allowed!important;
+}
+
+@media(max-width:820px){
+  .products{
+    grid-template-columns:1fr!important;
+  }
+
+  .product-ref-top{
+    grid-template-columns:38% 62%;
+  }
+}
+
+@media(max-width:520px){
+  .product.product-ref{
+    min-height:255px!important;
+  }
+
+  .product-ref-top{
+    grid-template-columns:42% 58%;
+    min-height:196px;
+  }
+
+  .product-ref-art{
+    padding:12px 7px 10px 10px;
+  }
+
+  .product-ref-art img{
+    height:165px!important;
+    border-radius:8px!important;
+  }
+
+  .product-ref-copy{
+    padding:15px 13px 10px 12px;
+  }
+
+  .product.product-ref h3{
+    font-size:18px!important;
+  }
+
+  .product.product-ref p{
+    font-size:10.5px!important;
+    line-height:1.45!important;
+  }
+
+  .product-ref-meta{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:4px;
+  }
+
+  .product-ref-footer{
+    min-height:55px;
+    padding:10px 12px;
+  }
+
+  .product-ref-footer .price{
+    font-size:17px!important;
+  }
+
+  .product-ref-add{
+    height:32px!important;
+    padding:0 10px!important;
+  }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   CARRITO DESPLEGABLE LATERAL
+   ========================================================= */
+.cart-drawer-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  background:rgba(34,27,22,.18);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .22s ease;
+}
+.cart-drawer-backdrop.is-open{
+  opacity:1;
+  pointer-events:auto;
+}
+.cart-drawer{
+  position:absolute;
+  top:0;
+  right:0;
+  width:min(430px,92vw);
+  height:100%;
+  background:#fbf8f3;
+  border-left:1px solid #d7cec4;
+  box-shadow:-16px 0 38px rgba(62,47,36,.14);
+  transform:translateX(102%);
+  transition:transform .24s ease;
+  display:flex;
+  flex-direction:column;
+}
+.cart-drawer.is-open{
+  transform:translateX(0);
+}
+.cart-drawer-head{
+  padding:20px 18px 16px;
+  border-bottom:1px solid #ded5ca;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.cart-drawer-kicker{
+  display:block;
+  color:#e53935;
+  font-size:9px;
+  letter-spacing:1.5px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.cart-drawer-head h2{
+  margin:0;
+  color:#25211e;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:28px;
+  line-height:1;
+}
+.cart-drawer-head small{
+  display:block;
+  margin-top:6px;
+  color:#7a7168;
+  font-size:11px;
+}
+.cart-drawer-close{
+  width:38px;
+  height:38px;
+  flex:none;
+  border-radius:50%;
+  border:1px solid #d5c9bd;
+  background:#fff;
+  color:#25211e;
+  font-size:22px;
+  line-height:1;
+}
+.cart-drawer-body{
+  flex:1;
+  overflow:auto;
+  padding:16px 16px 24px;
+}
+.cart-drawer-body::-webkit-scrollbar{width:6px}
+.cart-drawer-body::-webkit-scrollbar-thumb{
+  background:#d6c9bc;
+  border-radius:20px;
+}
+
+/* El carrito ya no bloquea toda la interfaz ni oculta la barra flotante */
+body.cart-review-open .mobile-cart{
+  display:flex!important;
+}
+
+@media(max-width:560px){
+  .cart-drawer{
+    width:min(390px,96vw);
+  }
+  .cart-drawer-head{
+    padding:17px 14px 14px;
+  }
+  .cart-drawer-body{
+    padding:14px 12px 22px;
+  }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   BOTÓN FLOTANTE DEL CARRITO · MÁS SUTIL
+   ========================================================= */
+.mobile-cart{
+  width:auto!important;
+  min-width:0!important;
+  right:18px!important;
+  left:auto!important;
+  bottom:18px!important;
+  padding:8px 9px 8px 11px!important;
+  gap:8px!important;
+  border-radius:999px!important;
+  background:rgba(251,248,243,.94)!important;
+  border:1px solid rgba(82,70,60,.20)!important;
+  box-shadow:0 6px 18px rgba(52,40,30,.10)!important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+  color:#39332e!important;
+}
+
+.mobile-cart:hover{
+  border-color:rgba(229,57,53,.38)!important;
+  box-shadow:0 8px 22px rgba(52,40,30,.13)!important;
+  transform:translateY(-1px)!important;
+}
+
+.mobile-cart-icon{
+  width:30px!important;
+  height:30px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:#4c4540!important;
+  font-size:17px!important;
+}
+
+.mobile-cart-copy{
+  min-width:0!important;
+  text-align:left!important;
+}
+
+.mobile-cart-copy strong{
+  display:block!important;
+  color:#39332e!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+}
+
+.mobile-cart-copy small{
+  display:block!important;
+  margin-top:2px!important;
+  color:#8a8179!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:600!important;
+}
+
+.mobile-cart-action{
+  min-width:0!important;
+  height:30px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  border:1px solid #d9cec3!important;
+  color:#e53935!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+}
+
+.mobile-cart:hover .mobile-cart-action{
+  background:#e53935!important;
+  border-color:#e53935!important;
+  color:#fff!important;
+}
+
+.mobile-cart-badge{
+  top:-5px!important;
+  right:-4px!important;
+  min-width:19px!important;
+  height:19px!important;
+  padding:0 5px!important;
+  border:2px solid #fbf8f3!important;
+  background:#e53935!important;
+  color:#fff!important;
+  font-size:9px!important;
+  box-shadow:none!important;
+}
+
+@media(max-width:560px){
+  .mobile-cart{
+    right:10px!important;
+    bottom:10px!important;
+    padding:7px 8px 7px 9px!important;
+  }
+
+  .mobile-cart-icon{
+    width:27px!important;
+    height:27px!important;
+    font-size:15px!important;
+  }
+
+  .mobile-cart-copy strong{
+    font-size:10px!important;
+  }
+
+  .mobile-cart-copy small{
+    font-size:8px!important;
+  }
+
+  .mobile-cart-action{
+    height:28px!important;
+    padding:0 9px!important;
+    font-size:9px!important;
+  }
+}
+</style>
+
+
+<style>
+/* Carrito SUPERIOR derecho: más discreto */
+.topbar .cart-top{
+  min-width:0!important;
+  height:38px!important;
+  padding:0 11px!important;
+  gap:7px!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  color:#4b443e!important;
+  border:1px solid rgba(83,72,63,.20)!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+  font-weight:700!important;
+}
+.topbar .cart-top:hover{
+  background:#fffaf5!important;
+  border-color:rgba(229,57,53,.35)!important;
+  color:#292521!important;
+}
+.topbar .cart-top .cart-badge{
+  position:static!important;
+  min-width:18px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:#e53935!important;
+  color:#fff!important;
+  font-size:9px!important;
+  line-height:1!important;
+  box-shadow:none!important;
+}
+
+/* Evita cualquier contenido duplicado en botones Agregar */
+.product-ref-add::before,
+.product-ref-add::after{
+  content:none!important;
+  display:none!important;
+}
+.product-ref-add{
+  min-width:86px!important;
+  padding:0 13px!important;
+}
+</style>
+
+
+<style>
+/* =========================================================
+   SUCHINALOA · MOCKUP REAL FOTOS
+   Réplica visual del concepto generado, usando fotos reales.
+   ========================================================= */
+:root{
+  --mk-bg:#f6f0e8;
+  --mk-paper:#fffaf4;
+  --mk-ink:#191816;
+  --mk-muted:#665f59;
+  --mk-red:#df2525;
+  --mk-red-dark:#b51717;
+  --mk-line:#ddd2c6;
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 15% 20%,rgba(218,196,168,.12),transparent 22%),
+    var(--mk-bg)!important;
+  color:var(--mk-ink)!important;
+}
+
+/* HERO */
+.hero-experience{
+  width:min(1460px,calc(100% - 24px))!important;
+  min-height:560px!important;
+  margin:10px auto 0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:#f7f1e9!important;
+}
+.hero-experience-bg{
+  opacity:.12!important;
+  filter:grayscale(.2) sepia(.12)!important;
+}
+.hero-experience-overlay{
+  background:
+    linear-gradient(90deg,rgba(247,241,233,.99) 0%,rgba(247,241,233,.95) 39%,rgba(247,241,233,.52) 63%,rgba(247,241,233,.18) 100%)!important;
+}
+.hero-experience-content{
+  position:relative!important;
+  z-index:4!important;
+  max-width:1400px!important;
+  padding:70px 7%!important;
+}
+.hero-experience-eyebrow{
+  color:var(--mk-red)!important;
+  font-size:11px!important;
+  letter-spacing:2.4px!important;
+  font-weight:900!important;
+}
+.hero-experience-copy{
+  max-width:500px!important;
+}
+.hero-experience-copy h1{
+  font-family:'Archivo Black',Impact,sans-serif!important;
+  color:#1c1a18!important;
+  text-transform:uppercase!important;
+  font-size:clamp(52px,5.6vw,80px)!important;
+  line-height:.92!important;
+  letter-spacing:-2px!important;
+  text-shadow:none!important;
+}
+.hero-experience-copy h1 br + *{color:var(--mk-red)!important}
+.hero-experience-copy p{
+  color:#4e4944!important;
+  max-width:430px!important;
+  font-size:15px!important;
+}
+.hero-order-btn{
+  background:var(--mk-red)!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:5px!important;
+  min-width:190px!important;
+  box-shadow:none!important;
+}
+.hero-order-btn span{color:#fff!important}
+.hero-experience-tag{color:#6b625b!important}
+
+/* Real photo hero visual */
+.hero-real-visual{
+  position:absolute;
+  z-index:3;
+  right:3.5%;
+  top:50%;
+  width:min(57vw,760px);
+  height:430px;
+  transform:translateY(-48%);
+  pointer-events:none;
+}
+.hero-real-visual img{
+  position:absolute;
+  z-index:3;
+  right:0;
+  bottom:0;
+  width:88%;
+  height:82%;
+  object-fit:cover;
+  object-position:center;
+  border-radius:44% 56% 38% 62% / 50% 42% 58% 50%;
+  box-shadow:0 25px 52px rgba(72,43,25,.20);
+  transform:rotate(-2deg);
+  clip-path:polygon(8% 8%,94% 0,100% 88%,72% 100%,8% 92%,0 28%);
+}
+.hero-red-sun{
+  position:absolute;
+  z-index:1;
+  width:340px;
+  height:340px;
+  right:8%;
+  top:5%;
+  border-radius:50%;
+  background:#d82020;
+}
+.hero-brush{
+  position:absolute;
+  z-index:2;
+  right:0;
+  bottom:3%;
+  width:96%;
+  height:38%;
+  background:#181716;
+  transform:rotate(-6deg) skewX(-17deg);
+  clip-path:polygon(0 40%,10% 28%,5% 54%,19% 37%,15% 63%,34% 42%,31% 67%,48% 45%,44% 72%,64% 48%,62% 75%,78% 51%,76% 71%,100% 49%,92% 74%,100% 72%,88% 86%,65% 78%,42% 90%,20% 81%,0 94%,8% 67%);
+}
+.hero-scroll-cue{display:none!important}
+
+/* ABOUT */
+.mock-about{
+  max-width:1280px;
+  margin:34px auto 0;
+  padding:30px 22px;
+  display:grid;
+  grid-template-columns:.8fr 1.3fr .8fr;
+  gap:28px;
+  align-items:center;
+}
+.mock-kicker{
+  color:#1e1c1a;
+  font-size:12px;
+  font-weight:900;
+}
+.mock-about-copy h2{
+  margin:4px 0 14px;
+  color:var(--mk-red);
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:32px;
+  line-height:1;
+}
+.mock-about-copy p{
+  color:var(--mk-muted);
+  font-size:12px;
+  line-height:1.65;
+}
+.mock-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--mk-line);
+  background:rgba(255,250,244,.72);
+}
+.mock-stats div{
+  padding:25px 14px;
+  text-align:center;
+  border-right:1px solid var(--mk-line);
+}
+.mock-stats div:last-child{border-right:0}
+.mock-stats b{
+  display:block;
+  color:#25211e;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:26px;
+}
+.mock-stats span{
+  display:block;
+  margin-top:7px;
+  color:#6f6760;
+  font-size:9px;
+  line-height:1.35;
+}
+.mock-about-photo{
+  height:190px;
+  overflow:hidden;
+}
+.mock-about-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+/* MENU TITLE */
+.mock-menu-title{
+  margin:38px auto 4px;
+  text-align:center;
+}
+.mock-menu-title span{
+  color:#1e1b19;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:30px;
+}
+.mock-menu-title h2{
+  display:inline;
+  margin-left:8px;
+  color:var(--mk-red);
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:30px;
+}
+.content{
+  max-width:1320px!important;
+  margin:0 auto 120px!important;
+  padding:0 58px!important;
+}
+.section-head{display:none!important}
+.categories{
+  justify-content:center!important;
+  padding:18px 0!important;
+  margin:0 0 10px!important;
+  background:transparent!important;
+}
+.category{
+  background:transparent!important;
+  color:#282522!important;
+  border:0!important;
+  border-radius:4px!important;
+  font-size:11px!important;
+  padding:9px 15px!important;
+}
+.category.active{
+  background:var(--mk-red)!important;
+  color:#fff!important;
+}
+
+/* FEATURED 3-SLOT CAROUSEL */
+.featured-carousel-shell{
+  position:relative;
+}
+.featured-viewport{
+  overflow:hidden;
+}
+.products{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.mock-product-card{
+  display:grid!important;
+  grid-template-columns:45% 55%!important;
+  min-height:250px!important;
+  background:rgba(255,250,244,.92)!important;
+  border:1px solid #d9d0c6!important;
+  border-radius:10px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.mock-product-photo{
+  min-height:250px;
+  background:#f0e7dd;
+}
+.mock-product-photo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+.mock-product-photo.is-empty{
+  background:#f4ede5;
+}
+.mock-product-info{
+  display:flex;
+  flex-direction:column;
+  padding:18px 16px 14px;
+}
+.mock-product-tag{
+  color:var(--mk-red);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.mock-product-info h3{
+  margin:7px 0 2px!important;
+  color:#1e1b19!important;
+  font-family:'Archivo Black',Impact,sans-serif!important;
+  font-size:20px!important;
+  line-height:1.05!important;
+}
+.mock-jp{
+  color:var(--mk-red);
+  font-size:9px;
+  margin-bottom:12px;
+}
+.mock-product-info p{
+  margin:0!important;
+  color:#625b55!important;
+  font-size:10.5px!important;
+  line-height:1.55!important;
+}
+.mock-product-bottom{
+  margin-top:auto;
+  padding-top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.mock-product-bottom .price{
+  color:var(--mk-red)!important;
+  font-size:18px!important;
+  font-weight:900!important;
+}
+.mock-add{
+  width:auto!important;
+  min-width:78px!important;
+  height:31px!important;
+  padding:0 10px!important;
+  background:#fff!important;
+  color:var(--mk-red)!important;
+  border:1px solid var(--mk-red)!important;
+  border-radius:4px!important;
+  font-size:9px!important;
+  text-transform:uppercase;
+}
+.mock-add:hover{
+  background:var(--mk-red)!important;
+  color:#fff!important;
+}
+.featured-arrow{
+  position:absolute;
+  z-index:5;
+  top:50%;
+  width:42px;
+  height:42px;
+  margin-top:-21px;
+  border-radius:50%;
+  border:1px solid #e2d8ce;
+  background:#fff;
+  color:var(--mk-red);
+  font-size:28px;
+  box-shadow:0 6px 18px rgba(56,42,31,.10);
+}
+.featured-prev{left:-50px}
+.featured-next{right:-50px}
+.featured-dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:18px;
+}
+.featured-dots button{
+  width:8px;
+  height:8px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:#d5ccc3;
+}
+.featured-dots button.active{
+  width:20px;
+  border-radius:99px;
+  background:var(--mk-red);
+}
+
+/* Header cart stays subtle */
+.topbar .cart-top{
+  background:transparent!important;
+  border:1px solid rgba(55,48,43,.22)!important;
+  color:#2b2825!important;
+  box-shadow:none!important;
+}
+
+/* Preserve drawer/cart functionality in same palette */
+.cart-drawer{
+  background:#fffaf4!important;
+}
+.mobile-cart{
+  background:rgba(255,250,244,.96)!important;
+}
+
+/* RESPONSIVE */
+@media(max-width:980px){
+  .hero-real-visual{
+    opacity:.50;
+    width:60vw;
+    right:-8%;
+  }
+  .mock-about{
+    grid-template-columns:1fr;
+  }
+  .mock-about-photo{height:260px}
+  .products{
+    grid-template-columns:1fr!important;
+  }
+  .mock-product-card{
+    grid-template-columns:38% 62%!important;
+  }
+  .featured-prev{left:4px}
+  .featured-next{right:4px}
+  .content{padding:0 18px!important}
+}
+@media(max-width:620px){
+  .hero-experience{
+    min-height:600px!important;
+  }
+  .hero-experience-content{
+    padding:50px 24px!important;
+  }
+  .hero-real-visual{
+    width:92vw;
+    height:290px;
+    right:-10%;
+    top:72%;
+    opacity:.38;
+  }
+  .hero-red-sun{
+    width:220px;
+    height:220px;
+  }
+  .mock-stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .mock-stats div{
+    padding:16px 7px;
+  }
+  .mock-product-card{
+    grid-template-columns:42% 58%!important;
+    min-height:220px!important;
+  }
+  .mock-product-photo{
+    min-height:220px;
+  }
+  .mock-product-info{
+    padding:14px 12px;
+  }
+  .mock-product-info h3{
+    font-size:17px!important;
+  }
+  .mock-product-info p{
+    font-size:9.5px!important;
+  }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   HERO LIMPIO · FOTO REAL SIN RECORTE EXTRAÑO
+   ========================================================= */
+.hero-experience{
+  min-height:540px!important;
+  display:block!important;
+  background:#f7f1e9!important;
+}
+
+.hero-experience-content{
+  position:relative!important;
+  z-index:5!important;
+  width:100%!important;
+  max-width:1400px!important;
+  min-height:540px!important;
+  padding:72px 7%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+}
+
+.hero-experience-copy{
+  position:relative!important;
+  z-index:6!important;
+  width:43%!important;
+  max-width:520px!important;
+}
+
+.hero-experience-copy h1{
+  max-width:100%!important;
+  font-size:clamp(48px,5.2vw,76px)!important;
+  line-height:.92!important;
+}
+
+.hero-experience-copy p{
+  max-width:440px!important;
+}
+
+.hero-experience-actions{
+  position:relative!important;
+  z-index:6!important;
+}
+
+/* Visual del lado derecho */
+.hero-real-visual{
+  position:absolute!important;
+  z-index:2!important;
+  top:50%!important;
+  right:4%!important;
+  width:52%!important;
+  height:76%!important;
+  transform:translateY(-50%)!important;
+  pointer-events:none!important;
+}
+
+/* Sol rojo detrás de la comida */
+.hero-red-sun{
+  position:absolute!important;
+  z-index:0!important;
+  width:310px!important;
+  height:310px!important;
+  top:0!important;
+  right:5%!important;
+  border-radius:50%!important;
+  background:#df2525!important;
+}
+
+/* Pincel negro más controlado */
+.hero-brush{
+  position:absolute!important;
+  z-index:1!important;
+  left:2%!important;
+  right:0!important;
+  bottom:8%!important;
+  width:96%!important;
+  height:22%!important;
+  background:#1b1917!important;
+  transform:rotate(-4deg)!important;
+  clip-path:polygon(
+    0 48%, 7% 35%, 5% 58%, 15% 40%, 14% 61%,
+    28% 42%, 31% 60%, 46% 45%, 49% 62%,
+    65% 43%, 68% 58%, 82% 41%, 86% 56%,
+    100% 39%, 94% 63%, 100% 62%, 86% 75%,
+    68% 70%, 50% 78%, 32% 72%, 16% 79%, 0 72%
+  )!important;
+}
+
+/* La foto ya no usa clip polygon irregular */
+.hero-real-visual img{
+  position:absolute!important;
+  z-index:3!important;
+  right:0!important;
+  bottom:4%!important;
+  width:88%!important;
+  height:78%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:34px!important;
+  clip-path:none!important;
+  transform:rotate(-1.2deg)!important;
+  box-shadow:0 24px 46px rgba(66,45,30,.18)!important;
+  border:8px solid rgba(255,250,244,.72)!important;
+}
+
+/* Solo se conserva el bloque LOS FAVORITOS DE LA CASA */
+.menu-intro{
+  margin:54px auto 16px!important;
+}
+.menu-intro > span{
+  color:#df2525!important;
+  letter-spacing:2px!important;
+}
+.menu-intro h2{
+  color:#1d1a18!important;
+}
+.menu-intro h2 b{
+  color:#df2525!important;
+}
+
+/* Ocultamos cualquier CSS viejo de secciones ya eliminadas */
+.brand-story,
+.mock-about,
+.mock-menu-title{
+  display:none!important;
+}
+
+@media(max-width:900px){
+  .hero-experience-content{
+    min-height:590px!important;
+    padding:56px 28px 300px!important;
+    justify-content:flex-start!important;
+  }
+
+  .hero-experience-copy{
+    width:100%!important;
+    max-width:600px!important;
+  }
+
+  .hero-real-visual{
+    top:auto!important;
+    bottom:18px!important;
+    right:3%!important;
+    width:82%!important;
+    height:300px!important;
+    transform:none!important;
+  }
+
+  .hero-real-visual img{
+    width:90%!important;
+    height:230px!important;
+  }
+
+  .hero-red-sun{
+    width:190px!important;
+    height:190px!important;
+  }
+}
+
+@media(max-width:560px){
+  .hero-experience{
+    min-height:650px!important;
+  }
+
+  .hero-experience-content{
+    min-height:650px!important;
+    padding:42px 20px 300px!important;
+  }
+
+  .hero-experience-copy h1{
+    font-size:48px!important;
+  }
+
+  .hero-real-visual{
+    width:96%!important;
+    right:-7%!important;
+  }
+
+  .hero-real-visual img{
+    width:92%!important;
+    height:220px!important;
+    border-radius:24px!important;
+  }
+}
+</style>
+
+
+<style>
+/* ESTRUCTURA: HERO → SOBRE SUCHINALOA → NUESTROS ROLLOS → PRODUCTOS */
+.mock-about{
+  display:grid!important;
+  max-width:1280px!important;
+  margin:48px auto 42px!important;
+  padding:30px 22px!important;
+  grid-template-columns:.8fr 1.3fr .8fr!important;
+  gap:28px!important;
+  align-items:center!important;
+}
+
+.rollos-heading{
+  max-width:1280px;
+  margin:8px auto 4px;
+  padding:0 22px;
+  text-align:center;
+}
+.rollos-heading h2{
+  margin:0;
+  color:#1d1a18;
+  font-family:'Archivo Black',Impact,sans-serif;
+  font-size:36px;
+  line-height:1;
+}
+.rollos-heading h2 b{
+  color:#df2525;
+}
+
+.menu-intro{
+  display:none!important;
+}
+
+@media(max-width:980px){
+  .mock-about{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:560px){
+  .mock-about{
+    margin:28px auto 30px!important;
+    padding:22px 18px!important;
+  }
+  .rollos-heading h2{
+    font-size:29px;
+  }
+}
+</style>
+
+
+<style>
+/* ===== IMÁGENES ROTATIVAS · HERO + SOBRE SUCHINALOA ===== */
+#heroRotatingImage,
+#aboutRotatingImage{
+  opacity:1;
+  transition:opacity .55s ease, transform .9s ease!important;
+  will-change:opacity,transform;
+}
+
+#heroRotatingImage.photo-out,
+#aboutRotatingImage.photo-out{
+  opacity:0!important;
+}
+
+#heroRotatingImage{
+  transform:rotate(-1.2deg) scale(1.01)!important;
+}
+#heroRotatingImage.photo-in{
+  transform:rotate(-1.2deg) scale(1.035)!important;
+}
+
+#aboutRotatingImage{
+  transform:scale(1.01)!important;
+}
+#aboutRotatingImage.photo-in{
+  transform:scale(1.035)!important;
+}
+</style>
+
+
+<style>
+/* ===== TOP BAR · NUEVO LOGO CENTRADO ===== */
+.topbar{
+  position:relative!important;
+  min-height:92px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  padding:10px clamp(18px,5vw,76px)!important;
+  background:#f7f1e9!important;
+}
+
+.topbar-centered-logo{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:3!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:min(390px,48vw)!important;
+  height:76px!important;
+  pointer-events:none!important;
+}
+
+.topbar-centered-logo img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+
+/* El carrito permanece a la derecha */
+.topbar .cart-top{
+  position:relative!important;
+  z-index:5!important;
+  margin-left:auto!important;
+}
+
+/* Ocultar cualquier nombre/logo anterior que hubiera quedado */
+.topbar > .brand,
+.topbar > .topbar-brand,
+.topbar .brand-name,
+.topbar .brand-text{
+  display:none!important;
+}
+
+@media(max-width:640px){
+  .topbar{
+    min-height:78px!important;
+    padding:8px 14px!important;
+  }
+  .topbar-centered-logo{
+    width:min(245px,58vw)!important;
+    height:62px!important;
+  }
+  .topbar .cart-top{
+    transform:scale(.92);
+    transform-origin:right center;
+  }
+}
+</style>
+
+
+<style>
+.order-hours-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:10px 16px;background:#f4efe6;border-bottom:1px solid rgba(0,0,0,.08);color:#28231f;font-family:"DM Sans",system-ui,sans-serif;font-size:14px;position:relative;z-index:25}.order-hours-dot{width:9px;height:9px;border-radius:50%;background:#999;flex:none}.order-hours-bar.is-open .order-hours-dot{background:#17884f}.order-hours-bar.is-closed .order-hours-dot{background:#d52c2c}.order-hours-bar.is-open #orderHoursTitle{color:#126c40}.order-hours-bar.is-closed #orderHoursTitle{color:#b42318}.order-hours-bar #orderHoursText{color:#6d655e}body.orders-closed .cart-review-continue,body.orders-closed .checkout,body.orders-closed .submit-order{opacity:.5!important;cursor:not-allowed!important}@media(max-width:600px){.order-hours-bar{flex-wrap:wrap;gap:5px 8px;font-size:12px;text-align:center;padding:8px 12px}}
+</style>
+
+
+<style>
+/* ===== TIEMPO DE ESPERA DINÁMICO ===== */
+.wait-time-bar{max-width:1180px;margin:12px auto 0;padding:12px 18px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.74);border:1px solid rgba(28,25,22,.10);border-radius:16px;font-family:"DM Sans",system-ui,sans-serif;box-shadow:0 8px 24px rgba(43,32,20,.06)}
+.wait-time-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#1d1a18;color:#fff;font-size:20px;flex:none}
+.wait-time-copy{min-width:0;display:grid;gap:1px}
+.wait-time-copy span{font-size:10px;font-weight:800;letter-spacing:1.3px;color:#8b2b27}
+.wait-time-copy strong{font-size:19px;line-height:1.15;color:#1d1a18}
+.wait-time-bar.busy{border-color:rgba(189,35,31,.24)}
+.wait-time-bar.busy .wait-time-icon{background:#b82b27}
+.wait-time-bar.very-busy{border-color:rgba(160,25,20,.4);background:#fff7f4}
+.wait-time-bar.very-busy .wait-time-icon{background:#991e1b}
+@media(max-width:600px){.wait-time-bar{margin:8px 10px 0;padding:10px 12px;border-radius:14px}.wait-time-icon{width:36px;height:36px;font-size:17px}.wait-time-copy strong{font-size:17px}}
+</style>
+
+
+<style>
+/* ===== CHECKOUT SIMPLE: DESGLOSE + 2 FORMAS DE PAGO ===== */
+.checkout-summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:12px;
+  border:1px solid #ddd1c5;
+  border-radius:14px;
+  background:#fff;
+  margin-bottom:10px;
+}
+.checkout-summary > div{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:13px;
+}
+.checkout-summary span{color:#7c736b}
+.checkout-summary strong{color:#1d1a18}
+.checkout-summary-total{
+  grid-column:1/-1;
+  padding-top:9px;
+  border-top:1px solid #e6ddd4;
+  font-size:16px!important;
+  font-weight:900;
+}
+.simple-pay-choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.simple-pay-option{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  padding:11px;
+  border:1px solid #d9cec3;
+  border-radius:13px;
+  background:#fff;
+  cursor:pointer;
+}
+.simple-pay-option:has(input:checked){
+  border-color:#d12f2f;
+  background:#fff7f6;
+}
+.simple-pay-option input{
+  width:auto!important;
+  margin-top:3px;
+}
+.simple-pay-option strong{
+  display:block;
+  color:#24201d;
+  font-size:13px;
+}
+.simple-pay-option small{
+  display:block;
+  margin-top:3px;
+  color:#786f67;
+  font-size:11px;
+  line-height:1.35;
+}
+@media(max-width:560px){
+  .simple-pay-choice{grid-template-columns:1fr}
+}
+</style>
+
+
+<style>
+/* =========================================================
+   AJUSTE FINAL DEL HEADER / LOGO SUCHINALOA
+   Logo grande, centrado y carrito a la derecha
+   ========================================================= */
+
+.topbar{
+  position:relative !important;
+  width:100% !important;
+  min-height:130px !important;
+  background:#f6f3ee !important;
+  border-bottom:1px solid #ddd4ca !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
+}
+
+.topbar-inner{
+  position:relative !important;
+  width:100% !important;
+  max-width:none !important;
+  min-height:130px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+/* Logo principal */
+.topbar-centered-logo{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+
+  width:min(520px,48vw) !important;
+  height:115px !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+
+  margin:0 !important;
+  padding:0 !important;
+  z-index:2 !important;
+}
+
+.topbar-centered-logo img{
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:115px !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* Carrito superior */
+.topbar .cart-top{
+  position:absolute !important;
+  right:5% !important;
+  top:50% !important;
+  left:auto !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+  z-index:4 !important;
+}
+
+/* TABLET */
+@media(max-width:900px){
+  .topbar,
+  .topbar-inner{
+    min-height:115px !important;
+  }
+
+  .topbar-centered-logo{
+    width:min(430px,55vw) !important;
+    height:95px !important;
+  }
+
+  .topbar-centered-logo img{
+    max-height:95px !important;
+  }
+
+  .topbar .cart-top{
+    right:24px !important;
+  }
+}
+
+/* CELULAR */
+@media(max-width:600px){
+  .topbar,
+  .topbar-inner{
+    min-height:95px !important;
+  }
+
+  .topbar-centered-logo{
+    width:min(290px,58vw) !important;
+    height:76px !important;
+  }
+
+  .topbar-centered-logo img{
+    max-height:76px !important;
+  }
+
+  .topbar .cart-top{
+    right:8px !important;
+    transform:translateY(-50%) scale(.84) !important;
+    transform-origin:right center !important;
+  }
+}
+</style>
+
+
+<style>
+body{background:#f7f3ed!important}
+.topbar{min-height:160px!important;height:160px!important;background:#faf7f1!important;border-bottom:1px solid #ded7cf!important;box-shadow:none!important;backdrop-filter:none!important;overflow:visible!important}
+.topbar-inner{min-height:160px!important;height:160px!important;max-width:1600px!important;margin:0 auto!important;padding:0 48px!important}
+.topbar-centered-logo{width:min(650px,52vw)!important;height:138px!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;overflow:visible!important}
+.topbar-centered-logo img{width:100%!important;height:100%!important;max-height:none!important;object-fit:contain!important;object-position:center!important;mix-blend-mode:multiply!important;filter:contrast(1.05) brightness(.98)!important}
+.topbar .cart-top{right:6.2%!important;top:50%!important;min-width:auto!important;padding:11px 15px!important;border-radius:999px!important;background:#fbf8f3!important;color:#2c2824!important;border:1px solid #d9d1c8!important;box-shadow:none!important;font-size:14px!important;font-weight:800!important}
+.order-hours-bar{min-height:58px!important;padding:0 16px!important;background:#f7f3ed!important;border-bottom:1px solid #ded7cf!important;gap:10px!important;font-size:14px!important}
+.order-hours-bar #orderHoursTitle{font-size:15px!important;font-weight:850!important}.order-hours-bar #orderHoursText{font-size:14px!important}
+.wait-time-bar{max-width:1460px!important;width:calc(100% - 96px)!important;min-height:90px!important;margin:18px auto 10px!important;padding:16px 22px!important;border-radius:18px!important;background:#fff!important;border:1px solid #e5ddd4!important;box-shadow:0 8px 28px rgba(58,47,36,.05)!important}
+.wait-time-icon{width:50px!important;height:50px!important;font-size:20px!important;background:#171513!important}
+.wait-time-copy span{font-size:11px!important;letter-spacing:1.7px!important;color:#9f2722!important}.wait-time-copy strong{font-size:23px!important;font-weight:900!important;color:#1b1815!important}
+.hero-experience{margin-top:0!important;padding-top:44px!important;background:#f7f3ed!important}.hero-experience-content{max-width:1500px!important;margin:0 auto!important}.hero-experience-copy h1,.hero-experience h1{color:#1b1917!important}.hero-experience-copy p,.hero-experience p{color:#6f6962!important}
+@media(min-width:1200px){.hero-experience{min-height:610px!important}.hero-experience-content{padding-left:70px!important;padding-right:70px!important}}
+@media(max-width:900px){.topbar{min-height:130px!important;height:130px!important}.topbar-inner{min-height:130px!important;height:130px!important;padding:0 20px!important}.topbar-centered-logo{width:min(500px,58vw)!important;height:110px!important}.topbar .cart-top{right:18px!important}.wait-time-bar{width:calc(100% - 40px)!important}}
+@media(max-width:600px){.topbar{min-height:105px!important;height:105px!important}.topbar-inner{min-height:105px!important;height:105px!important;padding:0 10px!important}.topbar-centered-logo{width:min(340px,64vw)!important;height:84px!important}.topbar .cart-top{right:6px!important;transform:translateY(-50%) scale(.80)!important}.order-hours-bar{min-height:52px!important;font-size:12px!important}.order-hours-bar #orderHoursTitle,.order-hours-bar #orderHoursText{font-size:12px!important}.wait-time-bar{width:calc(100% - 20px)!important;min-height:76px!important;margin:10px auto 4px!important;padding:12px 14px!important}.wait-time-icon{width:42px!important;height:42px!important}.wait-time-copy strong{font-size:19px!important}}
+</style>
+
+
+<style>
+/* =========================================================
+   SUCHINALOA · PAGO SIMPLE
+   Mantiene la paleta clara/original.
+   ========================================================= */
+.payment-simple-field{
+  padding-top:2px;
+}
+
+.payment-main-choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:10px;
+}
+
+.payment-main-option,
+.payment-scope-option{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  cursor:pointer;
+  border:1px solid #ddd3c8;
+  background:#fffdf9;
+  border-radius:14px;
+  padding:12px;
+  transition:.16s ease;
+}
+
+.payment-main-option:hover,
+.payment-scope-option:hover{
+  border-color:#c9bcb0;
+}
+
+.payment-main-option:has(input:checked),
+.payment-scope-option:has(input:checked){
+  border-color:#d92f2f;
+  background:#fff6f4;
+  box-shadow:0 0 0 1px rgba(217,47,47,.05);
+}
+
+.payment-main-option input,
+.payment-scope-option input{
+  width:auto!important;
+  margin:3px 0 0!important;
+  accent-color:#d92f2f;
+  flex:none;
+}
+
+.payment-main-option strong,
+.payment-scope-option strong{
+  display:block;
+  color:#211d1a;
+  font-size:14px;
+}
+
+.payment-main-option small,
+.payment-scope-option small{
+  display:block;
+  margin-top:2px;
+  color:#786f67;
+  font-size:11px;
+  line-height:1.35;
+}
+
+.card-payment-scope{
+  margin-top:10px;
+  padding:11px;
+  border-radius:14px;
+  background:#f7f2eb;
+  border:1px solid #e2d8ce;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.card-payment-scope.is-hidden{
+  display:none!important;
+}
+
+.card-payment-scope-title{
+  grid-column:1/-1;
+  font-size:12px;
+  color:#665d56;
+  font-weight:800;
+  margin-bottom:1px;
+}
+
+.payment-note{
+  min-height:18px;
+  margin-top:9px;
+  color:#6b625a;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.checkout-summary{
+  margin-top:7px;
+}
+
+.active-order-recovery{
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:#f6f0e8;
+  border:1px solid #dfd5ca;
+  text-align:left;
+}
+
+.active-order-recovery strong{
+  display:block;
+  color:#2b2622;
+  margin-bottom:3px;
+}
+
+.active-order-recovery span{
+  color:#766d65;
+  font-size:12px;
+}
+
+.new-order-btn{
+  border:1px solid #d7cdc3!important;
+  background:#fff!important;
+  color:#2a2521!important;
+}
+
+@media(max-width:560px){
+  .payment-main-choice,
+  .card-payment-scope{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -2820,12 +5144,14 @@ html.intro-lock body{
 
 
  <header class="topbar">
+  <div class="topbar-centered-logo" aria-label="Suchinaloa">
+    <img src="img/logo-suchinaloa.png" alt="Suchinaloa">
+  </div>
  <div class="topbar-inner">
- <div class="brand">
- <div class="logo official-logo"><img src="img/logo-suchinaloa-transparente.png" alt="Logo Suchinaloa"></div>
+ 
  <div>
- <strong>SUCHINALOA</strong>
- <small> · Entrega a domicilio</small>
+ <strong></strong>
+ <small></small>
  </div>
  </div>
  <button class="cart-top" onclick="scrollToCart()">
@@ -2833,6 +5159,21 @@ html.intro-lock body{
  </button>
  </div>
  </header>
+
+<div id="orderHoursBar" class="order-hours-bar" role="status" aria-live="polite">
+  <span id="orderHoursDot" class="order-hours-dot"></span>
+  <strong id="orderHoursTitle">Revisando horario...</strong>
+  <span id="orderHoursText"></span>
+</div>
+
+<div id="waitTimeBar" class="wait-time-bar" role="status" aria-live="polite">
+  <div class="wait-time-icon">⏱</div>
+  <div class="wait-time-copy">
+    <span>TIEMPO DE ESPERA ACTUAL</span>
+    <strong id="waitTimeValue">Calculando...</strong>
+  </div>
+</div>
+
 
  <main>
  
@@ -2846,6 +5187,13 @@ html.intro-lock body{
 <div class="hero-experience-copy">
       <h1>Algo bien<br>se está preparando.</h1>
       <p>Sushi con carácter, preparado al momento y directo a tu puerta.</p>
+    </div>
+
+
+    <div class="hero-real-visual" aria-hidden="true">
+      <div class="hero-red-sun"></div>
+      <div class="hero-brush"></div>
+      <img id="heroRotatingImage" src="img/imagen-13.jpg" alt="">
     </div>
 
     <div class="hero-experience-actions">
@@ -2865,6 +5213,30 @@ html.intro-lock body{
     <span>DESLIZA</span>
     <i></i>
   </div>
+
+</section>
+
+
+<section class="mock-about">
+  <div class="mock-about-copy">
+    <span class="mock-kicker">SOBRE</span>
+    <h2>SUCHINALOA</h2>
+    <p>Sushi con carácter, preparado al momento y con ingredientes frescos. Una propuesta hecha para compartir y pedir fácil desde cualquier dispositivo.</p>
+  </div>
+
+  <div class="mock-stats">
+    <div><b>100%</b><span>Preparado al momento</span></div>
+    <div><b>15+</b><span>Opciones en el menú</span></div>
+    <div><b>10 km</b><span>Zona de cobertura</span></div>
+  </div>
+
+  <div class="mock-about-photo">
+    <img id="aboutRotatingImage" src="img/imagen-07.jpg" alt="Suchinaloa" loading="lazy">
+  </div>
+</section>
+
+<section class="rollos-heading">
+  <h2>NUESTROS <b>ROLLOS</b></h2>
 </section>
 
 <section class="content" id="menu">
@@ -2887,7 +5259,14 @@ html.intro-lock body{
  <button class="category" data-category="Extras" onclick="filterProducts('Extras',this)">Extras</button>
  </div>
 
- <div class="products" id="products"></div>
+ <div class="featured-carousel-shell">
+  <button class="featured-arrow featured-prev" type="button" onclick="moveFeatured(-1)" aria-label="Anterior">‹</button>
+  <div class="featured-viewport" id="featuredViewport">
+    <div class="products" id="products"></div>
+  </div>
+  <button class="featured-arrow featured-next" type="button" onclick="moveFeatured(1)" aria-label="Siguiente">›</button>
+</div>
+<div class="featured-dots" id="featuredDots"></div>
  </div>
 
  <aside class="cart-panel" id="desktopCart">
@@ -2900,7 +5279,7 @@ html.intro-lock body{
  </section>
  </main>
 
- <button class="mobile-cart" id="mobileCart" onclick="openCheckout()" aria-label="Ver pedido">
+ <button class="mobile-cart" id="mobileCart" onclick="openCartReview()" aria-label="Ver pedido">
  <span class="mobile-cart-left">
  <span class="mobile-cart-icon">🛍️</span>
  <span class="mobile-cart-copy">
@@ -2918,7 +5297,28 @@ html.intro-lock body{
  <span class="mobile-cart-total" id="mobileTotal">$0</span>
  </button>
 
- <div class="overlay hidden" id="checkoutOverlay">
+ 
+
+<div class="cart-drawer-backdrop hidden" id="cartReviewOverlay" onclick="handleCartBackdrop(event)">
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Tu pedido">
+    <div class="cart-drawer-head">
+      <div>
+        <span class="cart-drawer-kicker">TU PEDIDO</span>
+        <h2>Carrito</h2>
+        <small>Revisa cantidades o elimina productos.</small>
+      </div>
+      <button class="cart-drawer-close" type="button" onclick="closeCartReview()" aria-label="Cerrar carrito">×</button>
+    </div>
+
+    <div class="cart-drawer-body">
+      <div id="cartReviewBody"></div>
+    </div>
+  </aside>
+</div>
+
+</div>
+
+<div class="overlay hidden" id="checkoutOverlay">
  <div class="modal">
  <div class="modal-head">
  <h2>Datos de entrega</h2>
@@ -2976,40 +5376,68 @@ html.intro-lock body{
  </div>
  </div>
 
- <div class="field full">
- <label>Método de pago</label>
- <div class="payment-options">
- <label class="payment-choice">
- <input type="radio" name="payment" value="Mercado Pago" checked onchange="actualizarPagoCheckout()" />
- <span>
- <strong>💳 Tarjeta / Mercado Pago</strong>
- <small>El pago electrónico cubre únicamente los alimentos. La entrega se paga en efectivo al repartidor.</small>
- </span>
- </label>
+ 
+<div class="field full payment-simple-field">
+  <label>Forma de pago</label>
 
- <label id="cashPaymentChoice" class="payment-choice">
- <input type="radio" name="payment" value="Efectivo" onchange="actualizarPagoCheckout()" />
- <span>
- <strong>💵 Efectivo</strong>
- <small>Pagas alimentos y entrega en efectivo al recibir tu pedido.</small>
- </span>
- </label>
- </div>
+  <div class="checkout-summary" id="checkoutSummary">
+    <div><span>Alimentos</span><strong id="checkoutFoodTotal">$0</strong></div>
+    <div><span>Envío</span><strong id="checkoutDeliveryTotal">—</strong></div>
+    <div class="checkout-summary-total"><span>Total</span><strong id="checkoutGrandTotal">$0</strong></div>
+  </div>
 
- <div id="paymentMethodNote" class="payment-note">
- Mercado Pago cobrará únicamente los alimentos. El envío se paga en efectivo al repartidor.
- </div>
+  <div class="payment-main-choice">
+    <label id="cashPaymentChoice" class="payment-main-option">
+      <input type="radio" name="payment" value="Efectivo" onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>💵 Efectivo</strong>
+        <small>Pagas todo al recibir.</small>
+      </span>
+    </label>
 
- <div class="cash-admin">
- <span>ADMIN · Opción de pago en efectivo</span>
- <button id="cashToggleBtn" class="cash-toggle" type="button" onclick="toggleEfectivo()">DESACTIVAR EFECTIVO</button>
- </div>
- <div class="cash-admin rain-admin">
-   <span>ADMIN · Tarifa de reparto</span>
-   <button id="rainToggleBtn" class="cash-toggle" type="button" onclick="toggleLluvia()">NORMAL</button>
- </div>
- </div>
- <div class="field full">
+    <label class="payment-main-option">
+      <input type="radio" name="payment" value="Mercado Pago" checked onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>💳 Tarjeta</strong>
+        <small>Paga con Mercado Pago.</small>
+      </span>
+    </label>
+  </div>
+
+  <div id="cardPaymentScope" class="card-payment-scope">
+    <div class="card-payment-scope-title">¿Qué quieres pagar con tarjeta?</div>
+
+    <label class="payment-scope-option">
+      <input type="radio" name="payment_scope" value="todo" checked onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>Alimentos + envío</strong>
+        <small>Todo en un solo pago.</small>
+      </span>
+    </label>
+
+    <label class="payment-scope-option">
+      <input type="radio" name="payment_scope" value="separado" onchange="actualizarPagoCheckout()" />
+      <span>
+        <strong>Solo alimentos</strong>
+        <small>El envío se paga al repartidor.</small>
+      </span>
+    </label>
+  </div>
+
+  <div id="paymentMethodNote" class="payment-note"></div>
+
+  <div class="cash-admin">
+    <span>ADMIN · Opción de pago en efectivo</span>
+    <button id="cashToggleBtn" class="cash-toggle" type="button" onclick="toggleEfectivo()">DESACTIVAR EFECTIVO</button>
+  </div>
+
+  <div class="cash-admin rain-admin">
+    <span>ADMIN · Tarifa de reparto</span>
+    <button id="rainToggleBtn" class="cash-toggle" type="button" onclick="toggleLluvia()">NORMAL</button>
+  </div>
+</div>
+
+<div class="field full">
  <label>Indicaciones generales</label>
  <textarea name="notes" placeholder="Ej. Marcar al llegar, no tocar el timbre..."></textarea>
  </div>
@@ -3029,10 +5457,12 @@ html.intro-lock body{
  <script src="config.js"></script>
 
 <script>
- const TIEMPO_ESPERA = "45–60 min";
+ let TIEMPO_ESPERA = "40–50 min";
+let ULTIMA_CARGA_COCINA = null;
+let ULTIMO_CALCULO_ESPERA = null;
  const products = [
  {id:1,name:"Arroz Frito Gohan",category:"Entradas",price:85,emoji:"🍚",photo:"img/imagen-03.jpg",tag:"ENTRADA",desc:"Arroz frito preparado con tocino, queso crema, cebollín, pollo y carne de res; sazonado con soya natural y zanahoria, coronado con tampico y aguacate."},
- {id:2,name:"Orden Chiles Güeros Rellenos",category:"Entradas",price:1,emoji:"🌶️",photo:"img/imagen-04.jpg",tag:"3 PIEZAS",desc:"3 chiles güeros rellenos de tampico y queso crema, empanizados y coronados con salsa de anguila y chipotle."},
+ {id:2,name:"Orden Chiles Güeros Rellenos",category:"Entradas",price:75,emoji:"🌶️",photo:"img/imagen-04.jpg",tag:"3 PIEZAS",desc:"3 chiles güeros rellenos de tampico y queso crema, empanizados y coronados con salsa de anguila y chipotle."},
  {id:3,name:"Mar y Tierra",category:"Rollos Empanizados",price:125,emoji:"🍣",photo:"img/imagen-05.jpg",tag:"EMPANIZADO",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, camarón y res."},
  {id:4,name:"Yaquesita",category:"Rollos Empanizados",price:140,emoji:"🧀",photo:"img/imagen-06.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón y surimi; coronado con mozzarella, queso crema, chimichurri, salsa sriracha y ajonjolí."},
  {id:5,name:"¡Que Chulada!",category:"Rollos Empanizados",price:155,emoji:"🍤",photo:"img/imagen-07.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y surimi; coronado con queso especial de la casa, tampico y camarones empanizados, bañado en salsa de anguila y ajonjolí."},
@@ -3044,7 +5474,8 @@ html.intro-lock body{
  {id:11,name:"Machin Roll",category:"Rollo Horneado",price:165,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
  {id:12,name:"Suchinaloa",category:"El Especial",price:180,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
  {id:13,name:"Avocado Roll",category:"Natural",price:125,emoji:"🥑",photo:"img/imagen-14.jpg",tag:"NATURAL",desc:"Rollo natural relleno de alga, queso crema, aguacate y camarón; coronado con tampico."},
- {id:14,name:"Té de Jazmín Saboraté",category:"Bebidas",price:null,emoji:"🍵",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
+ {id:14,name:"Té de Jazmín Saboraté · Individual",category:"Bebidas",price:null,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación individual. Precio por definir."},
+ {id:17,name:"Té de Jazmín Saboraté · 950 ml",category:"Bebidas",price:null,emoji:"",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín Saboraté, presentación de 950 ml. Precio por definir."},
  {id:15,name:"Extra de Salsa",category:"Extras",price:15,emoji:"🥣",tag:"EXTRA",desc:"Porción extra de salsa para acompañar tu pedido."},
  {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."}
  ];
@@ -3054,6 +5485,9 @@ html.intro-lock body{
  let lastOrderPayload = null;
  let pedidoFinalizado = false;
  let checkoutFormOriginal = "";
+
+ const ACTIVE_ORDER_KEY = "suchinaloaActiveOrderV1";
+ const ACTIVE_ORDER_MAX_AGE_MS = 8 * 60 * 60 * 1000; // 8 horas
 
  // Configuración local del equipo/negocio.
  // El botón del formulario guarda esta preferencia en localStorage.
@@ -3138,25 +5572,101 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(value);
  }
 
+ let featuredCategory = "Todos";
+ let featuredStart = 0;
+ let featuredTimer = null;
+
+ function getFeaturedList(){
+   return featuredCategory==="Todos"
+     ? products
+     : products.filter(p=>p.category===featuredCategory);
+ }
+
  function renderProducts(category="Todos"){
- const container = document.getElementById("products");
- const list = category==="Todos" ? products : products.filter(p=>p.category===category);
- container.innerHTML = list.map(p=>`
- <article class="product">
- <div class="product-art">
-   ${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : `<span class="product-emoji">${p.emoji}</span>`}
- </div>
- <div class="product-body">
- <span class="product-tag">${p.tag}</span>
- <h3>${p.name}</h3>
- <p>${p.desc}</p>
- <div class="product-bottom">
- <span class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</span>
- <button class="add" aria-label="${Number.isFinite(p.price) ? `Agregar ${p.name}` : `${p.name} sin precio`}" onclick="addToCart(${p.id})" ${Number.isFinite(p.price) ? "" : "disabled"}>+</button>
- </div>
- </div>
- </article>
- `).join("");
+   featuredCategory = category;
+   featuredStart = 0;
+   renderFeaturedSlots();
+   restartFeaturedAuto();
+ }
+
+ function renderFeaturedSlots(){
+   const container = document.getElementById("products");
+   const dots = document.getElementById("featuredDots");
+   if(!container) return;
+
+   const list = getFeaturedList();
+
+   if(!list.length){
+     container.innerHTML = `<div class="featured-empty">No hay productos en esta categoría.</div>`;
+     if(dots) dots.innerHTML = "";
+     return;
+   }
+
+   const visible = [];
+   const count = Math.min(3,list.length);
+   for(let i=0;i<count;i++){
+     visible.push(list[(featuredStart+i)%list.length]);
+   }
+
+   container.innerHTML = visible.map(p=>`
+     <article class="product mock-product-card">
+       <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
+         ${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : ``}
+       </div>
+
+       <div class="mock-product-info">
+         <div class="mock-product-tag">${p.tag || p.category}</div>
+         <h3>${p.name}</h3>
+         <small class="mock-jp">スシナルoa</small>
+         <p>${p.desc}</p>
+
+         <div class="mock-product-bottom">
+           <strong class="price">${Number.isFinite(p.price) ? money(p.price) : "Precio por definir"}</strong>
+           <button
+             class="add mock-add"
+             type="button"
+             onclick="addToCart(${p.id})"
+             ${Number.isFinite(p.price) ? "" : "disabled"}
+           >Agregar</button>
+         </div>
+       </div>
+     </article>
+   `).join("");
+
+   if(dots){
+     const pages = Math.max(1,Math.ceil(list.length/3));
+     const active = Math.floor(featuredStart/3)%pages;
+     dots.innerHTML = Array.from({length:pages},(_,i)=>
+       `<button class="${i===active ? "active" : ""}" type="button" onclick="goFeaturedPage(${i})" aria-label="Página ${i+1}"></button>`
+     ).join("");
+   }
+ }
+
+ function moveFeatured(direction){
+   const list = getFeaturedList();
+   if(!list.length) return;
+   featuredStart = (featuredStart + direction*3 + list.length) % list.length;
+   renderFeaturedSlots();
+   restartFeaturedAuto();
+ }
+
+ function goFeaturedPage(page){
+   const list = getFeaturedList();
+   if(!list.length) return;
+   featuredStart = (page*3) % list.length;
+   renderFeaturedSlots();
+   restartFeaturedAuto();
+ }
+
+ function restartFeaturedAuto(){
+   if(featuredTimer) clearInterval(featuredTimer);
+   featuredTimer = setInterval(()=>{
+     const list = getFeaturedList();
+     if(list.length>3){
+       featuredStart = (featuredStart + 3) % list.length;
+       renderFeaturedSlots();
+     }
+   },4200);
  }
 
  function filterProducts(category,btn){
@@ -3208,7 +5718,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  subtotal,
  delivery,
  total,
- totalMercadoPago: subtotal, // Mercado Pago cobra únicamente alimentos.
+ totalMercadoPago: subtotal,
  totalEfectivo: total
  };
  }
@@ -3268,6 +5778,113 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  <button class="checkout" onclick="openCheckout()">Continuar pedido</button>`;
  }
 
+
+ function renderCartReview(){
+   const host = document.getElementById("cartReviewBody");
+   if(!host) return;
+
+   if(!cart.length){
+     host.innerHTML = `
+       <div class="cart-review-empty">
+         <div class="cart-review-empty-icon">🛒</div>
+         <strong>Tu carrito está vacío</strong>
+         <span>Agrega algún producto para comenzar.</span>
+       </div>`;
+     return;
+   }
+
+   const totals = getTotals();
+
+   host.innerHTML = `
+     <div class="cart-review-list">
+       ${cart.map(item=>{
+         const p = products.find(x=>x.id===item.id);
+         if(!p) return "";
+         return `
+           <div class="cart-review-item">
+             <div class="cart-review-item-info">
+               <strong>${p.name}</strong>
+               <small>${money(p.price)} c/u</small>
+             </div>
+
+             <div class="cart-review-item-total">${money(p.price*item.qty)}</div>
+
+             <div class="cart-review-controls">
+               <button type="button" class="cart-review-qty" onclick="changeQtyAndReview(${p.id},-1)">−</button>
+               <span>${item.qty}</span>
+               <button type="button" class="cart-review-qty" onclick="changeQtyAndReview(${p.id},1)">+</button>
+               <button type="button" class="cart-review-remove" onclick="removeItemAndReview(${p.id})">Eliminar</button>
+             </div>
+           </div>`;
+       }).join("")}
+     </div>
+
+     <div class="cart-review-totals">
+       <div><span>Subtotal</span><strong>${money(totals.subtotal)}</strong></div>
+       ${Number.isFinite(deliveryQuote.cost) ? `<div><span>A pagar al moto envío</span><strong>${money(totals.delivery)}</strong></div>` : ""}
+       <div class="cart-review-grand"><span>Total alimentos</span><strong>${money(totals.subtotal)}</strong></div>
+     </div>
+
+     <button type="button" class="cart-review-continue" onclick="continueFromCart()">
+       Continuar con pedido
+       <span>›</span>
+     </button>
+   `;
+ }
+
+ function changeQtyAndReview(id,delta){
+   changeQty(id,delta);
+   renderCartReview();
+ }
+
+ function removeItemAndReview(id){
+   removeItem(id);
+   renderCartReview();
+ }
+
+ function openCartReview(){
+   if(!cart.length){
+     document.getElementById("menu").scrollIntoView({behavior:"smooth",block:"start"});
+     return;
+   }
+   renderCartReview();
+   const backdrop = document.getElementById("cartReviewOverlay");
+   const drawer = document.getElementById("cartDrawer");
+   backdrop.classList.remove("hidden");
+   requestAnimationFrame(()=>{
+     backdrop.classList.add("is-open");
+     drawer.classList.add("is-open");
+   });
+ }
+
+ function closeCartReview(){
+   const backdrop = document.getElementById("cartReviewOverlay");
+   const drawer = document.getElementById("cartDrawer");
+   if(!backdrop || !drawer) return;
+
+   drawer.classList.remove("is-open");
+   backdrop.classList.remove("is-open");
+
+   setTimeout(()=>{
+     backdrop.classList.add("hidden");
+   },220);
+ }
+
+ function handleCartBackdrop(event){
+   if(event.target && event.target.id === "cartReviewOverlay"){
+     closeCartReview();
+   }
+ }
+
+ function continueFromCart(){
+   if(!horarioPedidosActivo()){
+     mostrarAvisoHorario();
+     return;
+   }
+   closeCartReview();
+   openCheckout();
+ }
+
  function resetCheckoutForNewOrder(){
  const content = document.getElementById("checkoutContent");
 
@@ -3283,19 +5900,43 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  if(changeField) changeField.classList.add("hidden");
  }
 
- function openCheckout(){
+ async function openCheckout(){
+ const active = leerPedidoActivo();
+
+ if(active?.payload?.pedido_id){
+   restaurarVariablesPedido(active);
+   const remote = await consultarEstadoPedidoActivo(lastOrderPayload.pedido_id);
+   const estadoPago = lastOrderPayload.pago?.metodo === "Efectivo"
+     ? "efectivo"
+     : (
+         remote?.estado_pago === "pagado" ||
+         remote?.mercado_pago_status === "approved"
+           ? "pagado"
+           : "pendiente"
+       );
+   mostrarPedidoFinal(estadoPago, true);
+   return;
+ }
+
+ if(!horarioPedidosActivo()){
+   mostrarAvisoHorario();
+   return;
+ }
+
  if(!cart.length){
- document.getElementById("menu").scrollIntoView({behavior:"smooth"});
- return;
+   document.getElementById("menu").scrollIntoView({behavior:"smooth"});
+   return;
  }
 
  if(pedidoFinalizado){
- resetCheckoutForNewOrder();
+   resetCheckoutForNewOrder();
  }
+
+ await calcularTiempoEsperaActual();
 
  document.getElementById("checkoutOverlay").classList.remove("hidden");
  document.body.classList.add("checkout-open");
- setTimeout(()=>{ aplicarEstadoEfectivo(); actualizarControlLluvia(); obtenerUbicacion(false); },150);
+ setTimeout(()=>{ aplicarEstadoEfectivo(); actualizarControlLluvia(); actualizarPagoCheckout(); obtenerUbicacion(false); },150);
  document.body.style.overflow="hidden";
  }
 
@@ -3310,8 +5951,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  }
 
  function scrollToCart(){
- if(window.innerWidth<=960) openCheckout();
- else document.getElementById("desktopCart").scrollIntoView({behavior:"smooth",block:"center"});
+ openCartReview();
  }
 
  function toggleChange(value){}
@@ -3338,23 +5978,72 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  return `SU-${codigo}`;
  }
 
- function buildKitchenTicket(order,customerNotes){
+ function buildKitchenTicket(order,customerNotes,data,totals){
  const now=new Date();
+
  const lines=cart.map(item=>{
  const p=products.find(x=>x.id===item.id);
  return `<div style="margin:10px 0"><b style="font-size:16px">${item.qty} x ${p.name}</b></div>`;
  }).join("");
+
+ const metodo = data?.payment || "No especificado";
+ const modalidad = data?.payment_scope || "todo";
+
+ let pagoTitulo = "";
+ let pagoDetalle = "";
+ let pagoTotal = "";
+
+ if(metodo === "Efectivo"){
+   pagoTitulo = "EFECTIVO";
+   pagoDetalle = `Alimentos + envío al recibir`;
+   pagoTotal = money(totals.total);
+ }else if(modalidad === "todo"){
+   pagoTitulo = "TARJETA / MERCADO PAGO";
+   pagoDetalle = `Alimentos + envío pagados`;
+   pagoTotal = money(totals.total);
+ }else{
+   pagoTitulo = "TARJETA / MERCADO PAGO";
+   pagoDetalle = `Solo alimentos pagados`;
+   pagoTotal = money(totals.subtotal);
+ }
+
+ const envioDetalle = metodo === "Efectivo"
+   ? `Envío incluido en efectivo: ${money(totals.delivery)}`
+   : modalidad === "todo"
+     ? `Envío pagado: ${money(totals.delivery)}`
+     : `Envío pendiente al repartidor: ${money(totals.delivery)}`;
+
  return `
  <div style="text-align:center;font-weight:900;font-size:19px">SUCHINALOA</div>
- <div style="text-align:center;margin-top:4px">COMANDA DE COCINA</div>
+ <div style="text-align:center;margin-top:4px">COMANDA</div>
  <hr>
+
  <div style="text-align:center;font-size:22px;font-weight:900">${order}</div>
  <div style="text-align:center">${now.toLocaleDateString("es-MX")} · ${now.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}</div>
+
  <hr>
+
+ <div style="
+   border:3px solid #000;
+   padding:8px 7px;
+   margin:8px 0 10px;
+   text-align:center;
+ ">
+   <div style="font-size:13px;font-weight:900">FORMA DE PAGO</div>
+   <div style="font-size:20px;font-weight:900;margin-top:3px">${pagoTitulo}</div>
+   <div style="font-size:16px;font-weight:900;margin-top:3px">${pagoDetalle}</div>
+   <div style="font-size:18px;font-weight:900;margin-top:5px">PAGO: ${pagoTotal}</div>
+   <div style="font-size:14px;font-weight:800;margin-top:3px">${envioDetalle}</div>
+ </div>
+
+ <hr>
+
  ${lines}
+
  <hr>
  <div><b>OBSERVACIONES:</b></div>
  <div style="min-height:30px">${customerNotes||"Sin observaciones"}</div>
+
  <hr>
  <div style="text-align:center;font-weight:900">FIN DE COMANDA</div>`;
  }
@@ -3438,6 +6127,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 </head>
 <body>
 ${document.getElementById("kitchenTicket").innerHTML}
+
+
+
 </body>
 </html>`;
 
@@ -3494,20 +6186,29 @@ ${document.getElementById("kitchenTicket").innerHTML}
  function aplicarEstadoEfectivo(){
  const choice = document.getElementById("cashPaymentChoice");
  const button = document.getElementById("cashToggleBtn");
- const adminBox = document.querySelector(".cash-admin");
- if(!choice || !button) return;
+ const adminBoxes = document.querySelectorAll(".cash-admin");
 
- if(adminBox){
- adminBox.style.display = MODO_ADMIN ? "flex" : "none";
+ adminBoxes.forEach(box=>{
+   if(!box.classList.contains("rain-admin")){
+     box.style.display = MODO_ADMIN ? "flex" : "none";
+   }
+ });
+
+ if(choice){
+   choice.style.display = EFECTIVO_HABILITADO ? "flex" : "none";
+
+   const cashRadio = choice.querySelector('input[value="Efectivo"]');
+
+   if(!EFECTIVO_HABILITADO && cashRadio?.checked){
+     const mp = document.querySelector('input[name="payment"][value="Mercado Pago"]');
+     if(mp) mp.checked = true;
+   }
  }
 
- choice.style.display = EFECTIVO_HABILITADO ? "flex" : "none";
- button.textContent = EFECTIVO_HABILITADO ? "DESACTIVAR EFECTIVO" : "HABILITAR EFECTIVO";
-
- const cashRadio = choice.querySelector('input[value="Efectivo"]');
- if(!EFECTIVO_HABILITADO && cashRadio?.checked){
- const mp = document.querySelector('input[name="payment"][value="Mercado Pago"]');
- if(mp) mp.checked = true;
+ if(button){
+   button.textContent = EFECTIVO_HABILITADO
+     ? "DESACTIVAR EFECTIVO"
+     : "HABILITAR EFECTIVO";
  }
 
  actualizarPagoCheckout();
@@ -3520,14 +6221,42 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function actualizarPagoCheckout(){
- const selected = document.querySelector('input[name="payment"]:checked')?.value || "Mercado Pago";
+ const payment = document.querySelector('input[name="payment"]:checked')?.value || "Mercado Pago";
+ const scope = document.querySelector('input[name="payment_scope"]:checked')?.value || "todo";
+ const cardScope = document.getElementById("cardPaymentScope");
  const note = document.getElementById("paymentMethodNote");
- if(!note) return;
+ const totals = getTotals();
 
- if(selected === "Efectivo"){
- note.textContent = "Pago en efectivo: alimentos + entrega se pagan al recibir.";
- }else{
- note.textContent = "Mercado Pago cobrará únicamente los alimentos. La entrega se paga en efectivo al repartidor.";
+ const food = document.getElementById("checkoutFoodTotal");
+ const delivery = document.getElementById("checkoutDeliveryTotal");
+ const grand = document.getElementById("checkoutGrandTotal");
+
+ if(food) food.textContent = money(totals.subtotal);
+ if(delivery){
+   delivery.textContent = Number.isFinite(deliveryQuote.cost)
+     ? money(totals.delivery)
+     : "Por calcular";
+ }
+ if(grand){
+   grand.textContent = Number.isFinite(deliveryQuote.cost)
+     ? money(totals.total)
+     : money(totals.subtotal);
+ }
+
+ const isCash = payment === "Efectivo";
+
+ if(cardScope){
+   cardScope.classList.toggle("is-hidden", isCash);
+ }
+
+ if(note){
+   if(isCash){
+     note.textContent = "Alimentos y envío se pagan en efectivo al recibir.";
+   }else if(scope === "todo"){
+     note.textContent = "La tarjeta cobrará alimentos + envío.";
+   }else{
+     note.textContent = "La tarjeta cobrará solo alimentos; el envío se paga al repartidor.";
+   }
  }
  }
 
@@ -3592,6 +6321,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  cost.textContent = Number.isFinite(deliveryQuote.cost)
    ? money(deliveryQuote.cost)
    : "—";
+ actualizarPagoCheckout();
  }
 
  async function consultarGoogleRoutes(destination){
@@ -4030,10 +6760,28 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }).join("\n");
 
  const payment = data.payment || "No especificado";
- const esMercadoPago = payment === "Mercado Pago";
- const paymentDetail = esMercadoPago
- ? `💳 Alimentos pagados por Mercado Pago: ${money(totals.subtotal)}\n🛵 A pagar al moto envío a cobrar en efectivo: ${money(totals.delivery)}`
- : `💵 Total a cobrar en efectivo: ${money(totals.total)}`;
+ const modalidad = data.payment_scope || "todo";
+
+ let paymentDetail = "";
+
+ if(payment === "Efectivo"){
+   paymentDetail =
+     `💵 EFECTIVO AL RECIBIR\n` +
+     `Alimentos: ${money(totals.subtotal)}\n` +
+     `Envío: ${money(totals.delivery)}\n` +
+     `Total a cobrar: ${money(totals.total)}`;
+ }else if(modalidad === "todo"){
+   paymentDetail =
+     `💳 TARJETA / MERCADO PAGO\n` +
+     `✅ Alimentos pagados: ${money(totals.subtotal)}\n` +
+     `✅ Envío pagado: ${money(totals.delivery)}\n` +
+     `Total pagado: ${money(totals.total)}`;
+ }else{
+   paymentDetail =
+     `💳 TARJETA / MERCADO PAGO\n` +
+     `✅ Solo alimentos pagados: ${money(totals.subtotal)}\n` +
+     `🛵 Envío pendiente al repartidor: ${money(totals.delivery)}`;
+ }
 
  const locationText = data.location
  ? `\n📍 Ubicación:\n${data.location}`
@@ -4115,6 +6863,277 @@ Favor de confirmar quién toma el envío.`;
 
  let paymentPollTimer = null;
 
+
+ function guardarPedidoActivo(){
+   if(!lastOrderPayload?.pedido_id) return;
+
+   const data = {
+     version:1,
+     savedAt:Date.now(),
+     waitTime:TIEMPO_ESPERA,
+     payload:lastOrderPayload,
+     deliveryMessage:lastDeliveryMessage,
+     kitchenHtml:document.getElementById("kitchenTicket")?.innerHTML || ""
+   };
+
+   localStorage.setItem(ACTIVE_ORDER_KEY, JSON.stringify(data));
+ }
+
+ function borrarPedidoActivo(){
+   localStorage.removeItem(ACTIVE_ORDER_KEY);
+ }
+
+ function leerPedidoActivo(){
+   try{
+     const raw = localStorage.getItem(ACTIVE_ORDER_KEY);
+     if(!raw) return null;
+
+     const data = JSON.parse(raw);
+
+     if(!data?.payload?.pedido_id){
+       borrarPedidoActivo();
+       return null;
+     }
+
+     if(
+       Number.isFinite(Number(data.savedAt)) &&
+       Date.now() - Number(data.savedAt) > ACTIVE_ORDER_MAX_AGE_MS
+     ){
+       borrarPedidoActivo();
+       return null;
+     }
+
+     return data;
+   }catch(error){
+     console.warn("Pedido activo local:", error);
+     borrarPedidoActivo();
+     return null;
+   }
+ }
+
+ function restaurarVariablesPedido(data){
+   if(!data?.payload?.pedido_id) return false;
+
+   lastOrderPayload = data.payload;
+   lastDeliveryMessage = data.deliveryMessage || "";
+   pedidoFinalizado = true;
+
+   if(data.waitTime){
+     TIEMPO_ESPERA = data.waitTime;
+   }
+
+   const ticket = document.getElementById("kitchenTicket");
+   if(ticket && data.kitchenHtml){
+     ticket.innerHTML = data.kitchenHtml;
+   }
+
+   return true;
+ }
+
+ function htmlPedidoFinal(estadoPago="pendiente"){
+   const pago = lastOrderPayload?.pago || {};
+   const esEfectivo = pago.metodo === "Efectivo";
+   const pagado = estadoPago === "pagado" || estadoPago === "approved";
+   const pagoTodo = pago.modalidad_pago === "todo";
+
+   const titulo = esEfectivo
+     ? "¡Pedido recibido!"
+     : (pagado ? "¡Pago recibido!" : "¡Pedido recibido!");
+
+   const intro = esEfectivo
+     ? "Tu pedido está confirmado y se pagará en efectivo al recibir."
+     : (pagado
+         ? "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo."
+         : "Tu pedido está registrado. Completa el pago para confirmar tu orden.");
+
+   const breakdown = `
+     <div class="payment-final-breakdown">
+       <div>
+         <span>Alimentos</span>
+         <strong>${money(pago.subtotal_alimentos || 0)}</strong>
+       </div>
+       <div>
+         <span>Envío</span>
+         <strong>${money(pago.moto_envio || 0)}${
+           !esEfectivo && !pagoTodo ? " al repartidor" : ""
+         }</strong>
+       </div>
+     </div>`;
+
+   let card = "";
+
+   if(esEfectivo){
+     card = `
+       <div class="payment-final-card">
+         <div class="payment-final-kicker">PAGO AL RECIBIR</div>
+         <div class="payment-final-label">Total en efectivo</div>
+         <div class="payment-final-amount">${money(pago.total || 0)}</div>
+         ${breakdown}
+         <div id="paymentStatus" class="payment-final-status ok">
+           ✓ Pedido confirmado · Paga al recibir.
+         </div>
+         <div class="payment-final-help">
+           Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.
+         </div>
+       </div>`;
+   }else if(pagado){
+     card = `
+       <div class="payment-final-card payment-confirmed">
+         <div class="payment-final-kicker">PAGO RECIBIDO</div>
+         <div class="payment-final-label">Pagado con tarjeta</div>
+         <div class="payment-final-amount">${money(pago.total_mercadopago || 0)}</div>
+         ${breakdown}
+         <div id="paymentStatus" class="payment-final-status ok">
+           ✓ Pago recibido y confirmado por Mercado Pago.
+         </div>
+         <div class="payment-confirmed-banner">
+           Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.
+         </div>
+       </div>`;
+   }else{
+     card = `
+       <div class="payment-final-card">
+         <div class="payment-final-kicker">CONFIRMA TU PEDIDO</div>
+         <div class="payment-final-label">Total a pagar con tarjeta</div>
+         <div class="payment-final-amount">${money(pago.total_mercadopago || 0)}</div>
+         ${breakdown}
+
+         <button id="mercadoPagoBtn" class="payment-final-button" onclick="openMercadoPago()">
+           <span class="payment-final-button-icon">💳</span>
+           <span>
+             <small>Continuar al pago seguro</small>
+             PAGAR CON MERCADO PAGO
+           </span>
+           <b>›</b>
+         </button>
+
+         <div id="paymentStatus" class="payment-final-status waiting">
+           Pedido registrado · Esperando pago
+         </div>
+
+         <div class="payment-final-help">
+           ${pagoTodo
+             ? "El pago con tarjeta incluye alimentos + envío."
+             : "La tarjeta paga los alimentos; el envío se paga al repartidor."}
+         </div>
+       </div>`;
+   }
+
+   return `
+     <div class="success">
+       <div class="success-icon">✓</div>
+       <h2>${titulo}</h2>
+       <p>${intro}</p>
+       <div class="order-number">${escapeHtml(lastOrderPayload.pedido_id)}</div>
+       <div class="order-wait-time">
+         <span>⏱ Tiempo estimado de espera</span>
+         <strong>${TIEMPO_ESPERA}</strong>
+       </div>
+
+       ${card}
+
+       <div class="invoice-notice">
+         <strong>¿Requieres factura?</strong>
+         <span>Favor de enviar tus datos fiscales a</span>
+         <a href="mailto:suchinaloa1@gmail.com">suchinaloa1@gmail.com</a>
+       </div>
+
+       <div class="active-order-recovery">
+         <strong>Este pedido queda guardado en este dispositivo.</strong>
+         <span>Si cierras esta pestaña y vuelves a entrar, podrás regresar a esta misma orden.</span>
+       </div>
+
+       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+         <button type="button" onclick="closeCheckout()" style="background:#111">Cerrar</button>
+         <button type="button" class="new-order-btn" onclick="iniciarNuevoPedido()">Hacer otro pedido</button>
+       </div>
+     </div>
+     <div id="sendStatus" class="send-status"></div>`;
+ }
+
+ function mostrarPedidoFinal(estadoPago="pendiente", abrir=true){
+   const content = document.getElementById("checkoutContent");
+   if(!content || !lastOrderPayload) return;
+
+   content.innerHTML = htmlPedidoFinal(estadoPago);
+
+   if(abrir){
+     document.getElementById("checkoutOverlay")?.classList.remove("hidden");
+     document.body.classList.add("checkout-open");
+     document.body.style.overflow = "hidden";
+   }
+
+   if(
+     lastOrderPayload.pago?.metodo !== "Efectivo" &&
+     estadoPago !== "pagado" &&
+     estadoPago !== "approved"
+   ){
+     iniciarMonitoreoPago(lastOrderPayload.pedido_id);
+   }
+ }
+
+ async function consultarEstadoPedidoActivo(pedidoId){
+   try{
+     const {data,error} = await supabaseClient
+       .from("comandas_sushi")
+       .select("pedido_id,estado_pago,mercado_pago_status,estado,estado_whatsapp")
+       .eq("pedido_id",pedidoId)
+       .maybeSingle();
+
+     if(error) throw error;
+     return data || null;
+   }catch(error){
+     console.warn("No se pudo consultar pedido activo:", error);
+     return null;
+   }
+ }
+
+ async function recuperarPedidoActivo(){
+   const saved = leerPedidoActivo();
+   if(!saved) return false;
+
+   if(!restaurarVariablesPedido(saved)){
+     return false;
+   }
+
+   const remote = await consultarEstadoPedidoActivo(
+     lastOrderPayload.pedido_id
+   );
+
+   let estadoPago = "pendiente";
+
+   if(lastOrderPayload.pago?.metodo === "Efectivo"){
+     estadoPago = "efectivo";
+   }else if(
+     remote?.estado_pago === "pagado" ||
+     remote?.mercado_pago_status === "approved"
+   ){
+     estadoPago = "pagado";
+   }
+
+   mostrarPedidoFinal(estadoPago, true);
+   return true;
+ }
+
+ function iniciarNuevoPedido(){
+   if(paymentPollTimer){
+     clearInterval(paymentPollTimer);
+     paymentPollTimer = null;
+   }
+
+   borrarPedidoActivo();
+   cart = [];
+   saveCart();
+   resetCheckoutForNewOrder();
+   closeCheckout();
+   renderCart();
+
+   document.getElementById("menu")?.scrollIntoView({
+     behavior:"smooth",
+     block:"start"
+   });
+ }
+
  async function registrarPedidoPendiente(){
  if(!lastOrderPayload || !lastOrderPayload.pedido_id){
  throw new Error("No hay un pedido preparado.");
@@ -4156,7 +7175,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  estado_pago: esEfectivo ? "efectivo_al_recibir" : "pendiente",
 
- // En Mercado Pago se cobra SOLO alimentos; la entrega queda en efectivo.
+ // El total esperado depende de la modalidad elegida: todo o solo alimentos.
  total_esperado: Number(
  esEfectivo
  ? 0
@@ -4173,6 +7192,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function aplicarEstadoPagoConfirmado(){
+   guardarPedidoActivo();
    const success = document.querySelector("#checkoutContent .success");
    if(!success || success.dataset.pagoConfirmado === "1") return;
    success.dataset.pagoConfirmado = "1";
@@ -4182,7 +7202,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
    if(title) title.textContent = "¡Pago recibido!";
 
    const intro = document.querySelector("#checkoutContent .success > p");
-   if(intro) intro.textContent = "Tu pago fue confirmado correctamente. Tu pedido ya se está elaborando.";
+   if(intro) intro.textContent = "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.";
 
    const icon = document.querySelector("#checkoutContent .success-icon");
    if(icon) icon.textContent = "✓";
@@ -4201,13 +7221,17 @@ ${document.getElementById("kitchenTicket").innerHTML}
    }
 
    const help = document.querySelector("#checkoutContent .payment-final-help");
-   if(help) help.textContent = "Tu orden está confirmada. El pedido está en elaboración y el repartidor se comunicará contigo. La entrega se paga en efectivo al repartidor.";
+   if(help){
+     help.textContent = lastOrderPayload?.pago?.modalidad_pago === "separado"
+       ? "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo. El envío se paga al repartidor."
+       : "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.";
+   }
 
    const card = document.querySelector("#checkoutContent .payment-final-card");
    if(card && !card.querySelector(".payment-confirmed-banner")){
      const banner = document.createElement("div");
      banner.className = "payment-confirmed-banner";
-     banner.textContent = "Todo listo. Estamos elaborando tu pedido. El repartidor se comunicará contigo cuando salga a entrega.";
+     banner.textContent = "Tu pedido se está preparando. En breve un repartidor de Moto Envíos se contactará contigo.";
      card.appendChild(banner);
    }
  }
@@ -4238,7 +7262,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  throw new Error(result.error || "No se pudo crear el pago.");
  }
 
- const checkoutUrl = result.init_point;
+ const checkoutUrl = result.sandbox_init_point || result.init_point;
  if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
 
  if(status){
@@ -4307,6 +7331,15 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  async function submitOrder(event){
  event.preventDefault();
+
+ if(!horarioPedidosActivo()){
+   mostrarAvisoHorario();
+   actualizarEstadoHorario();
+   return;
+ }
+
+ await calcularTiempoEsperaActual();
+
  const formData=new FormData(event.target);
  const data=Object.fromEntries(formData.entries());
 
@@ -4336,7 +7369,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const order=generateOrderNumber();
  const orderItems=cart.map(item=>({...item}));
  const totals=getTotals();
- const kitchenHtml=buildKitchenTicket(order,data.notes);
+ const kitchenHtml=buildKitchenTicket(order,data.notes,data,totals);
 
  lastDeliveryMessage=buildDeliveryMessage(order,data,orderItems,totals);
  lastOrderPayload={
@@ -4358,8 +7391,15 @@ ${document.getElementById("kitchenTicket").innerHTML}
  subtotal_alimentos:totals.subtotal,
  moto_envio:totals.delivery,
  total:totals.total,
- total_mercadopago:data.payment === "Mercado Pago" ? totals.totalMercadoPago : 0,
- total_efectivo:data.payment === "Mercado Pago" ? totals.delivery : totals.total
+ modalidad_pago:data.payment === "Efectivo"
+   ? "efectivo"
+   : (data.payment_scope || "todo"),
+ total_mercadopago:data.payment === "Efectivo"
+   ? 0
+   : ((data.payment_scope || "todo") === "todo" ? totals.total : totals.subtotal),
+ total_efectivo:data.payment === "Efectivo"
+   ? totals.total
+   : ((data.payment_scope || "todo") === "todo" ? 0 : totals.delivery)
  }
  };
 
@@ -4374,87 +7414,19 @@ ${document.getElementById("kitchenTicket").innerHTML}
  return;
  }
 
- document.getElementById("checkoutContent").innerHTML=`
- <div class="success">
- <div class="success-icon">✓</div>
- <h2>¡Pedido recibido!</h2>
- <p>Tu pedido está registrado. Completa el pago para confirmar tu orden.</p>
- <div class="order-number">${order}</div>
- <div class="order-wait-time"><span>⏱ Tiempo estimado de espera</span><strong>${TIEMPO_ESPERA}</strong></div>
+ guardarPedidoActivo();
 
- <div class="payment-final-card">
- ${
- data.payment === "Efectivo"
- ? `
- <div class="payment-final-kicker">PAGO AL RECIBIR</div>
- <div class="payment-final-amount">${money(totals.total)}</div>
+ const estadoInicial = lastOrderPayload.pago.metodo === "Efectivo"
+   ? "efectivo"
+   : "pendiente";
 
- <div class="payment-final-breakdown">
-   <div><span>Alimentos</span><strong>${money(totals.subtotal)}</strong></div>
-   <div><span>A pagar al moto envío</span><strong>${money(totals.delivery)}</strong></div>
- </div>
+ mostrarPedidoFinal(estadoInicial, false);
 
- <div id="paymentStatus" class="payment-final-status ok">
-   ✓ Pedido confirmado. Paga en efectivo al recibir.
- </div>
- <div class="order-process-notice">
-   🍣 Tu pedido ya se está elaborando. El repartidor se comunicará contigo cuando salga a entrega.
- </div>
- `
- : `
- <div class="payment-final-kicker">CONFIRMA TU PEDIDO</div>
- <div class="payment-final-label">Total a pagar con Mercado Pago</div>
- <div class="payment-final-amount">${money(totals.totalMercadoPago)}</div>
-
- <div class="payment-final-breakdown">
-   <div>
-     <span>Alimentos</span>
-     <strong>${money(totals.totalMercadoPago)}</strong>
-   </div>
-   <div>
-     <span>A pagar al moto envío</span>
-     <strong>${money(totals.delivery)} en efectivo</strong>
-   </div>
- </div>
-
- <button id="mercadoPagoBtn" class="payment-final-button" onclick="openMercadoPago()">
-   <span class="payment-final-button-icon">💳</span>
-   <span>
-     <small>Continuar al pago seguro</small>
-     PAGAR CON MERCADO PAGO
-   </span>
-   <b>›</b>
- </button>
-
- <div id="paymentStatus" class="payment-final-status waiting">
-   Pedido registrado · Esperando pago
- </div>
-
- <div class="payment-final-help">
-   El pago se confirma automáticamente. La entrega se paga en efectivo al repartidor.
- </div>
- `
- }
- </div>
-
- <div class="invoice-notice">
-   <strong>¿Requieres factura?</strong>
-   <span>Favor de enviar tus datos fiscales a</span>
-   <a href="mailto:suchinaloa1@gmail.com">suchinaloa1@gmail.com</a>
- </div>
-</div>
-<div id="sendStatus" class="send-status"></div>
- </div>
-
- <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
- 
- <button onclick="finishDemo()" style="background:#111">Cerrar</button>
- </div>
- </div>`;
-
- // Mercado Pago queda esperando confirmación; efectivo se libera de inmediato al receptor.
+ // El carrito se vacía para evitar una segunda orden accidental,
+ // pero el pedido completo ya quedó persistido en ACTIVE_ORDER_KEY.
  cart=[];
  saveCart();
+ renderCart();
  }
 
  function finishDemo(){
@@ -4464,8 +7436,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  block:"start"
  });
  }
-
- document.getElementById("checkoutOverlay").addEventListener("click",e=>{
+document.getElementById("checkoutOverlay").addEventListener("click",e=>{
  if(e.target.id==="checkoutOverlay") closeCheckout();
  });
 
@@ -4474,6 +7445,12 @@ ${document.getElementById("kitchenTicket").innerHTML}
  prepararUbicacionManual();
  renderProducts();
  renderCart();
+
+ // Si el cliente cerró la pestaña después de registrar el pedido,
+ // recuperamos automáticamente esa misma orden al volver.
+ setTimeout(()=>{
+   recuperarPedidoActivo();
+ },350);
  </script>
 
 
@@ -4555,6 +7532,218 @@ ${document.getElementById("kitchenTicket").innerHTML}
 })();
 </script>
 
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const heroPhotos = [
+    "img/imagen-13.jpg",
+    "img/imagen-03.jpg",
+    "img/imagen-05.jpg",
+    "img/imagen-09.jpg"
+  ];
+
+  const aboutPhotos = [
+    "img/imagen-07.jpg",
+    "img/imagen-04.jpg",
+    "img/imagen-08.jpg",
+    "img/imagen-11.jpg"
+  ];
+
+  function preloadPhotos(list){
+    list.forEach(function(src){
+      const img = new Image();
+      img.src = src;
+    });
+  }
+
+  function startRotator(elementId, photos, intervalMs){
+    const element = document.getElementById(elementId);
+    if(!element || !photos || photos.length < 2) return;
+
+    let index = 0;
+
+    setInterval(function(){
+      index = (index + 1) % photos.length;
+      const nextSrc = photos[index];
+
+      element.classList.add("photo-out");
+
+      setTimeout(function(){
+        element.src = nextSrc;
+        element.classList.add("photo-in");
+        element.classList.remove("photo-out");
+
+        setTimeout(function(){
+          element.classList.remove("photo-in");
+        }, 900);
+      }, 520);
+    }, intervalMs);
+  }
+
+  preloadPhotos(heroPhotos.concat(aboutPhotos));
+
+  startRotator("heroRotatingImage", heroPhotos, 5600);
+
+  setTimeout(function(){
+    startRotator("aboutRotatingImage", aboutPhotos, 6800);
+  }, 1700);
+});
+</script>
+
+
+<style>
+/* ===== AJUSTE FINAL HERO · 24 AGO 2026 ===== */
+html,body{overflow-x:hidden!important;}
+.hero-experience{
+  width:100%!important;
+  min-height:540px!important;
+  overflow:hidden!important;
+}
+.hero-experience-content{
+  width:min(1400px,100%)!important;
+  max-width:1400px!important;
+  min-height:540px!important;
+  margin:0 auto!important;
+  padding:72px clamp(28px,5vw,72px)!important;
+  box-sizing:border-box!important;
+}
+.hero-experience-eyebrow,
+.hero-experience-copy,
+.hero-experience-actions{
+  margin-left:0!important;
+  transform:none!important;
+}
+.hero-experience-copy{
+  width:44%!important;
+  max-width:560px!important;
+}
+.hero-experience-copy h1{
+  margin-left:0!important;
+  max-width:560px!important;
+  font-size:clamp(50px,5.15vw,74px)!important;
+  line-height:.94!important;
+  overflow:visible!important;
+}
+.hero-real-visual{
+  top:50%!important;
+  right:clamp(20px,4vw,64px)!important;
+  width:52%!important;
+  height:76%!important;
+  transform:translateY(-50%)!important;
+}
+.hero-real-visual img{
+  right:0!important;
+  width:88%!important;
+  height:78%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+@media(max-width:900px){
+  .hero-experience{min-height:650px!important;}
+  .hero-experience-content{
+    min-height:650px!important;
+    padding:48px 28px 315px!important;
+  }
+  .hero-experience-copy{width:100%!important;max-width:620px!important;}
+  .hero-real-visual{
+    top:auto!important;bottom:20px!important;right:2%!important;
+    width:86%!important;height:300px!important;transform:none!important;
+  }
+}
+@media(max-width:560px){
+  .hero-experience-content{padding:38px 20px 300px!important;}
+  .hero-experience-copy h1{font-size:clamp(42px,13vw,54px)!important;}
+  .hero-real-visual{width:98%!important;right:-8%!important;}
+}
+</style>
+
+<script>
+const SUCHINALOA_TIMEZONE = "America/Mexico_City";
+const PEDIDOS_INICIO_MIN = 13 * 60;
+const PEDIDOS_CIERRE_MIN = 19 * 60 + 30;
+const OPERACION_CIERRE_MIN = 20 * 60;
+function horaSuchinaloa(){const partes=new Intl.DateTimeFormat("es-MX",{timeZone:SUCHINALOA_TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const valor=tipo=>Number(partes.find(p=>p.type===tipo)?.value||0);return{hora:valor("hour"),minuto:valor("minute"),segundo:valor("second")};}
+function minutosActualesSuchinaloa(){const t=horaSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
+function horarioPedidosActivo(){const min=minutosActualesSuchinaloa();return min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;}
+function estadoHorarioSuchinaloa(){const min=minutosActualesSuchinaloa();if(min<PEDIDOS_INICIO_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Recibimos pedidos hoy de 1:00 pm a 7:30 pm."};if(min<PEDIDOS_CIERRE_MIN)return{abierto:true,titulo:"Pedidos abiertos",texto:"Estamos recibiendo pedidos hasta las 7:30 pm."};if(min<OPERACION_CIERRE_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Ya cerramos pedidos por hoy. El servicio continúa hasta las 8:00 pm."};return{abierto:false,titulo:"Pedidos cerrados",texto:"Volvemos a recibir pedidos mañana a la 1:00 pm."};}
+function mostrarAvisoHorario(){const e=estadoHorarioSuchinaloa();alert(e.abierto?"Estamos recibiendo pedidos.":"En este momento no estamos recibiendo pedidos. Nuestro horario para ordenar es de 1:00 pm a 7:30 pm.");}
+function actualizarEstadoHorario(){const e=estadoHorarioSuchinaloa();const bar=document.getElementById("orderHoursBar"),title=document.getElementById("orderHoursTitle"),text=document.getElementById("orderHoursText");if(bar){bar.classList.toggle("is-open",e.abierto);bar.classList.toggle("is-closed",!e.abierto)}if(title)title.textContent=e.titulo;if(text)text.textContent=e.texto;document.body.classList.toggle("orders-closed",!e.abierto);document.querySelectorAll(".cart-review-continue,.checkout,.submit-order").forEach(btn=>{btn.disabled=!e.abierto;if(btn.classList.contains("cart-review-continue"))btn.title=e.abierto?"":"Pedidos disponibles de 1:00 pm a 7:30 pm";});}
+document.addEventListener("DOMContentLoaded",()=>{actualizarEstadoHorario();setInterval(actualizarEstadoHorario,15000);});
+</script>
+
+<script>
+const ESPERA_VENTANA_MIN = 75;
+const ESPERA_REFRESCO_MS = 60000;
+
+function pesoPedidoPorAntiguedad(minutos){
+  if(minutos <= 20) return 1.00;
+  if(minutos <= 40) return 0.75;
+  if(minutos <= 60) return 0.45;
+  if(minutos <= 75) return 0.20;
+  return 0;
+}
+
+function rangoEsperaPorCarga(carga){
+  if(carga < 1.5) return {texto:"30–40 min", nivel:"normal"};
+  if(carga < 2.5) return {texto:"40–50 min", nivel:"normal"};
+  if(carga < 3.5) return {texto:"50–60 min", nivel:"busy"};
+  if(carga < 4.5) return {texto:"60–75 min", nivel:"busy"};
+  if(carga < 6.0) return {texto:"75–90 min", nivel:"very-busy"};
+  return {texto:"90–120 min", nivel:"very-busy"};
+}
+
+function pedidoCuentaParaEspera(row){
+  const estadoPago=String(row.estado_pago||"").toLowerCase();
+  const mpStatus=String(row.mercado_pago_status||"").toLowerCase();
+  return estadoPago==="pagado" || estadoPago==="efectivo_al_recibir" || mpStatus==="approved";
+}
+
+async function calcularTiempoEsperaActual(){
+  const value=document.getElementById("waitTimeValue");
+  const bar=document.getElementById("waitTimeBar");
+  try{
+    const desde=new Date(Date.now()-ESPERA_VENTANA_MIN*60*1000).toISOString();
+    const {data,error}=await supabaseClient
+      .from("comandas_sushi")
+      .select("pedido_id,created_at,estado_pago,mercado_pago_status")
+      .gte("created_at",desde)
+      .order("created_at",{ascending:false});
+    if(error) throw error;
+
+    const ahora=Date.now();
+    const pedidos=(data||[]).filter(pedidoCuentaParaEspera);
+    let carga=0;
+    pedidos.forEach(row=>{
+      const creado=new Date(row.created_at).getTime();
+      if(!Number.isFinite(creado)) return;
+      carga+=pesoPedidoPorAntiguedad(Math.max(0,(ahora-creado)/60000));
+    });
+
+    const rango=rangoEsperaPorCarga(carga);
+    TIEMPO_ESPERA=rango.texto;
+    ULTIMA_CARGA_COCINA=carga;
+    ULTIMO_CALCULO_ESPERA=new Date();
+
+    if(value) value.textContent=rango.texto;
+    if(bar){
+      bar.classList.remove("busy","very-busy");
+      if(rango.nivel!=="normal") bar.classList.add(rango.nivel);
+    }
+    return rango.texto;
+  }catch(error){
+    console.warn("No se pudo calcular el tiempo de espera:",error);
+    TIEMPO_ESPERA="40–50 min";
+    if(value) value.textContent=TIEMPO_ESPERA;
+    return TIEMPO_ESPERA;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  calcularTiempoEsperaActual();
+  setInterval(calcularTiempoEsperaActual,ESPERA_REFRESCO_MS);
+});
+</script>
 
 </body>
 </html>
