@@ -8,7 +8,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 
  <style>
  :root{
@@ -2628,7 +2629,7 @@ html.intro-lock body{
 }
 
 </style>
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 .add:disabled{
@@ -5725,6 +5726,10 @@ footer{background:#030303!important;color:#8f784d!important}
 }
 </style>
 
+
+<link rel="preload" as="image" href="img/imagen-07.jpg" fetchpriority="high">
+<link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+
 </head>
 <body>
 
@@ -6173,7 +6178,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
      <article class="product mock-product-card">
        <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
          ${p.photo
-           ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">`
+           ? `<img src="${p.photo}" alt="${p.name}" loading="lazy" decoding="async">`
            : ``}
        </div>
 
@@ -7834,7 +7839,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  throw new Error(result.error || "No se pudo crear el pago.");
  }
 
- const checkoutUrl =  result.init_point;
+ const checkoutUrl = result.sandbox_init_point || result.init_point;
  if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
 
  if(status){
@@ -8042,15 +8047,37 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
 
   document.documentElement.classList.add("intro-lock");
 
-  // Precarga inmediata solo de las 4 fotos del intro.
-  slides.forEach(slide=>{
-    const bg = getComputedStyle(slide).getPropertyValue("--intro-bg");
-    const match = bg.match(/url\(["']?(.*?)["']?\)/);
-    if(match && match[1]){
-      const img = new Image();
-      img.src = match[1];
-    }
-  });
+  function slideUrl(slide){
+    const inline = slide.getAttribute("style") || "";
+    const match = inline.match(/--intro-bg\s*:\s*url\(["']?(.*?)["']?\)/i);
+    return match ? match[1] : "";
+  }
+
+  // Solo la primera foto es prioritaria.
+  // Las otras se descargan una por una, sin competir todas al mismo tiempo.
+  const introUrls = slides.map(slideUrl).filter(Boolean);
+
+  function preloadSequential(index=1){
+    if(index >= introUrls.length || finished) return;
+
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = img.onerror = ()=>{
+      setTimeout(()=>preloadSequential(index + 1), 40);
+    };
+    img.src = introUrls[index];
+  }
+
+  if(introUrls[0]){
+    const first = new Image();
+    first.decoding = "async";
+    first.onload = first.onerror = ()=>{
+      setTimeout(()=>preloadSequential(1), 80);
+    };
+    first.src = introUrls[0];
+  }else{
+    preloadSequential(1);
+  }
 
   function paint(){
     slides.forEach((slide,i)=>{
@@ -8097,8 +8124,9 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
   paint();
   timer = setTimeout(next,SLIDE_MS);
 
-  // Fallback: jamás bloquear la página.
-  setTimeout(finish,9000);
+  // Seguridad: si algún recurso externo falla, la intro nunca deja
+  // bloqueada la página indefinidamente.
+  setTimeout(finish,8000);
 })();
 </script>
 
@@ -8120,13 +8148,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "img/imagen-11.jpg"
   ];
 
-  function preloadPhotos(list){
-    list.forEach(function(src){
-      const img = new Image();
-      img.src = src;
-    });
-  }
-
   function startRotator(elementId, photos, intervalMs){
     const element = document.getElementById(elementId);
     if(!element || !photos || photos.length < 2) return;
@@ -8137,27 +8158,36 @@ document.addEventListener("DOMContentLoaded", function () {
       index = (index + 1) % photos.length;
       const nextSrc = photos[index];
 
-      element.classList.add("photo-out");
+      // Se carga únicamente la siguiente foto cuando realmente se necesita.
+      const loader = new Image();
+      loader.decoding = "async";
 
-      setTimeout(function(){
-        element.src = nextSrc;
-        element.classList.add("photo-in");
-        element.classList.remove("photo-out");
+      loader.onload = function(){
+        element.classList.add("photo-out");
 
         setTimeout(function(){
-          element.classList.remove("photo-in");
-        }, 900);
-      }, 520);
+          element.src = nextSrc;
+          element.classList.add("photo-in");
+          element.classList.remove("photo-out");
+
+          setTimeout(function(){
+            element.classList.remove("photo-in");
+          }, 900);
+        }, 520);
+      };
+
+      loader.src = nextSrc;
     }, intervalMs);
   }
 
-  preloadPhotos(heroPhotos.concat(aboutPhotos));
-
-  startRotator("heroRotatingImage", heroPhotos, 5600);
+  // Esperar a que la intro termine de competir por la red.
+  setTimeout(function(){
+    startRotator("heroRotatingImage", heroPhotos, 5600);
+  }, 7600);
 
   setTimeout(function(){
     startRotator("aboutRotatingImage", aboutPhotos, 6800);
-  }, 1700);
+  }, 9300);
 });
 </script>
 
@@ -8243,68 +8273,156 @@ document.addEventListener("DOMContentLoaded",()=>{actualizarEstadoHorario();setI
 </script>
 
 <script>
-const ESPERA_VENTANA_MIN = 75;
-const ESPERA_REFRESCO_MS = 60000;
+/* =========================================================
+   TIEMPO DE ESPERA POR COLA REAL ESTIMADA
+   - Un pedido sin cola: 15 min para salir del local.
+   - Cada pedido nuevo ocupa 5 min adicionales de producción.
+   - El tiempo transcurrido se descuenta automáticamente.
+   - No requiere marcar manualmente el pedido como entregado.
+   ========================================================= */
 
-function pesoPedidoPorAntiguedad(minutos){
-  if(minutos <= 20) return 1.00;
-  if(minutos <= 40) return 0.75;
-  if(minutos <= 60) return 0.45;
-  if(minutos <= 75) return 0.20;
-  return 0;
-}
-
-function rangoEsperaPorCarga(carga){
-  if(carga < 1.5) return {texto:"30–40 min", nivel:"normal"};
-  if(carga < 2.5) return {texto:"40–50 min", nivel:"normal"};
-  if(carga < 3.5) return {texto:"50–60 min", nivel:"busy"};
-  if(carga < 4.5) return {texto:"60–75 min", nivel:"busy"};
-  if(carga < 6.0) return {texto:"75–90 min", nivel:"very-busy"};
-  return {texto:"90–120 min", nivel:"very-busy"};
-}
+const ESPERA_BASE_MIN = 15;
+const ESPERA_POR_PEDIDO_MIN = 5;
+const ESPERA_VENTANA_MIN = 120;
+const ESPERA_REFRESCO_MS = 30000;
 
 function pedidoCuentaParaEspera(row){
-  const estadoPago=String(row.estado_pago||"").toLowerCase();
-  const mpStatus=String(row.mercado_pago_status||"").toLowerCase();
-  return estadoPago==="pagado" || estadoPago==="efectivo_al_recibir" || mpStatus==="approved";
+  const estadoPago = String(row.estado_pago || "").toLowerCase();
+  const mpStatus = String(row.mercado_pago_status || "").toLowerCase();
+
+  // Solo contamos pedidos que realmente llegaron a operación:
+  // tarjeta aprobada o efectivo al recibir.
+  return (
+    estadoPago === "pagado" ||
+    estadoPago === "efectivo_al_recibir" ||
+    mpStatus === "approved"
+  );
+}
+
+function minutosRestantesDeCola(pedidos, ahoraMs){
+  if(!pedidos.length) return ESPERA_BASE_MIN;
+
+  // Procesamos cronológicamente para reconstruir la cola.
+  const ordenados = pedidos
+    .map(row => ({
+      ...row,
+      creadoMs: new Date(row.created_at).getTime()
+    }))
+    .filter(row => Number.isFinite(row.creadoMs))
+    .sort((a,b) => a.creadoMs - b.creadoMs);
+
+  if(!ordenados.length) return ESPERA_BASE_MIN;
+
+  let salidaUltimoPedido = 0;
+
+  for(const pedido of ordenados){
+    /*
+      Si al entrar este pedido ya no había cola:
+        salida = hora de entrada + 15 min.
+
+      Si todavía había pedidos acumulados:
+        se coloca detrás del último y agrega 5 min.
+
+      Ejemplo:
+        6:00 -> sale 6:15
+        6:04 -> sale 6:20
+        6:08 -> sale 6:25
+        6:12 -> sale 6:30
+
+      A las 6:12 un pedido nuevo vería aprox.:
+        último sale 6:30 + 5 min para él = 23 min.
+    */
+    const salidaSinCola =
+      pedido.creadoMs + ESPERA_BASE_MIN * 60000;
+
+    if(salidaUltimoPedido > pedido.creadoMs){
+      salidaUltimoPedido += ESPERA_POR_PEDIDO_MIN * 60000;
+    }else{
+      salidaUltimoPedido = salidaSinCola;
+    }
+  }
+
+  // Tiempo para UN pedido nuevo que entra en este momento.
+  let salidaNuevoPedido;
+
+  if(salidaUltimoPedido > ahoraMs){
+    salidaNuevoPedido =
+      salidaUltimoPedido + ESPERA_POR_PEDIDO_MIN * 60000;
+  }else{
+    salidaNuevoPedido =
+      ahoraMs + ESPERA_BASE_MIN * 60000;
+  }
+
+  return Math.max(
+    ESPERA_BASE_MIN,
+    Math.ceil((salidaNuevoPedido - ahoraMs) / 60000)
+  );
+}
+
+function presentarTiempoEspera(minutos){
+  // Redondeamos hacia arriba a bloques de 5 para no mostrar falsa precisión.
+  const redondeado = Math.max(
+    ESPERA_BASE_MIN,
+    Math.ceil(minutos / 5) * 5
+  );
+
+  let nivel = "normal";
+  if(redondeado >= 30) nivel = "busy";
+  if(redondeado >= 45) nivel = "very-busy";
+
+  return {
+    minutos:redondeado,
+    texto:`${redondeado} min`,
+    nivel
+  };
 }
 
 async function calcularTiempoEsperaActual(){
-  const value=document.getElementById("waitTimeValue");
-  const bar=document.getElementById("waitTimeBar");
+  const value = document.getElementById("waitTimeValue");
+  const bar = document.getElementById("waitTimeBar");
+
   try{
-    const desde=new Date(Date.now()-ESPERA_VENTANA_MIN*60*1000).toISOString();
-    const {data,error}=await supabaseClient
+    const desde = new Date(
+      Date.now() - ESPERA_VENTANA_MIN * 60 * 1000
+    ).toISOString();
+
+    const {data,error} = await supabaseClient
       .from("comandas_sushi")
       .select("pedido_id,created_at,estado_pago,mercado_pago_status")
       .gte("created_at",desde)
-      .order("created_at",{ascending:false});
+      .order("created_at",{ascending:true});
+
     if(error) throw error;
 
-    const ahora=Date.now();
-    const pedidos=(data||[]).filter(pedidoCuentaParaEspera);
-    let carga=0;
-    pedidos.forEach(row=>{
-      const creado=new Date(row.created_at).getTime();
-      if(!Number.isFinite(creado)) return;
-      carga+=pesoPedidoPorAntiguedad(Math.max(0,(ahora-creado)/60000));
-    });
+    const ahora = Date.now();
+    const pedidos = (data || []).filter(pedidoCuentaParaEspera);
 
-    const rango=rangoEsperaPorCarga(carga);
-    TIEMPO_ESPERA=rango.texto;
-    ULTIMA_CARGA_COCINA=carga;
-    ULTIMO_CALCULO_ESPERA=new Date();
+    const minutos = minutosRestantesDeCola(pedidos, ahora);
+    const resultado = presentarTiempoEspera(minutos);
 
-    if(value) value.textContent=rango.texto;
+    TIEMPO_ESPERA = resultado.texto;
+    ULTIMA_CARGA_COCINA = pedidos.length;
+    ULTIMO_CALCULO_ESPERA = new Date();
+
+    if(value) value.textContent = resultado.texto;
+
     if(bar){
       bar.classList.remove("busy","very-busy");
-      if(rango.nivel!=="normal") bar.classList.add(rango.nivel);
+      if(resultado.nivel !== "normal"){
+        bar.classList.add(resultado.nivel);
+      }
     }
-    return rango.texto;
+
+    return resultado.texto;
+
   }catch(error){
     console.warn("No se pudo calcular el tiempo de espera:",error);
-    TIEMPO_ESPERA="40–50 min";
-    if(value) value.textContent=TIEMPO_ESPERA;
+
+    // Si Supabase falla, no castigamos al cliente con una estimación enorme.
+    // Mostramos el tiempo base conocido.
+    TIEMPO_ESPERA = "15 min";
+    if(value) value.textContent = TIEMPO_ESPERA;
+
     return TIEMPO_ESPERA;
   }
 }
