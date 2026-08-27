@@ -7231,6 +7231,71 @@ ${document.getElementById("kitchenTicket").innerHTML}
    if(lngInput) lngInput.value = "";
  }
 
+ async function geocodificarDireccionManual(address, neighborhood, zip){
+   // Geocodificación segura: primero convertimos la dirección escrita a coordenadas
+   // y sólo aceptamos resultados suficientemente precisos dentro de Irapuato.
+   const full = [
+     address,
+     neighborhood ? `Col. ${neighborhood}` : "",
+     zip ? `C.P. ${zip}` : "",
+     "Irapuato, Guanajuato, México"
+   ].filter(Boolean).join(", ");
+
+   const url = new URL("https://nominatim.openstreetmap.org/search");
+   url.searchParams.set("format","jsonv2");
+   url.searchParams.set("q",full);
+   url.searchParams.set("addressdetails","1");
+   url.searchParams.set("limit","5");
+   url.searchParams.set("countrycodes","mx");
+   url.searchParams.set("accept-language","es");
+
+   const response = await fetch(url.toString(), {headers:{"Accept":"application/json"}});
+   if(!response.ok) throw new Error("No se pudo verificar la dirección escrita.");
+
+   const results = await response.json();
+   if(!Array.isArray(results) || !results.length){
+     throw new Error("No encontramos esa dirección con precisión. Usa “Usar mi ubicación actual”.");
+   }
+
+   const norm = v => String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+   const wantedNumber = (String(address).match(/\b\d+[a-zA-Z-]*\b/g) || []).pop() || "";
+   const wantedZip = String(zip || "").trim();
+   const wantedNeighborhood = norm(neighborhood);
+
+   const ranked = results.map(r=>{
+     const a = r.address || {};
+     const cityText = norm([a.city,a.town,a.municipality,a.county,a.state_district].filter(Boolean).join(" "));
+     const resultNeighborhood = norm([a.neighbourhood,a.suburb,a.quarter,a.city_district,a.residential].filter(Boolean).join(" "));
+     const house = String(a.house_number || "").trim();
+     const postcode = String(a.postcode || "").trim();
+     let score = 0;
+     if(cityText.includes("irapuato") || norm(r.display_name).includes("irapuato")) score += 5;
+     if(wantedNumber && house && norm(house) === norm(wantedNumber)) score += 5;
+     if(wantedZip && postcode === wantedZip) score += 3;
+     if(wantedNeighborhood && resultNeighborhood && (resultNeighborhood.includes(wantedNeighborhood) || wantedNeighborhood.includes(resultNeighborhood))) score += 2;
+     return {r,a,score,house,postcode,cityText};
+   }).sort((x,y)=>y.score-x.score);
+
+   const best = ranked[0];
+   const inIrapuato = best && (best.cityText.includes("irapuato") || norm(best.r.display_name).includes("irapuato"));
+   const exactNumber = !wantedNumber || (best.house && norm(best.house) === norm(wantedNumber));
+   const exactZip = !wantedZip || !best.postcode || best.postcode === wantedZip;
+
+   // Si el usuario escribió número exterior, no aceptamos un resultado que sólo
+   // represente la calle, colonia o C.P.; eso era lo que podía producir cobros erróneos.
+   if(!best || !inIrapuato || !exactNumber || !exactZip || best.score < (wantedNumber ? 10 : 7)){
+     throw new Error("No pudimos confirmar el domicilio exacto (calle y número). Usa “Usar mi ubicación actual” para evitar calcular el envío desde un punto aproximado.");
+   }
+
+   const lat = Number(best.r.lat);
+   const lng = Number(best.r.lon);
+   if(!Number.isFinite(lat) || !Number.isFinite(lng)){
+     throw new Error("La dirección encontrada no devolvió coordenadas válidas.");
+   }
+
+   return {lat,lng,displayName:best.r.display_name};
+ }
+
  async function calcularUbicacionManual(){
    const form = document.getElementById("checkoutForm");
    const status = document.getElementById("locationStatus");
@@ -7275,17 +7340,23 @@ ${document.getElementById("kitchenTicket").innerHTML}
        const neighborhood = String(fd.get("neighborhood") || "").trim();
        const zip = String(fd.get("zip") || "").trim();
 
-       if(!address && !neighborhood && !zip){
-         throw new Error("Captura calle y número, colonia y/o código postal antes de calcular.");
+       if(!address || !neighborhood || !zip){
+         throw new Error("Captura calle y número, colonia y código postal antes de calcular.");
        }
 
+       if(status) status.textContent = "Verificando que la dirección sea exacta...";
+       const verified = await geocodificarDireccionManual(address, neighborhood, zip);
+       if(latInput) latInput.value = verified.lat;
+       if(lngInput) lngInput.value = verified.lng;
+       if(locationInput) locationInput.value = `https://www.google.com/maps?q=${verified.lat},${verified.lng}`;
+
        destination = {
-         address:[
-           address,
-           neighborhood ? `Col. ${neighborhood}` : "",
-           zip ? `C.P. ${zip}` : "",
-           "Irapuato, Guanajuato, México"
-         ].filter(Boolean).join(", ")
+         location:{
+           latLng:{
+             latitude:verified.lat,
+             longitude:verified.lng
+           }
+         }
        };
      }
 
