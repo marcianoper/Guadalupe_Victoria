@@ -5876,7 +5876,7 @@ footer{background:#030303!important;color:#8f784d!important}
  </section>
  </main>
 
- <button class="mobile-cart" id="mobileCart" onclick="openCheckout()" aria-label="Ver pedido">
+ <button class="mobile-cart" id="mobileCart" onclick="openCartReview()" aria-label="Ver pedido">
  <span class="mobile-cart-left">
  <span class="mobile-cart-icon">🛍️</span>
  <span class="mobile-cart-copy">
@@ -5893,6 +5893,43 @@ footer{background:#030303!important;color:#8f784d!important}
  <span class="mobile-cart-badge" id="mobileCount">0</span>
  <span class="mobile-cart-total" id="mobileTotal">$0</span>
  </button>
+
+
+
+<!-- =========================================================
+     CARRITO LATERAL · ESTRUCTURA REQUERIDA POR openCartReview()
+     ========================================================= -->
+<div
+  id="cartReviewOverlay"
+  class="cart-drawer-backdrop hidden"
+  onclick="handleCartBackdrop(event)"
+  aria-hidden="true"
+>
+  <aside
+    id="cartDrawer"
+    class="cart-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cartDrawerTitle"
+  >
+    <div class="cart-drawer-head">
+      <div>
+        <span class="cart-drawer-kicker">TU PEDIDO</span>
+        <h2 id="cartDrawerTitle">Revisa tu carrito</h2>
+        <small>Confirma productos y cantidades antes de continuar.</small>
+      </div>
+
+      <button
+        type="button"
+        class="cart-drawer-close"
+        onclick="closeCartReview()"
+        aria-label="Cerrar carrito"
+      >×</button>
+    </div>
+
+    <div id="cartReviewBody" class="cart-drawer-body"></div>
+  </aside>
+</div>
 
  <div class="overlay hidden" id="checkoutOverlay">
  <div class="modal">
@@ -6466,7 +6503,14 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    const backdrop = document.getElementById("cartReviewOverlay");
    const drawer = document.getElementById("cartDrawer");
 
+   if(!backdrop || !drawer){
+     console.error("Carrito: faltan cartReviewOverlay o cartDrawer.");
+     return;
+   }
+
    backdrop.classList.remove("hidden");
+   backdrop.setAttribute("aria-hidden","false");
+   document.body.classList.add("cart-review-open");
 
    requestAnimationFrame(()=>{
      backdrop.classList.add("is-open");
@@ -6481,6 +6525,8 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
    drawer.classList.remove("is-open");
    backdrop.classList.remove("is-open");
+   backdrop.setAttribute("aria-hidden","true");
+   document.body.classList.remove("cart-review-open");
 
    setTimeout(()=>{
      backdrop.classList.add("hidden");
