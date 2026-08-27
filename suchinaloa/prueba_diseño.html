@@ -8,7 +8,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 
  <style>
  :root{
@@ -2628,7 +2629,7 @@ html.intro-lock body{
 }
 
 </style>
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 .add:disabled{
@@ -5725,6 +5726,10 @@ footer{background:#030303!important;color:#8f784d!important}
 }
 </style>
 
+
+<link rel="preload" as="image" href="img/imagen-07.jpg" fetchpriority="high">
+<link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+
 </head>
 <body>
 
@@ -6173,7 +6178,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
      <article class="product mock-product-card">
        <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
          ${p.photo
-           ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">`
+           ? `<img src="${p.photo}" alt="${p.name}" loading="lazy" decoding="async">`
            : ``}
        </div>
 
@@ -8042,15 +8047,37 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
 
   document.documentElement.classList.add("intro-lock");
 
-  // Precarga inmediata solo de las 4 fotos del intro.
-  slides.forEach(slide=>{
-    const bg = getComputedStyle(slide).getPropertyValue("--intro-bg");
-    const match = bg.match(/url\(["']?(.*?)["']?\)/);
-    if(match && match[1]){
-      const img = new Image();
-      img.src = match[1];
-    }
-  });
+  function slideUrl(slide){
+    const inline = slide.getAttribute("style") || "";
+    const match = inline.match(/--intro-bg\s*:\s*url\(["']?(.*?)["']?\)/i);
+    return match ? match[1] : "";
+  }
+
+  // Solo la primera foto es prioritaria.
+  // Las otras se descargan una por una, sin competir todas al mismo tiempo.
+  const introUrls = slides.map(slideUrl).filter(Boolean);
+
+  function preloadSequential(index=1){
+    if(index >= introUrls.length || finished) return;
+
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = img.onerror = ()=>{
+      setTimeout(()=>preloadSequential(index + 1), 40);
+    };
+    img.src = introUrls[index];
+  }
+
+  if(introUrls[0]){
+    const first = new Image();
+    first.decoding = "async";
+    first.onload = first.onerror = ()=>{
+      setTimeout(()=>preloadSequential(1), 80);
+    };
+    first.src = introUrls[0];
+  }else{
+    preloadSequential(1);
+  }
 
   function paint(){
     slides.forEach((slide,i)=>{
@@ -8097,8 +8124,9 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
   paint();
   timer = setTimeout(next,SLIDE_MS);
 
-  // Fallback: jamás bloquear la página.
-  setTimeout(finish,9000);
+  // Seguridad: si algún recurso externo falla, la intro nunca deja
+  // bloqueada la página indefinidamente.
+  setTimeout(finish,8000);
 })();
 </script>
 
@@ -8120,13 +8148,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "img/imagen-11.jpg"
   ];
 
-  function preloadPhotos(list){
-    list.forEach(function(src){
-      const img = new Image();
-      img.src = src;
-    });
-  }
-
   function startRotator(elementId, photos, intervalMs){
     const element = document.getElementById(elementId);
     if(!element || !photos || photos.length < 2) return;
@@ -8137,27 +8158,36 @@ document.addEventListener("DOMContentLoaded", function () {
       index = (index + 1) % photos.length;
       const nextSrc = photos[index];
 
-      element.classList.add("photo-out");
+      // Se carga únicamente la siguiente foto cuando realmente se necesita.
+      const loader = new Image();
+      loader.decoding = "async";
 
-      setTimeout(function(){
-        element.src = nextSrc;
-        element.classList.add("photo-in");
-        element.classList.remove("photo-out");
+      loader.onload = function(){
+        element.classList.add("photo-out");
 
         setTimeout(function(){
-          element.classList.remove("photo-in");
-        }, 900);
-      }, 520);
+          element.src = nextSrc;
+          element.classList.add("photo-in");
+          element.classList.remove("photo-out");
+
+          setTimeout(function(){
+            element.classList.remove("photo-in");
+          }, 900);
+        }, 520);
+      };
+
+      loader.src = nextSrc;
     }, intervalMs);
   }
 
-  preloadPhotos(heroPhotos.concat(aboutPhotos));
-
-  startRotator("heroRotatingImage", heroPhotos, 5600);
+  // Esperar a que la intro termine de competir por la red.
+  setTimeout(function(){
+    startRotator("heroRotatingImage", heroPhotos, 5600);
+  }, 7600);
 
   setTimeout(function(){
     startRotator("aboutRotatingImage", aboutPhotos, 6800);
-  }, 1700);
+  }, 9300);
 });
 </script>
 
