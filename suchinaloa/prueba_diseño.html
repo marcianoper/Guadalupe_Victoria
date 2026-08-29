@@ -2629,7 +2629,7 @@ html.intro-lock body{
 }
 
 </style>
- <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 .add:disabled{
@@ -5876,7 +5876,7 @@ footer{background:#030303!important;color:#8f784d!important}
  </section>
  </main>
 
- <button class="mobile-cart" id="mobileCart" onclick="openCheckout()" aria-label="Ver pedido">
+ <button class="mobile-cart" id="mobileCart" onclick="openCartReview()" aria-label="Ver pedido">
  <span class="mobile-cart-left">
  <span class="mobile-cart-icon">🛍️</span>
  <span class="mobile-cart-copy">
@@ -5893,6 +5893,43 @@ footer{background:#030303!important;color:#8f784d!important}
  <span class="mobile-cart-badge" id="mobileCount">0</span>
  <span class="mobile-cart-total" id="mobileTotal">$0</span>
  </button>
+
+
+
+<!-- =========================================================
+     CARRITO LATERAL · ESTRUCTURA REQUERIDA POR openCartReview()
+     ========================================================= -->
+<div
+  id="cartReviewOverlay"
+  class="cart-drawer-backdrop hidden"
+  onclick="handleCartBackdrop(event)"
+  aria-hidden="true"
+>
+  <aside
+    id="cartDrawer"
+    class="cart-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cartDrawerTitle"
+  >
+    <div class="cart-drawer-head">
+      <div>
+        <span class="cart-drawer-kicker">TU PEDIDO</span>
+        <h2 id="cartDrawerTitle">Revisa tu carrito</h2>
+        <small>Confirma productos y cantidades antes de continuar.</small>
+      </div>
+
+      <button
+        type="button"
+        class="cart-drawer-close"
+        onclick="closeCartReview()"
+        aria-label="Cerrar carrito"
+      >×</button>
+    </div>
+
+    <div id="cartReviewBody" class="cart-drawer-body"></div>
+  </aside>
+</div>
 
  <div class="overlay hidden" id="checkoutOverlay">
  <div class="modal">
@@ -6033,7 +6070,59 @@ footer{background:#030303!important;color:#8f784d!important}
  <script src="config.js"></script>
 
 <script>
- let TIEMPO_ESPERA = "40–50 min";
+/* CIERRE TEMPORAL DE PEDIDOS · SOLO 26/08/2026
+   Mañana la página vuelve automáticamente a su funcionamiento normal. */
+(function(){
+  const AHORA = new Date();
+  const PEDIDOS_CERRADOS_HOY = 
+    AHORA.getFullYear() === 2026 &&
+    AHORA.getMonth() === 7 &&
+    AHORA.getDate() === 26;
+
+  window.SUCHINALOA_PEDIDOS_CERRADOS_HOY = PEDIDOS_CERRADOS_HOY;
+
+  function aplicarCierre(){
+    if(!PEDIDOS_CERRADOS_HOY) return;
+
+    // Mensaje superior
+    const statusText = document.querySelector(".status-text");
+    const statusDot = document.querySelector(".status-dot");
+    if(statusText){
+      statusText.innerHTML = "<strong>Pedidos cerrados por hoy</strong> · Mañana volvemos a recibir pedidos.";
+    }
+    if(statusDot) statusDot.style.background = "#e52b2b";
+
+    // Desactivar botones de agregar sin ocultar el menú.
+    document.querySelectorAll(".add").forEach(btn=>{
+      btn.disabled = true;
+      btn.textContent = "CERRADO";
+      btn.style.opacity = ".55";
+      btn.style.cursor = "not-allowed";
+    });
+
+    // Desactivar accesos para continuar pedido.
+    document.querySelectorAll(".hero-order-btn, .cart-float button, .cart-float .cart-action").forEach(btn=>{
+      btn.style.pointerEvents = "none";
+      btn.style.opacity = ".55";
+    });
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", aplicarCierre);
+  }else{
+    aplicarCierre();
+  }
+
+  // Los productos se renderizan por JS; reaplicamos después de su render.
+  setTimeout(aplicarCierre, 350);
+  setTimeout(aplicarCierre, 1300);
+  window.addEventListener("load", aplicarCierre);
+})();
+</script>
+
+
+<script>
+ let TIEMPO_ESPERA = "15 min";
 let ULTIMA_CARGA_COCINA = null;
 let ULTIMO_CALCULO_ESPERA = null;
  const products = [
@@ -6139,10 +6228,9 @@ const MERCADOPAGO_SERVER_URL = "https://variable-seldom-prevail.ngrok-free.dev";
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
 
- const supabaseClient = window.supabase.createClient(
- SUPABASE_URL,
- SUPABASE_ANON_KEY
- );
+ const supabaseClient = window.supabase?.createClient
+ ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+ : null;
 
  function money(value){
  return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(value);
@@ -6215,6 +6303,10 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  }
 
  function addToCart(id){
+ if(window.SUCHINALOA_PEDIDOS_CERRADOS_HOY){
+   alert("Los pedidos están cerrados por hoy. Mañana volvemos a recibir pedidos.");
+   return;
+ }
  const found = cart.find(i=>i.id===id);
  if(found) found.qty++;
  else cart.push({id,qty:1});
@@ -6411,7 +6503,14 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    const backdrop = document.getElementById("cartReviewOverlay");
    const drawer = document.getElementById("cartDrawer");
 
+   if(!backdrop || !drawer){
+     console.error("Carrito: faltan cartReviewOverlay o cartDrawer.");
+     return;
+   }
+
    backdrop.classList.remove("hidden");
+   backdrop.setAttribute("aria-hidden","false");
+   document.body.classList.add("cart-review-open");
 
    requestAnimationFrame(()=>{
      backdrop.classList.add("is-open");
@@ -6426,6 +6525,8 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
    drawer.classList.remove("is-open");
    backdrop.classList.remove("is-open");
+   backdrop.setAttribute("aria-hidden","true");
+   document.body.classList.remove("cart-review-open");
 
    setTimeout(()=>{
      backdrop.classList.add("hidden");
@@ -7130,6 +7231,71 @@ ${document.getElementById("kitchenTicket").innerHTML}
    if(lngInput) lngInput.value = "";
  }
 
+ async function geocodificarDireccionManual(address, neighborhood, zip){
+   // Geocodificación segura: primero convertimos la dirección escrita a coordenadas
+   // y sólo aceptamos resultados suficientemente precisos dentro de Irapuato.
+   const full = [
+     address,
+     neighborhood ? `Col. ${neighborhood}` : "",
+     zip ? `C.P. ${zip}` : "",
+     "Irapuato, Guanajuato, México"
+   ].filter(Boolean).join(", ");
+
+   const url = new URL("https://nominatim.openstreetmap.org/search");
+   url.searchParams.set("format","jsonv2");
+   url.searchParams.set("q",full);
+   url.searchParams.set("addressdetails","1");
+   url.searchParams.set("limit","5");
+   url.searchParams.set("countrycodes","mx");
+   url.searchParams.set("accept-language","es");
+
+   const response = await fetch(url.toString(), {headers:{"Accept":"application/json"}});
+   if(!response.ok) throw new Error("No se pudo verificar la dirección escrita.");
+
+   const results = await response.json();
+   if(!Array.isArray(results) || !results.length){
+     throw new Error("No encontramos esa dirección con precisión. Usa “Usar mi ubicación actual”.");
+   }
+
+   const norm = v => String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+   const wantedNumber = (String(address).match(/\b\d+[a-zA-Z-]*\b/g) || []).pop() || "";
+   const wantedZip = String(zip || "").trim();
+   const wantedNeighborhood = norm(neighborhood);
+
+   const ranked = results.map(r=>{
+     const a = r.address || {};
+     const cityText = norm([a.city,a.town,a.municipality,a.county,a.state_district].filter(Boolean).join(" "));
+     const resultNeighborhood = norm([a.neighbourhood,a.suburb,a.quarter,a.city_district,a.residential].filter(Boolean).join(" "));
+     const house = String(a.house_number || "").trim();
+     const postcode = String(a.postcode || "").trim();
+     let score = 0;
+     if(cityText.includes("irapuato") || norm(r.display_name).includes("irapuato")) score += 5;
+     if(wantedNumber && house && norm(house) === norm(wantedNumber)) score += 5;
+     if(wantedZip && postcode === wantedZip) score += 3;
+     if(wantedNeighborhood && resultNeighborhood && (resultNeighborhood.includes(wantedNeighborhood) || wantedNeighborhood.includes(resultNeighborhood))) score += 2;
+     return {r,a,score,house,postcode,cityText};
+   }).sort((x,y)=>y.score-x.score);
+
+   const best = ranked[0];
+   const inIrapuato = best && (best.cityText.includes("irapuato") || norm(best.r.display_name).includes("irapuato"));
+   const exactNumber = !wantedNumber || (best.house && norm(best.house) === norm(wantedNumber));
+   const exactZip = !wantedZip || !best.postcode || best.postcode === wantedZip;
+
+   // Si el usuario escribió número exterior, no aceptamos un resultado que sólo
+   // represente la calle, colonia o C.P.; eso era lo que podía producir cobros erróneos.
+   if(!best || !inIrapuato || !exactNumber || !exactZip || best.score < (wantedNumber ? 10 : 7)){
+     throw new Error("No pudimos confirmar el domicilio exacto (calle y número). Usa “Usar mi ubicación actual” para evitar calcular el envío desde un punto aproximado.");
+   }
+
+   const lat = Number(best.r.lat);
+   const lng = Number(best.r.lon);
+   if(!Number.isFinite(lat) || !Number.isFinite(lng)){
+     throw new Error("La dirección encontrada no devolvió coordenadas válidas.");
+   }
+
+   return {lat,lng,displayName:best.r.display_name};
+ }
+
  async function calcularUbicacionManual(){
    const form = document.getElementById("checkoutForm");
    const status = document.getElementById("locationStatus");
@@ -7174,17 +7340,23 @@ ${document.getElementById("kitchenTicket").innerHTML}
        const neighborhood = String(fd.get("neighborhood") || "").trim();
        const zip = String(fd.get("zip") || "").trim();
 
-       if(!address && !neighborhood && !zip){
-         throw new Error("Captura calle y número, colonia y/o código postal antes de calcular.");
+       if(!address || !neighborhood || !zip){
+         throw new Error("Captura calle y número, colonia y código postal antes de calcular.");
        }
 
+       if(status) status.textContent = "Verificando que la dirección sea exacta...";
+       const verified = await geocodificarDireccionManual(address, neighborhood, zip);
+       if(latInput) latInput.value = verified.lat;
+       if(lngInput) lngInput.value = verified.lng;
+       if(locationInput) locationInput.value = `https://www.google.com/maps?q=${verified.lat},${verified.lng}`;
+
        destination = {
-         address:[
-           address,
-           neighborhood ? `Col. ${neighborhood}` : "",
-           zip ? `C.P. ${zip}` : "",
-           "Irapuato, Guanajuato, México"
-         ].filter(Boolean).join(", ")
+         location:{
+           latLng:{
+             latitude:verified.lat,
+             longitude:verified.lng
+           }
+         }
        };
      }
 
@@ -7268,62 +7440,123 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const lngInput = document.getElementById("longitudeInput");
 
  if(!navigator.geolocation){
- if(status) status.textContent = "Este dispositivo no permite obtener ubicación automáticamente.";
- return;
+   if(status) status.textContent = "Este dispositivo no permite obtener ubicación automáticamente.";
+   return;
  }
 
- if(status) status.textContent = "Obteniendo ubicación y dirección...";
+ // No reutilizar una ubicación anterior mientras buscamos una nueva.
+ limpiarCoordenadasAutomaticas();
+ if(input) input.value = "";
+ deliveryQuote = {distanceKm:null,cost:null,loading:false,outOfCoverage:false};
+ mostrarTarifaEnvio();
 
- navigator.geolocation.getCurrentPosition(
- async position => {
- const lat = position.coords.latitude;
- const lng = position.coords.longitude;
- const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+ const PRECISION_IDEAL_M = 60;
+ const PRECISION_MAXIMA_M = 120;
+ const TIEMPO_MAXIMO_MS = 20000;
+ let mejorPosicion = null;
+ let terminado = false;
+ let watchId = null;
 
- if(input) input.value = mapsUrl;
- if(latInput) latInput.value = lat;
- if(lngInput) lngInput.value = lng;
+ const finalizar = async () => {
+   if(terminado) return;
+   terminado = true;
+   if(watchId !== null) navigator.geolocation.clearWatch(watchId);
 
- if(status) status.textContent = "Ubicación obtenida. Buscando dirección...";
-
- await completarDireccionDesdeCoordenadas(lat, lng);
-
- try{
-   await calcularTarifaEnvio({
-     location:{
-       latLng:{
-         latitude:lat,
-         longitude:lng
-       }
+   if(!mejorPosicion){
+     if(status){
+       status.textContent = mostrarError
+         ? "No se pudo obtener tu ubicación. Activa la ubicación precisa del teléfono o usa “Calcular con dirección escrita”."
+         : "Ubicación no disponible. Puedes calcular con tu dirección escrita.";
      }
-   });
-
-   if(status && Number.isFinite(deliveryQuote.cost)){
-     status.textContent = `✓ Ubicación lista · ${deliveryQuote.distanceKm.toFixed(1)} km · A pagar al moto envío ${money(deliveryQuote.cost)}`;
-   }else if(status && deliveryQuote.outOfCoverage){
-     // En computadoras de escritorio la geolocalización del navegador puede
-     // devolver la ubicación aproximada del proveedor de internet.
-     // Si sale fuera de cobertura, no conservamos esas coordenadas para que
-     // el cliente pueda calcular con su dirección real escrita.
-     limpiarCoordenadasAutomaticas();
-     status.textContent = `La ubicación automática marcó ${deliveryQuote.distanceKm.toFixed(1)} km y parece incorrecta o fuera de cobertura. Usa “Calcular con dirección escrita” para continuar.`;
+     return;
    }
- }catch(error){
-   console.warn("Tarifa de envío:", error);
- }
- },
- error => {
- if(status){
- status.textContent = mostrarError
- ? "No se pudo obtener la ubicación. Revisa el permiso de ubicación o captura los datos manualmente."
- : "Ubicación no autorizada. Puedes capturarla manualmente.";
- }
- console.warn("Geolocalización:", error);
- },
- {enableHighAccuracy:true, timeout:15000, maximumAge:0}
- );
- }
 
+   const accuracy = Number(mejorPosicion.coords.accuracy);
+
+   // Rechazar coordenadas aproximadas de red/Wi-Fi/antena.
+   if(!Number.isFinite(accuracy) || accuracy > PRECISION_MAXIMA_M){
+     limpiarCoordenadasAutomaticas();
+     if(input) input.value = "";
+     deliveryQuote = {distanceKm:null,cost:null,loading:false,outOfCoverage:false};
+     mostrarTarifaEnvio();
+
+     if(status){
+       status.textContent =
+         `⚠ La ubicación del teléfono es poco precisa (±${Math.round(accuracy || 0)} m). ` +
+         `Activa “Ubicación precisa” y vuelve a intentar, o usa “Calcular con dirección escrita”.`;
+     }
+     return;
+   }
+
+   const lat = mejorPosicion.coords.latitude;
+   const lng = mejorPosicion.coords.longitude;
+   const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+   if(input) input.value = mapsUrl;
+   if(latInput) latInput.value = lat;
+   if(lngInput) lngInput.value = lng;
+
+   if(status) status.textContent = `Ubicación GPS obtenida (±${Math.round(accuracy)} m). Buscando dirección...`;
+
+   await completarDireccionDesdeCoordenadas(lat, lng);
+
+   try{
+     await calcularTarifaEnvio({
+       location:{
+         latLng:{
+           latitude:lat,
+           longitude:lng
+         }
+       }
+     });
+
+     if(status && Number.isFinite(deliveryQuote.cost)){
+       status.textContent =
+         `✓ GPS preciso ±${Math.round(accuracy)} m · ${deliveryQuote.distanceKm.toFixed(1)} km · ` +
+         `A pagar al moto envío ${money(deliveryQuote.cost)}`;
+     }else if(status && deliveryQuote.outOfCoverage){
+       limpiarCoordenadasAutomaticas();
+       if(input) input.value = "";
+       status.textContent =
+         `La ubicación GPS marcó ${deliveryQuote.distanceKm.toFixed(1)} km y está fuera de cobertura. ` +
+         `Revisa la dirección o usa “Calcular con dirección escrita”.`;
+     }
+   }catch(error){
+     console.warn("Tarifa de envío:", error);
+   }
+ };
+
+ if(status) status.textContent = "Buscando GPS preciso… mantén la ubicación activada.";
+
+ watchId = navigator.geolocation.watchPosition(
+   position => {
+     const accuracy = Number(position.coords.accuracy);
+     if(!mejorPosicion || (Number.isFinite(accuracy) && accuracy < Number(mejorPosicion.coords.accuracy))){
+       mejorPosicion = position;
+     }
+
+     if(status && Number.isFinite(accuracy)){
+       status.textContent = `Buscando GPS preciso… precisión actual ±${Math.round(accuracy)} m`;
+     }
+
+     // Si ya logramos una lectura suficientemente buena, la usamos sin esperar más.
+     if(Number.isFinite(accuracy) && accuracy <= PRECISION_IDEAL_M){
+       finalizar();
+     }
+   },
+   error => {
+     console.warn("Geolocalización:", error);
+     // No terminamos de inmediato: si ya hubo alguna lectura, dejamos que
+     // el temporizador evalúe la mejor obtenida.
+     if(!mejorPosicion && status){
+       status.textContent = "Esperando una ubicación más precisa…";
+     }
+   },
+   {enableHighAccuracy:true, maximumAge:0, timeout:TIEMPO_MAXIMO_MS}
+ );
+
+ setTimeout(finalizar, TIEMPO_MAXIMO_MS);
+}
 
  function buildDeliveryMessage(order, data, orderItems, totals){
  const productsText = orderItems.map(item => {
@@ -7839,7 +8072,7 @@ ${document.getElementById("kitchenTicket").innerHTML}
  throw new Error(result.error || "No se pudo crear el pago.");
  }
 
- const checkoutUrl = result.sandbox_init_point || result.init_point;
+ const checkoutUrl = result.init_point;
  if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
 
  if(status){
@@ -8017,10 +8250,29 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
  });
 
  iniciarModoAdmin();
- checkoutFormOriginal = document.getElementById("checkoutContent").innerHTML;
- prepararUbicacionManual();
- renderProducts();
- renderCart();
+
+ const checkoutNode = document.getElementById("checkoutContent");
+ if(checkoutNode) checkoutFormOriginal = checkoutNode.innerHTML;
+
+ // PRIORIDAD: el menú debe aparecer aunque falle cualquier servicio externo.
+ try{
+   renderProducts("Todos");
+ }catch(error){
+   console.error("Error al renderizar productos:", error);
+ }
+
+ try{
+   renderCart();
+ }catch(error){
+   console.error("Error al renderizar carrito:", error);
+ }
+
+ // Ubicación se inicia después y no puede bloquear el menú.
+ try{
+   prepararUbicacionManual();
+ }catch(error){
+   console.warn("Ubicación no pudo iniciar:", error);
+ }
 
  // Al volver a abrir o recargar la página mostramos la tienda normal.
  // El carrito ya se recupera desde localStorage mediante loadCart().
@@ -8273,68 +8525,162 @@ document.addEventListener("DOMContentLoaded",()=>{actualizarEstadoHorario();setI
 </script>
 
 <script>
-const ESPERA_VENTANA_MIN = 75;
-const ESPERA_REFRESCO_MS = 60000;
+/* =========================================================
+   TIEMPO DE ESPERA POR COLA REAL ESTIMADA
+   - Un pedido sin cola: 15 min para salir del local.
+   - Cada pedido nuevo ocupa 5 min adicionales de producción.
+   - El tiempo transcurrido se descuenta automáticamente.
+   - No requiere marcar manualmente el pedido como entregado.
+   ========================================================= */
 
-function pesoPedidoPorAntiguedad(minutos){
-  if(minutos <= 20) return 1.00;
-  if(minutos <= 40) return 0.75;
-  if(minutos <= 60) return 0.45;
-  if(minutos <= 75) return 0.20;
-  return 0;
-}
-
-function rangoEsperaPorCarga(carga){
-  if(carga < 1.5) return {texto:"30–40 min", nivel:"normal"};
-  if(carga < 2.5) return {texto:"40–50 min", nivel:"normal"};
-  if(carga < 3.5) return {texto:"50–60 min", nivel:"busy"};
-  if(carga < 4.5) return {texto:"60–75 min", nivel:"busy"};
-  if(carga < 6.0) return {texto:"75–90 min", nivel:"very-busy"};
-  return {texto:"90–120 min", nivel:"very-busy"};
-}
+const ESPERA_BASE_MIN = 15;
+const ESPERA_POR_PEDIDO_MIN = 5;
+const ESPERA_VENTANA_MIN = 120;
+const ESPERA_REFRESCO_MS = 30000;
 
 function pedidoCuentaParaEspera(row){
-  const estadoPago=String(row.estado_pago||"").toLowerCase();
-  const mpStatus=String(row.mercado_pago_status||"").toLowerCase();
-  return estadoPago==="pagado" || estadoPago==="efectivo_al_recibir" || mpStatus==="approved";
+  const estadoPago = String(row.estado_pago || "").toLowerCase();
+  const mpStatus = String(row.mercado_pago_status || "").toLowerCase();
+
+  // Solo contamos pedidos que realmente llegaron a operación:
+  // tarjeta aprobada o efectivo al recibir.
+  return (
+    estadoPago === "pagado" ||
+    estadoPago === "efectivo_al_recibir" ||
+    mpStatus === "approved"
+  );
+}
+
+function minutosRestantesDeCola(pedidos, ahoraMs){
+  if(!pedidos.length) return ESPERA_BASE_MIN;
+
+  // Procesamos cronológicamente para reconstruir la cola.
+  const ordenados = pedidos
+    .map(row => ({
+      ...row,
+      creadoMs: new Date(row.created_at).getTime()
+    }))
+    .filter(row => Number.isFinite(row.creadoMs))
+    .sort((a,b) => a.creadoMs - b.creadoMs);
+
+  if(!ordenados.length) return ESPERA_BASE_MIN;
+
+  let salidaUltimoPedido = 0;
+
+  for(const pedido of ordenados){
+    /*
+      Si al entrar este pedido ya no había cola:
+        salida = hora de entrada + 15 min.
+
+      Si todavía había pedidos acumulados:
+        se coloca detrás del último y agrega 5 min.
+
+      Ejemplo:
+        6:00 -> sale 6:15
+        6:04 -> sale 6:20
+        6:08 -> sale 6:25
+        6:12 -> sale 6:30
+
+      A las 6:12 un pedido nuevo vería aprox.:
+        último sale 6:30 + 5 min para él = 23 min.
+    */
+    const salidaSinCola =
+      pedido.creadoMs + ESPERA_BASE_MIN * 60000;
+
+    if(salidaUltimoPedido > pedido.creadoMs){
+      salidaUltimoPedido += ESPERA_POR_PEDIDO_MIN * 60000;
+    }else{
+      salidaUltimoPedido = salidaSinCola;
+    }
+  }
+
+  // Tiempo para UN pedido nuevo que entra en este momento.
+  let salidaNuevoPedido;
+
+  if(salidaUltimoPedido > ahoraMs){
+    salidaNuevoPedido =
+      salidaUltimoPedido + ESPERA_POR_PEDIDO_MIN * 60000;
+  }else{
+    salidaNuevoPedido =
+      ahoraMs + ESPERA_BASE_MIN * 60000;
+  }
+
+  return Math.max(
+    ESPERA_BASE_MIN,
+    Math.ceil((salidaNuevoPedido - ahoraMs) / 60000)
+  );
+}
+
+function presentarTiempoEspera(minutos){
+  // Redondeamos hacia arriba a bloques de 5 para no mostrar falsa precisión.
+  const redondeado = Math.max(
+    ESPERA_BASE_MIN,
+    Math.ceil(minutos / 5) * 5
+  );
+
+  let nivel = "normal";
+  if(redondeado >= 30) nivel = "busy";
+  if(redondeado >= 45) nivel = "very-busy";
+
+  return {
+    minutos:redondeado,
+    texto:`${redondeado} min`,
+    nivel
+  };
 }
 
 async function calcularTiempoEsperaActual(){
-  const value=document.getElementById("waitTimeValue");
-  const bar=document.getElementById("waitTimeBar");
+  const value = document.getElementById("waitTimeValue");
+  const bar = document.getElementById("waitTimeBar");
+
+  if(!supabaseClient){
+    TIEMPO_ESPERA = "15 min";
+    if(value) value.textContent = TIEMPO_ESPERA;
+    return TIEMPO_ESPERA;
+  }
+
   try{
-    const desde=new Date(Date.now()-ESPERA_VENTANA_MIN*60*1000).toISOString();
-    const {data,error}=await supabaseClient
+    const desde = new Date(
+      Date.now() - ESPERA_VENTANA_MIN * 60 * 1000
+    ).toISOString();
+
+    const {data,error} = await supabaseClient
       .from("comandas_sushi")
       .select("pedido_id,created_at,estado_pago,mercado_pago_status")
       .gte("created_at",desde)
-      .order("created_at",{ascending:false});
+      .order("created_at",{ascending:true});
+
     if(error) throw error;
 
-    const ahora=Date.now();
-    const pedidos=(data||[]).filter(pedidoCuentaParaEspera);
-    let carga=0;
-    pedidos.forEach(row=>{
-      const creado=new Date(row.created_at).getTime();
-      if(!Number.isFinite(creado)) return;
-      carga+=pesoPedidoPorAntiguedad(Math.max(0,(ahora-creado)/60000));
-    });
+    const ahora = Date.now();
+    const pedidos = (data || []).filter(pedidoCuentaParaEspera);
 
-    const rango=rangoEsperaPorCarga(carga);
-    TIEMPO_ESPERA=rango.texto;
-    ULTIMA_CARGA_COCINA=carga;
-    ULTIMO_CALCULO_ESPERA=new Date();
+    const minutos = minutosRestantesDeCola(pedidos, ahora);
+    const resultado = presentarTiempoEspera(minutos);
 
-    if(value) value.textContent=rango.texto;
+    TIEMPO_ESPERA = resultado.texto;
+    ULTIMA_CARGA_COCINA = pedidos.length;
+    ULTIMO_CALCULO_ESPERA = new Date();
+
+    if(value) value.textContent = resultado.texto;
+
     if(bar){
       bar.classList.remove("busy","very-busy");
-      if(rango.nivel!=="normal") bar.classList.add(rango.nivel);
+      if(resultado.nivel !== "normal"){
+        bar.classList.add(resultado.nivel);
+      }
     }
-    return rango.texto;
+
+    return resultado.texto;
+
   }catch(error){
     console.warn("No se pudo calcular el tiempo de espera:",error);
-    TIEMPO_ESPERA="40–50 min";
-    if(value) value.textContent=TIEMPO_ESPERA;
+
+    // Si Supabase falla, no castigamos al cliente con una estimación enorme.
+    // Mostramos el tiempo base conocido.
+    TIEMPO_ESPERA = "15 min";
+    if(value) value.textContent = TIEMPO_ESPERA;
+
     return TIEMPO_ESPERA;
   }
 }
@@ -8343,6 +8689,30 @@ document.addEventListener("DOMContentLoaded",function(){
   calcularTiempoEsperaActual();
   setInterval(calcularTiempoEsperaActual,ESPERA_REFRESCO_MS);
 });
+</script>
+
+
+<script>
+(function(){
+  function asegurarMenu(){
+    const nodo = document.getElementById("products");
+    if(!nodo) return;
+
+    if(nodo.children.length === 0 && typeof renderProducts === "function"){
+      try{ renderProducts("Todos"); }
+      catch(error){ console.error("Reintento menú:", error); }
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", asegurarMenu, {once:true});
+  }else{
+    asegurarMenu();
+  }
+
+  setTimeout(asegurarMenu, 300);
+  setTimeout(asegurarMenu, 1200);
+})();
 </script>
 
 </body>
