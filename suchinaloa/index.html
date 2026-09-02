@@ -6655,40 +6655,70 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  const now=new Date();
 
  const lines=cart.map(item=>{
- const p=products.find(x=>x.id===item.id);
- return `<div style="margin:10px 0"><b style="font-size:16px">${item.qty} x ${p.name}</b></div>`;
+   const p=products.find(x=>x.id===item.id);
+   const precioUnitario=Number(p?.price || 0);
+   const importe=precioUnitario * Number(item.qty || 0);
+   return `
+   <div style="margin:9px 0">
+     <div style="font-size:16px;font-weight:900">${item.qty} x ${p?.name || "Producto"}</div>
+     <div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-top:2px">
+       <span>${money(precioUnitario)} c/u</span>
+       <b>${money(importe)}</b>
+     </div>
+   </div>`;
  }).join("");
 
  const metodo = data?.payment || "No especificado";
  const modalidad = data?.payment_scope || "todo";
 
+ const subtotal = Number(totals?.subtotal || 0);
+ const envio = Number(totals?.delivery || 0);
+ const total = Number(totals?.total || 0);
+
  let pagoTitulo = "";
  let pagoDetalle = "";
- let pagoTotal = "";
+ let montoTarjeta = 0;
+ let montoEfectivo = 0;
 
  if(metodo === "Efectivo"){
    pagoTitulo = "EFECTIVO";
-   pagoDetalle = `Alimentos + envío al recibir`;
-   pagoTotal = money(totals.total);
+   pagoDetalle = "PAGAR TODO AL RECIBIR";
+   montoEfectivo = total;
  }else if(modalidad === "todo"){
    pagoTitulo = "TARJETA / MERCADO PAGO";
-   pagoDetalle = `Alimentos + envío pagados`;
-   pagoTotal = money(totals.total);
+   pagoDetalle = "ALIMENTOS + ENVIO CON TARJETA";
+   montoTarjeta = total;
  }else{
    pagoTitulo = "TARJETA / MERCADO PAGO";
-   pagoDetalle = `Solo alimentos pagados`;
-   pagoTotal = money(totals.subtotal);
+   pagoDetalle = "ALIMENTOS CON TARJETA / ENVIO AL REPARTIDOR";
+   montoTarjeta = subtotal;
+   montoEfectivo = envio;
  }
 
- const envioDetalle = metodo === "Efectivo"
-   ? `Envío incluido en efectivo: ${money(totals.delivery)}`
+ const paymentRows = metodo === "Efectivo"
+   ? `
+     <div style="display:flex;justify-content:space-between;margin-top:4px">
+       <span>A COBRAR EN EFECTIVO</span><b>${money(montoEfectivo)}</b>
+     </div>`
    : modalidad === "todo"
-     ? `Envío pagado: ${money(totals.delivery)}`
-     : `Envío pendiente al repartidor: ${money(totals.delivery)}`;
+     ? `
+       <div style="display:flex;justify-content:space-between;margin-top:4px">
+         <span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b>
+       </div>
+       <div style="display:flex;justify-content:space-between;margin-top:3px">
+         <span>A COBRAR POR REPARTIDOR</span><b>${money(0)}</b>
+       </div>`
+     : `
+       <div style="display:flex;justify-content:space-between;margin-top:4px">
+         <span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b>
+       </div>
+       <div style="display:flex;justify-content:space-between;margin-top:3px">
+         <span>A COBRAR POR REPARTIDOR</span><b>${money(montoEfectivo)}</b>
+       </div>`;
 
  return `
  <div style="text-align:center;font-weight:900;font-size:19px">SUCHINALOA</div>
- <div style="text-align:center;margin-top:4px">COMANDA</div>
+ <div style="text-align:center;margin-top:4px">COMANDA / PEDIDO</div>
  <hr>
 
  <div style="text-align:center;font-size:22px;font-weight:900">${order}</div>
@@ -6696,22 +6726,34 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  <hr>
 
- <div style="
-   border:3px solid #000;
-   padding:8px 7px;
-   margin:8px 0 10px;
-   text-align:center;
- ">
-   <div style="font-size:13px;font-weight:900">FORMA DE PAGO</div>
-   <div style="font-size:20px;font-weight:900;margin-top:3px">${pagoTitulo}</div>
-   <div style="font-size:16px;font-weight:900;margin-top:3px">${pagoDetalle}</div>
-   <div style="font-size:18px;font-weight:900;margin-top:5px">PAGO: ${pagoTotal}</div>
-   <div style="font-size:14px;font-weight:800;margin-top:3px">${envioDetalle}</div>
- </div>
+ <div style="font-size:13px;font-weight:900;margin-bottom:4px">DETALLE DEL PEDIDO</div>
+ ${lines}
 
  <hr>
 
- ${lines}
+ <div style="font-size:15px;font-weight:900;margin-bottom:5px">TOTALES</div>
+ <div style="display:flex;justify-content:space-between;margin:3px 0">
+   <span>ALIMENTOS</span><b>${money(subtotal)}</b>
+ </div>
+ <div style="display:flex;justify-content:space-between;margin:3px 0">
+   <span>ENVIO</span><b>${money(envio)}</b>
+ </div>
+ <div style="display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:2px solid #000;font-size:19px;font-weight:900">
+   <span>TOTAL</span><span>${money(total)}</span>
+ </div>
+
+ <div style="
+   border:3px solid #000;
+   padding:8px 7px;
+   margin:10px 0;
+ ">
+   <div style="text-align:center;font-size:13px;font-weight:900">FORMA DE PAGO</div>
+   <div style="text-align:center;font-size:18px;font-weight:900;margin-top:3px">${pagoTitulo}</div>
+   <div style="text-align:center;font-size:13px;font-weight:900;margin-top:3px">${pagoDetalle}</div>
+   <div style="border-top:1px dashed #000;margin-top:6px;padding-top:4px">
+     ${paymentRows}
+   </div>
+ </div>
 
  <hr>
  <div><b>OBSERVACIONES:</b></div>
@@ -6720,7 +6762,6 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  <hr>
  <div style="text-align:center;font-weight:900">FIN DE COMANDA</div>`;
  }
-
  function printKitchenTicket(){
  window.print();
  }
