@@ -8493,8 +8493,8 @@ html,body{overflow-x:hidden!important;}
 <script>
 const SUCHINALOA_TIMEZONE = "America/Mexico_City";
 const PEDIDOS_INICIO_MIN = 13 * 60;
-const PEDIDOS_CIERRE_MIN = 19 * 60 + 30;
-const OPERACION_CIERRE_MIN = 20 * 60;
+const PEDIDOS_CIERRE_MIN = 21 * 60;
+const OPERACION_CIERRE_MIN = 21 * 60 + 30;
 function horaSuchinaloa(){const partes=new Intl.DateTimeFormat("es-MX",{timeZone:SUCHINALOA_TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const valor=tipo=>Number(partes.find(p=>p.type===tipo)?.value||0);return{hora:valor("hour"),minuto:valor("minute"),segundo:valor("second")};}
 function minutosActualesSuchinaloa(){const t=horaSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
 function horarioPedidosActivo(){const min=minutosActualesSuchinaloa();return min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;}
