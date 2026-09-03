@@ -6661,9 +6661,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    return `
    <div style="margin:9px 0">
      <div style="font-size:16px;font-weight:900">${item.qty} x ${p?.name || "Producto"}</div>
-     <div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-top:2px">
+     <div class="ticket-detail-price" style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-top:2px">
        <span>${money(precioUnitario)} c/u</span>
-       <b>${money(importe)}</b>
+       <b class="ticket-amount">${money(importe)}</b>
      </div>
    </div>`;
  }).join("");
@@ -6697,22 +6697,22 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  const paymentRows = metodo === "Efectivo"
    ? `
-     <div style="display:flex;justify-content:space-between;margin-top:4px">
+     <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:4px">
        <span>A COBRAR EN EFECTIVO</span><b>${money(montoEfectivo)}</b>
      </div>`
    : modalidad === "todo"
      ? `
-       <div style="display:flex;justify-content:space-between;margin-top:4px">
+       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:4px">
          <span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b>
        </div>
-       <div style="display:flex;justify-content:space-between;margin-top:3px">
+       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:3px">
          <span>A COBRAR POR REPARTIDOR</span><b>${money(0)}</b>
        </div>`
      : `
-       <div style="display:flex;justify-content:space-between;margin-top:4px">
+       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:4px">
          <span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b>
        </div>
-       <div style="display:flex;justify-content:space-between;margin-top:3px">
+       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:3px">
          <span>A COBRAR POR REPARTIDOR</span><b>${money(montoEfectivo)}</b>
        </div>`;
 
@@ -6732,13 +6732,13 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  <hr>
 
  <div style="font-size:15px;font-weight:900;margin-bottom:5px">TOTALES</div>
- <div style="display:flex;justify-content:space-between;margin:3px 0">
+ <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin:3px 0">
    <span>ALIMENTOS</span><b>${money(subtotal)}</b>
  </div>
- <div style="display:flex;justify-content:space-between;margin:3px 0">
+ <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin:3px 0">
    <span>ENVIO</span><b>${money(envio)}</b>
  </div>
- <div style="display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:2px solid #000;font-size:19px;font-weight:900">
+ <div class="ticket-money-row ticket-grand-total" style="display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:2px solid #000;font-size:19px;font-weight:900">
    <span>TOTAL</span><span>${money(total)}</span>
  </div>
 
@@ -6837,6 +6837,30 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  border:0!important;
  background:#fff!important
  }
+
+ /* Ajuste exclusivo de importes: evita que precios/totales se corten a la derecha */
+ .ticket-detail-price,.ticket-money-row{
+   display:flex!important;
+   justify-content:space-between!important;
+   align-items:flex-start!important;
+   gap:5px!important;
+   width:100%!important;
+   min-width:0!important;
+ }
+ .ticket-detail-price>span:first-child,.ticket-money-row>span:first-child{
+   flex:1 1 auto!important;
+   min-width:0!important;
+   overflow-wrap:anywhere!important;
+ }
+ .ticket-detail-price>.ticket-amount,.ticket-detail-price>b:last-child,
+ .ticket-money-row>b:last-child,.ticket-money-row>span:last-child{
+   flex:0 0 auto!important;
+   white-space:nowrap!important;
+   text-align:right!important;
+   font-size:13px!important;
+   max-width:42%!important;
+ }
+ .ticket-grand-total>span:last-child{font-size:16px!important;}
 </style>
 </head>
 <body>
@@ -7934,6 +7958,30 @@ Favor de confirmar quién toma el envío.`;
  html,body{margin:0;padding:0;width:80mm;background:#fff;color:#000;font-family:Arial,sans-serif}
  body{padding:2mm}
  .ticket,.kitchen-ticket{display:block!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;background:#fff!important}
+
+ /* Ajuste exclusivo de importes: evita que precios/totales se corten a la derecha */
+ .ticket-detail-price,.ticket-money-row{
+   display:flex!important;
+   justify-content:space-between!important;
+   align-items:flex-start!important;
+   gap:5px!important;
+   width:100%!important;
+   min-width:0!important;
+ }
+ .ticket-detail-price>span:first-child,.ticket-money-row>span:first-child{
+   flex:1 1 auto!important;
+   min-width:0!important;
+   overflow-wrap:anywhere!important;
+ }
+ .ticket-detail-price>.ticket-amount,.ticket-detail-price>b:last-child,
+ .ticket-money-row>b:last-child,.ticket-money-row>span:last-child{
+   flex:0 0 auto!important;
+   white-space:nowrap!important;
+   text-align:right!important;
+   font-size:13px!important;
+   max-width:42%!important;
+ }
+ .ticket-grand-total>span:last-child{font-size:16px!important;}
 </style>
 </head>
 <body>
