@@ -8542,13 +8542,65 @@ html,body{overflow-x:hidden!important;}
 const SUCHINALOA_TIMEZONE = "America/Mexico_City";
 const PEDIDOS_INICIO_MIN = 13 * 60;
 const PEDIDOS_CIERRE_MIN = 21 * 60;
-const OPERACION_CIERRE_MIN = 21 * 60 + 30;
-function horaSuchinaloa(){const partes=new Intl.DateTimeFormat("es-MX",{timeZone:SUCHINALOA_TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const valor=tipo=>Number(partes.find(p=>p.type===tipo)?.value||0);return{hora:valor("hour"),minuto:valor("minute"),segundo:valor("second")};}
-function minutosActualesSuchinaloa(){const t=horaSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
-function horarioPedidosActivo(){const min=minutosActualesSuchinaloa();return min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;}
-function estadoHorarioSuchinaloa(){const min=minutosActualesSuchinaloa();if(min<PEDIDOS_INICIO_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Recibimos pedidos hoy de 1:00 pm a 7:30 pm."};if(min<PEDIDOS_CIERRE_MIN)return{abierto:true,titulo:"Pedidos abiertos",texto:"Estamos recibiendo pedidos hasta las 9:00 pm."};if(min<OPERACION_CIERRE_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Ya cerramos pedidos por hoy. El servicio continúa hasta las 8:00 pm."};return{abierto:false,titulo:"Pedidos cerrados",texto:"Volvemos a recibir pedidos mañana a la 1:00 pm."};}
-function mostrarAvisoHorario(){const e=estadoHorarioSuchinaloa();alert(e.abierto?"Estamos recibiendo pedidos.":"En este momento no estamos recibiendo pedidos. Nuestro horario para ordenar es de 1:00 pm a 9:00 pm.");}
-function actualizarEstadoHorario(){const e=estadoHorarioSuchinaloa();const bar=document.getElementById("orderHoursBar"),title=document.getElementById("orderHoursTitle"),text=document.getElementById("orderHoursText");if(bar){bar.classList.toggle("is-open",e.abierto);bar.classList.toggle("is-closed",!e.abierto)}if(title)title.textContent=e.titulo;if(text)text.textContent=e.texto;document.body.classList.toggle("orders-closed",!e.abierto);document.querySelectorAll(".cart-review-continue,.checkout,.submit-order").forEach(btn=>{btn.disabled=!e.abierto;if(btn.classList.contains("cart-review-continue"))btn.title=e.abierto?"":"Pedidos disponibles de 1:00 pm a 7:30 pm";});}
+// 0=domingo, 1=lunes ... 6=sábado
+const PEDIDOS_DIAS_ACTIVOS = new Set([0,4,5,6]); // jueves, viernes, sábado y domingo
+
+function fechaHoraSuchinaloa(){
+  const partes=new Intl.DateTimeFormat("en-US",{
+    timeZone:SUCHINALOA_TIMEZONE,
+    weekday:"short",
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit",
+    hourCycle:"h23"
+  }).formatToParts(new Date());
+  const valor=tipo=>partes.find(p=>p.type===tipo)?.value||"";
+  const mapaDia={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  return{
+    dia:mapaDia[valor("weekday")],
+    hora:Number(valor("hour")||0),
+    minuto:Number(valor("minute")||0),
+    segundo:Number(valor("second")||0)
+  };
+}
+function minutosActualesSuchinaloa(){const t=fechaHoraSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
+function diaPedidosActivo(){return PEDIDOS_DIAS_ACTIVOS.has(fechaHoraSuchinaloa().dia);}
+function horarioPedidosActivo(){
+  const t=fechaHoraSuchinaloa();
+  const min=t.hora*60+t.minuto+(t.segundo/60);
+  return PEDIDOS_DIAS_ACTIVOS.has(t.dia)&&min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;
+}
+function estadoHorarioSuchinaloa(){
+  const t=fechaHoraSuchinaloa();
+  const min=t.hora*60+t.minuto+(t.segundo/60);
+
+  if(!PEDIDOS_DIAS_ACTIVOS.has(t.dia)){
+    return{abierto:false,titulo:"Pedidos cerrados",texto:"Recibimos pedidos de jueves a domingo, de 1:00 pm a 9:00 pm."};
+  }
+  if(min<PEDIDOS_INICIO_MIN){
+    return{abierto:false,titulo:"Pedidos cerrados",texto:"Hoy recibimos pedidos de 1:00 pm a 9:00 pm."};
+  }
+  if(min<PEDIDOS_CIERRE_MIN){
+    return{abierto:true,titulo:"Pedidos abiertos",texto:"Estamos recibiendo pedidos hasta las 9:00 pm."};
+  }
+  return{abierto:false,titulo:"Pedidos cerrados",texto:"Ya cerramos pedidos por hoy. Horario: jueves a domingo, de 1:00 pm a 9:00 pm."};
+}
+function mostrarAvisoHorario(){
+  const e=estadoHorarioSuchinaloa();
+  alert(e.abierto?"Estamos recibiendo pedidos.":"En este momento no estamos recibiendo pedidos. Nuestro horario para ordenar es de jueves a domingo, de 1:00 pm a 9:00 pm.");
+}
+function actualizarEstadoHorario(){
+  const e=estadoHorarioSuchinaloa();
+  const bar=document.getElementById("orderHoursBar"),title=document.getElementById("orderHoursTitle"),text=document.getElementById("orderHoursText");
+  if(bar){bar.classList.toggle("is-open",e.abierto);bar.classList.toggle("is-closed",!e.abierto)}
+  if(title)title.textContent=e.titulo;
+  if(text)text.textContent=e.texto;
+  document.body.classList.toggle("orders-closed",!e.abierto);
+  document.querySelectorAll(".cart-review-continue,.checkout,.submit-order").forEach(btn=>{
+    btn.disabled=!e.abierto;
+    if(btn.classList.contains("cart-review-continue"))btn.title=e.abierto?"":"Pedidos disponibles de jueves a domingo, de 1:00 pm a 9:00 pm";
+  });
+}
 document.addEventListener("DOMContentLoaded",()=>{actualizarEstadoHorario();setInterval(actualizarEstadoHorario,15000);});
 </script>
 
