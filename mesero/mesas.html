@@ -479,6 +479,19 @@ input:focus, select:focus{
   line-height:1.1;
 }
 .itemCard.added .itemName{ color:var(--green-dark); }
+.itemPrice{
+  margin-top:7px;
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:5px 9px;
+  background:#eef6ff;
+  border:1px solid rgba(21,101,192,.16);
+  color:#0b4f93;
+  font-size:14px;
+  font-weight:1000;
+}
+
 .itemDesc{
   margin-top:5px;
   font-size:12px;
@@ -1034,7 +1047,7 @@ try{
 /* =========================
    CATÁLOGO
    ========================= */
-const catalogo = [
+const catalogoInicial = [
   {id:"taco_tripa",      cat:"TACOS",              name:"Taco de Tripa",             price:38,  desc:"", requiereNota:false, cocina:true},
   {id:"taco_tripa_dorada",  cat:"TACOS",     name:"Taco de Tripa Dorada",             price:38,  desc:"", requiereNota:false, cocina:true},
   {id:"taco_pastor",     cat:"TACOS",              name:"Taco de Pastor",            price:28,  desc:"", requiereNota:false, cocina:true},
@@ -1145,7 +1158,10 @@ const catalogo = [
   {id:"pos_napolitano",  cat:"POSTRES",            name:"Napolitano",                price:60, desc:"", requiereNota:false, cocina:false},
 ];
 
-const CATS = ["TACOS","QUESADILLAS","BURRITOS","QUESADILLAS CHICAS","CHAROLAS","VOLCANES","BEBIDAS","BURRITOS CHICOS","POSTRES"];
+let catalogo = [...catalogoInicial];
+
+const CATS_INICIALES = ["TACOS","QUESADILLAS","BURRITOS","QUESADILLAS CHICAS","CHAROLAS","VOLCANES","BEBIDAS","BURRITOS CHICOS","POSTRES"];
+let CATS = [...CATS_INICIALES];
 const PLATOS = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
 const MESAS = ["Mesa 1","Mesa 2","Mesa 3","Mesa 4","Mesa 5"];
 const CARRITOS = ["Carrito 1","Carrito 2","Carrito 3","Carrito 4","Carrito 5"];
@@ -1581,6 +1597,84 @@ async function syncComandaToSupabase(){
 }
 
 /* =========================
+   CATÁLOGO CENTRAL
+   ========================= */
+let catalogoChannel = null;
+
+function mapCatalogRow(row){
+  return {
+    id: String(row.id || "").trim(),
+    cat: String(row.categoria || "OTROS").trim().toUpperCase(),
+    name: String(row.nombre || "Producto").trim(),
+    price: Number(row.precio || 0),
+    desc: String(row.descripcion || ""),
+    requiereNota: !!row.requiere_nota,
+    cocina: row.cocina !== false,
+    bebidaConPresentacion: !!row.bebida_con_presentacion
+  };
+}
+
+async function cargarCatalogoProductos({ silencioso=false } = {}){
+  if(!supabaseReady) return false;
+
+  try{
+    const { data, error } = await supabase
+      .from("catalogo_productos")
+      .select("id,categoria,nombre,precio,descripcion,requiere_nota,cocina,bebida_con_presentacion,activo,orden,updated_at")
+      .eq("activo", true)
+      .order("orden", { ascending:true })
+      .order("nombre", { ascending:true });
+
+    if(error) throw error;
+    if(!Array.isArray(data) || !data.length){
+      if(!silencioso) console.warn("Catálogo central vacío; se mantiene el catálogo incluido en el archivo.");
+      return false;
+    }
+
+    catalogo = data.map(mapCatalogRow).filter(x => x.id && x.name);
+    const categorias = [...new Set(catalogo.map(x => x.cat).filter(Boolean))];
+    const categoriasBase = CATS_INICIALES.filter(c => categorias.includes(c));
+    const categoriasNuevas = categorias.filter(c => !CATS_INICIALES.includes(c));
+    CATS = categorias.length ? [...categoriasBase, ...categoriasNuevas] : [...CATS_INICIALES];
+
+    if(!CATS.includes(activeCat)) activeCat = CATS[0] || "TACOS";
+    renderCats();
+    renderItems();
+    return true;
+  }catch(err){
+    console.warn("No se pudo cargar catalogo_productos; se usa el catálogo local.", err);
+    if(!silencioso){
+      setSyncStatus("Comandas conectadas; catálogo central pendiente de instalar", "warn");
+    }
+    return false;
+  }
+}
+
+function iniciarCatalogoRealtime(){
+  if(!supabaseReady || catalogoChannel) return;
+  try{
+    catalogoChannel = supabase
+      .channel("catalogo-productos-cambios")
+      .on("postgres_changes", { event:"*", schema:"public", table:"catalogo_productos" }, ()=>{
+        cargarCatalogoProductos({ silencioso:true });
+      })
+      .subscribe();
+  }catch(err){
+    console.warn("Realtime de catálogo no disponible:", err);
+  }
+}
+
+function formatPrecio(value){
+  const n = Number(value || 0);
+  return new Intl.NumberFormat("es-MX", {
+    style:"currency",
+    currency:"MXN",
+    minimumFractionDigits: n % 1 ? 2 : 0,
+    maximumFractionDigits: 2
+  }).format(n);
+}
+
+/* =========================
    UI
    ========================= */
 function selectUbicacion(ubicacion){
@@ -1738,6 +1832,7 @@ function renderItems(){
     card.innerHTML = `
       <button type="button" class="itemMain">
         <div class="itemName">${escapeHtml(item.name)}</div>
+        <div class="itemPrice">${escapeHtml(formatPrecio(item.price))}</div>
         ${item.desc ? `<div class="itemDesc">${escapeHtml(item.desc)}</div>` : ``}
         ${lastCfg ? `<div class="itemLastCfg">Última config: ${escapeHtml(lastCfg)}</div>` : ``}
       </button>
@@ -2650,6 +2745,13 @@ updateContinueButton();
 
 if(supabaseReady){
   setSyncStatus("Supabase conectado. Listo para guardar comandas.", "ok");
+  cargarCatalogoProductos().then(ok=>{
+    if(ok) iniciarCatalogoRealtime();
+  });
+
+  window.addEventListener("focus", ()=>{
+    cargarCatalogoProductos({ silencioso:true });
+  });
 }else{
   setSyncStatus("Supabase pendiente de configurar", "warn");
 }
