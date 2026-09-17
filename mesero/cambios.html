@@ -47,7 +47,15 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--
   <div class="modalHead"><div class="modalTitle">Nuevo producto</div><button class="x" data-close="newBackdrop">×</button></div>
   <div class="modalBody">
     <div class="field"><label class="label">1. Nombre</label><input class="input" id="newName" placeholder="Ej. Taco de suadero"></div>
-    <div class="field"><label class="label">2. Categoría</label><div class="choiceGrid" id="newCats"></div><input class="input" id="newCatOther" placeholder="Otra categoría" style="margin-top:8px;display:none"></div>
+    <div class="field">
+      <label class="label">2. Categoría</label>
+      <div class="choiceGrid" id="newCats"></div>
+      <div id="newCatBox" style="display:none;margin-top:10px;padding:12px;border:2px solid #cfe0ef;border-radius:16px;background:#f6fbff">
+        <label class="label" style="color:#0e568f">Nombre de la categoría nueva</label>
+        <input class="input" id="newCatOther" placeholder="Ej. TACOS CHICOS" autocomplete="off">
+        <div style="font-size:12px;color:#64748b;font-weight:800;margin-top:7px;line-height:1.35">Se crea automáticamente al guardar este producto y después aparecerá como opción para los siguientes.</div>
+      </div>
+    </div>
     <div class="field"><label class="label">3. Precio</label><input class="input bigPrice" id="newPrice" type="number" min="0" step="1" inputmode="decimal" placeholder="$0"></div>
     <div class="advanced"><button class="advToggle" id="advToggle">⚙️ Más opciones</button><div class="advBox" id="advBox">
       <label class="checkrow"><input type="checkbox" id="newKitchen" checked> Se imprime en cocina</label>
@@ -80,9 +88,36 @@ function renderList(){const q=$('search').value.trim().toLowerCase();const rows=
 function openPrice(id){const p=products.find(x=>x.id===id);if(!p)return;editing=p;$('priceTitle').textContent=p.nombre;$('currentPrice').textContent=`Precio actual: ${money(p.precio)}`;$('priceInput').value=Number(p.precio||0);$('hideBtn').textContent=p.activo===false?'Volver a mostrar este producto':'Ocultar este producto';$('hideBtn').style.background=p.activo===false?'#eaf8ee':'#fff1f1';$('hideBtn').style.color=p.activo===false?'#236738':'#9d2020';open('priceBackdrop');setTimeout(()=>$('priceInput').select(),80)}
 async function savePrice(){if(!editing)return;const price=Number($('priceInput').value);if(!Number.isFinite(price)||price<0)return alert('Escribe un precio válido.');const {error}=await sb.from('catalogo_productos').update({precio:price}).eq('id',editing.id);if(error)return alert('No se pudo guardar: '+error.message);close('priceBackdrop');toast('Precio guardado');editing=null;await loadProducts()}
 async function toggleEditing(){if(!editing)return;const next=editing.activo===false;const text=next?'¿Volver a mostrar este producto en Mesas?':'¿Ocultar este producto de Mesas?';if(!confirm(text))return;const {error}=await sb.from('catalogo_productos').update({activo:next}).eq('id',editing.id);if(error)return alert('No se pudo guardar: '+error.message);close('priceBackdrop');toast(next?'Producto visible':'Producto oculto');editing=null;await loadProducts()}
-function openNew(){$('newName').value='';$('newPrice').value='';$('newCatOther').value='';$('newCatOther').style.display='none';$('newKitchen').checked=true;$('newNote').checked=false;$('advBox').classList.remove('show');newCat='';renderNewCats();open('newBackdrop')}
-function renderNewCats(){const cats=categories().filter(Boolean);$('newCats').innerHTML=cats.map(c=>`<button type="button" class="choice ${newCat===c?'active':''}" data-newcat="${esc(c)}">${esc(c)}</button>`).join('')+`<button type="button" class="choice ${newCat==='OTRA'?'active':''}" data-newcat="OTRA">OTRA</button>`;document.querySelectorAll('[data-newcat]').forEach(b=>b.onclick=()=>{newCat=b.dataset.newcat;$('newCatOther').style.display=newCat==='OTRA'?'block':'none';const kitchenDefault=!['BEBIDAS','POSTRES'].includes(newCat);$('newKitchen').checked=kitchenDefault;renderNewCats()})}
-async function saveNew(){const name=$('newName').value.trim();const cat=(newCat==='OTRA'?$('newCatOther').value.trim():newCat).toUpperCase();const price=Number($('newPrice').value);if(!name)return alert('Escribe el nombre del producto.');if(!cat)return alert('Selecciona una categoría.');if(!Number.isFinite(price)||price<0)return alert('Escribe un precio válido.');const maxOrder=products.reduce((m,p)=>Math.max(m,Number(p.orden||0)),0);const payload={id:`${slug(name)}_${Date.now().toString(36)}`,categoria:cat,nombre:name,precio:price,descripcion:'',requiere_nota:$('newNote').checked,cocina:$('newKitchen').checked,activo:true,orden:maxOrder+10,bebida_con_presentacion:false};const {error}=await sb.from('catalogo_productos').insert(payload);if(error)return alert('No se pudo guardar: '+error.message);close('newBackdrop');toast('Producto agregado');await loadProducts()}
+function openNew(){$('newName').value='';$('newPrice').value='';$('newCatOther').value='';$('newCatBox').style.display='none';$('newKitchen').checked=true;$('newNote').checked=false;$('advBox').classList.remove('show');newCat='';renderNewCats();open('newBackdrop')}
+function renderNewCats(){
+  const cats=categories().filter(Boolean);
+  $('newCats').innerHTML=cats.map(c=>`<button type="button" class="choice ${newCat===c?'active':''}" data-newcat="${esc(c)}">${esc(c)}</button>`).join('')+`<button type="button" class="choice ${newCat==='__NUEVA__'?'active':''}" data-newcat="__NUEVA__" style="grid-column:1/-1;background:${newCat==='__NUEVA__'?'#eaf8ee':'#f4fff7'};border-color:${newCat==='__NUEVA__'?'#237a3b':'#b9dfc3'};color:#236738">＋ CREAR CATEGORÍA NUEVA</button>`;
+  document.querySelectorAll('[data-newcat]').forEach(b=>b.onclick=()=>{
+    newCat=b.dataset.newcat;
+    const isNew=newCat==='__NUEVA__';
+    $('newCatBox').style.display=isNew?'block':'none';
+    const kitchenDefault=!['BEBIDAS','POSTRES'].includes(newCat);
+    $('newKitchen').checked=kitchenDefault;
+    renderNewCats();
+    if(isNew)setTimeout(()=>$('newCatOther').focus(),60);
+  });
+}
+async function saveNew(){
+  const name=$('newName').value.trim();
+  const cat=(newCat==='__NUEVA__'?$('newCatOther').value.trim():newCat).toUpperCase();
+  const price=Number($('newPrice').value);
+  if(!name)return alert('Escribe el nombre del producto.');
+  if(!cat)return alert(newCat==='__NUEVA__'?'Escribe el nombre de la categoría nueva.':'Selecciona una categoría.');
+  if(!Number.isFinite(price)||price<0)return alert('Escribe un precio válido.');
+  const maxOrder=products.reduce((m,p)=>Math.max(m,Number(p.orden||0)),0);
+  const payload={id:`${slug(name)}_${Date.now().toString(36)}`,categoria:cat,nombre:name,precio:price,descripcion:'',requiere_nota:$('newNote').checked,cocina:$('newKitchen').checked,activo:true,orden:maxOrder+10,bebida_con_presentacion:false};
+  const {error}=await sb.from('catalogo_productos').insert(payload);
+  if(error)return alert('No se pudo guardar: '+error.message);
+  close('newBackdrop');
+  toast(newCat==='__NUEVA__'?`Categoría ${cat} y producto creados`:'Producto agregado');
+  activeCat=cat;
+  await loadProducts();
+}
 $('search').oninput=renderList;$('newBtn').onclick=openNew;$('savePriceBtn').onclick=savePrice;$('hideBtn').onclick=toggleEditing;$('saveNewBtn').onclick=saveNew;$('advToggle').onclick=()=>{$('advBox').classList.toggle('show')};
 document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{$('priceInput').value=Math.max(0,Number($('priceInput').value||0)+Number(b.dataset.add||0))});document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.dataset.close));document.querySelectorAll('.backdrop').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)close(bg.id)}));
 loadProducts();try{sb.channel('catalog-simple').on('postgres_changes',{event:'*',schema:'public',table:'catalogo_productos'},()=>loadProducts()).subscribe()}catch(e){console.warn(e)}
