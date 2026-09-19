@@ -802,6 +802,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /** =========================
  *  CONFIG ADMIN
@@ -993,13 +994,13 @@ const catalogo = [
   {id:"taco_combinado",cat:"TACOS", name:"Taco Combinado",   price:38, desc:"Pon en nota tus carnes (ej. tripa + bistec).", mods:true, img:"tacogdp.png"},
 
   {id:"quesa_tripa",      cat:"QUESADILLAS", name:"Quesadilla de Tripa",      price:120, desc:"Queso + tripa.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_pastor",     cat:"QUESADILLAS", name:"Quesadilla de Pastor",     price:90,  desc:"Queso + pastor.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_bistec",     cat:"QUESADILLAS", name:"Quesadilla de Bistec",     price:90,  desc:"Queso + bistec.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_chorizo",    cat:"QUESADILLAS", name:"Quesadilla de Chorizo",    price:90,  desc:"Queso + chorizo.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_higado",     cat:"QUESADILLAS", name:"Quesadilla de Hígado",     price:90,  desc:"Queso + hígado.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_costilla",   cat:"QUESADILLAS", name:"Quesadilla de Costilla",   price:90,  desc:"Queso + costilla.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_barbacoa",   cat:"QUESADILLAS", name:"Quesadilla de Barbacoa",   price:90,  desc:"Queso + barbacoa.", mods:false, img:"quesadillagdp.png"},
-  {id:"quesa_alambre",    cat:"QUESADILLAS", name:"Quesadilla de Alambre",    price:90,  desc:"Queso + alambre.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_pastor",     cat:"QUESADILLAS", name:"Quesadilla de Pastor",     price:100,  desc:"Queso + pastor.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_bistec",     cat:"QUESADILLAS", name:"Quesadilla de Bistec",     price:100,  desc:"Queso + bistec.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_chorizo",    cat:"QUESADILLAS", name:"Quesadilla de Chorizo",    price:100,  desc:"Queso + chorizo.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_higado",     cat:"QUESADILLAS", name:"Quesadilla de Hígado",     price:100,  desc:"Queso + hígado.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_costilla",   cat:"QUESADILLAS", name:"Quesadilla de Costilla",   price:100,  desc:"Queso + costilla.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_barbacoa",   cat:"QUESADILLAS", name:"Quesadilla de Barbacoa",   price:100,  desc:"Queso + barbacoa.", mods:false, img:"quesadillagdp.png"},
+  {id:"quesa_alambre",    cat:"QUESADILLAS", name:"Quesadilla de Alambre",    price:100,  desc:"Queso + alambre.", mods:false, img:"quesadillagdp.png"},
   {id:"quesa_combinada",  cat:"QUESADILLAS", name:"Quesadilla Combinada",     price:100, desc:"Pon en nota qué combinación quieres.", mods:true, img:"quesadillagdp.png"},
 
   {id:"quesa_chica_tripa",      cat:"QUESADILLAS CHICAS", name:"Quesadilla Chica de Tripa",      price:70, desc:"Versión chica con queso + tripa.", mods:false, img:"quesadillagdp.png"},
@@ -1027,10 +1028,10 @@ const catalogo = [
   {id:"volcan_alambre",    cat:"VOLCANES", name:"Volcán de Alambre",    price:85, desc:"Volcán de alambre.", mods:true, img:"volcangdp.png"},
   {id:"volcan_combinado",  cat:"VOLCANES", name:"Volcán Combinado",     price:90, desc:"Pon en nota qué combinación quieres.", mods:true, img:"volcangdp.png"},
 
-  {id:"beb_coca_light",  cat:"BEBIDAS", name:"Coca Light",       price:35, desc:"", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_coca",        cat:"BEBIDAS", name:"Coca",             price:35, desc:"", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_fresca",      cat:"BEBIDAS", name:"Fresca",           price:35, desc:"", mods:false, img:"bebidasgpd.png"},
-  {id:"beb_sprite",      cat:"BEBIDAS", name:"Sprite",           price:35, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_coca_light",  cat:"BEBIDAS", name:"Coca Light",       price:30, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_coca",        cat:"BEBIDAS", name:"Coca",             price:30, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_fresca",      cat:"BEBIDAS", name:"Fresca",           price:30, desc:"", mods:false, img:"bebidasgpd.png"},
+  {id:"beb_sprite",      cat:"BEBIDAS", name:"Sprite",           price:30, desc:"", mods:false, img:"bebidasgpd.png"},
   {id:"beb_agua_fresca", cat:"BEBIDAS", name:"Agua fresca",      price:30, desc:"Vaso", mods:false, img:"bebidasgpd.png"},
   {id:"beb_agua_lt",     cat:"BEBIDAS", name:"Agua fresca 1 Lt", price:45, desc:"1 litro", mods:false, img:"bebidasgpd.png"},
 
@@ -1044,6 +1045,7 @@ const catalogo = [
 
 const CATS = ["TACOS","QUESADILLAS","QUESADILLAS CHICAS","CHAROLAS","VOLCANES","BEBIDAS","POSTRES"];
 
+
 const CAT_META = {
   "TACOS": "Elige tus tacos favoritos",
   "QUESADILLAS": "Quesadillas grandes y bien servidas",
@@ -1053,6 +1055,124 @@ const CAT_META = {
   "BEBIDAS": "Refrescos y aguas para acompañar",
   "POSTRES": "El toque dulce para cerrar tu pedido"
 };
+
+/** =========================
+ *  PRECIOS CENTRALIZADOS
+ *  Misma fuente que la página de mesas: catalogo_productos
+ *  ========================= */
+const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
+let menuSupabase = null;
+let catalogoPreciosChannel = null;
+
+try {
+  if (
+    SUPABASE_URL &&
+    SUPABASE_ANON_KEY &&
+    window.supabase &&
+    typeof window.supabase.createClient === "function"
+  ) {
+    menuSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch (err) {
+  console.warn("No se pudo inicializar Supabase para precios:", err);
+}
+
+function normalizarNombreProducto(s) {
+  return String(s || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function aplicarPreciosCentrales(rows) {
+  if (!Array.isArray(rows) || !rows.length) return 0;
+
+  const porId = new Map();
+  const porNombre = new Map();
+
+  rows.forEach(row => {
+    const id = String(row.id || "").trim();
+    const nombre = normalizarNombreProducto(row.nombre);
+    const precio = Number(row.precio);
+
+    if (!Number.isFinite(precio)) return;
+    if (id) porId.set(id, precio);
+    if (nombre) porNombre.set(nombre, precio);
+  });
+
+  let cambios = 0;
+
+  catalogo.forEach(item => {
+    let precioNuevo = porId.get(String(item.id || "").trim());
+
+    if (!Number.isFinite(precioNuevo)) {
+      precioNuevo = porNombre.get(normalizarNombreProducto(item.name));
+    }
+
+    if (Number.isFinite(precioNuevo) && Number(item.price) !== precioNuevo) {
+      item.price = precioNuevo;
+      cambios++;
+    }
+  });
+
+  // Si el cliente ya tenía productos en carrito, también se actualiza
+  // el precio para que total, checkout y WhatsApp coincidan con el menú.
+  if (Array.isArray(cart)) {
+    cart.forEach(line => {
+      const item = catalogo.find(p => p.id === line.id);
+      if (item && Number(line.basePrice) !== Number(item.price)) {
+        line.basePrice = Number(item.price);
+      }
+    });
+  }
+
+  renderItems();
+  renderCart();
+  return cambios;
+}
+
+async function cargarPreciosDesdeCatalogoCentral({ silencioso=false } = {}) {
+  if (!menuSupabase) return false;
+
+  try {
+    const { data, error } = await menuSupabase
+      .from("catalogo_productos")
+      .select("id,nombre,precio,activo,updated_at")
+      .eq("activo", true);
+
+    if (error) throw error;
+    if (!Array.isArray(data) || !data.length) return false;
+
+    aplicarPreciosCentrales(data);
+    return true;
+  } catch (err) {
+    if (!silencioso) {
+      console.warn("No se pudieron actualizar los precios desde catalogo_productos; se usan los precios de respaldo.", err);
+    }
+    return false;
+  }
+}
+
+function iniciarPreciosRealtime() {
+  if (!menuSupabase || catalogoPreciosChannel) return;
+
+  try {
+    catalogoPreciosChannel = menuSupabase
+      .channel("menu-digital-precios")
+      .on(
+        "postgres_changes",
+        { event:"*", schema:"public", table:"catalogo_productos" },
+        () => cargarPreciosDesdeCatalogoCentral({ silencioso:true })
+      )
+      .subscribe();
+  } catch (err) {
+    console.warn("Realtime de precios no disponible:", err);
+  }
+}
+
 
 /** =========================
  *  MODIFICADORES
@@ -1981,6 +2101,14 @@ renderItems();
 renderCart();
 renderHorarioEstado();
 setInterval(renderHorarioEstado, 30000);
+
+// Mantiene los precios del menú digital iguales a los de la página de mesas.
+cargarPreciosDesdeCatalogoCentral().then(ok=>{
+  if(ok) iniciarPreciosRealtime();
+});
+window.addEventListener("focus", ()=>{
+  cargarPreciosDesdeCatalogoCentral({ silencioso:true });
+});
 </script>
 
 </body>
