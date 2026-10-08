@@ -5724,11 +5724,90 @@ footer{background:#030303!important;color:#8f784d!important}
     font-size:12px!important;
   }
 }
+
+
+/* ===== TICKET SUCHINALOA · REDISEÑO SEGURO PARA 80MM ===== */
+.ticket-layout{width:60mm!important;max-width:60mm!important;margin:0 auto!important;padding:0!important;color:#000!important;background:#fff!important;font-family:Arial,Helvetica,sans-serif!important;box-sizing:border-box!important}
+.ticket-brand{text-align:center!important;font-size:22px!important;line-height:1.05!important;font-weight:900!important;letter-spacing:.2px!important}
+.ticket-subtitle{text-align:center!important;font-size:15px!important;margin-top:3px!important}
+.ticket-separator{width:100%!important;border-top:1px dashed #000!important;margin:8px 0!important}
+.ticket-order{text-align:center!important;font-size:23px!important;line-height:1.05!important;font-weight:900!important}
+.ticket-date{text-align:center!important;font-size:13px!important;margin-top:3px!important}
+.ticket-section-title{font-size:15px!important;font-weight:900!important;margin-bottom:6px!important}
+.ticket-item{margin:10px 0!important;width:100%!important}
+.ticket-item-name{font-size:16px!important;line-height:1.18!important;font-weight:900!important;overflow-wrap:anywhere!important}
+.ticket-item-money{display:grid!important;grid-template-columns:1fr auto!important;align-items:end!important;column-gap:4mm!important;width:54mm!important;max-width:54mm!important;margin:3px auto 0!important;font-size:13px!important}
+.ticket-item-money span{min-width:0!important}
+.ticket-item-money b{white-space:nowrap!important;text-align:right!important;font-size:13px!important}
+.ticket-summary-row{display:grid!important;grid-template-columns:1fr auto!important;column-gap:4mm!important;align-items:center!important;width:54mm!important;max-width:54mm!important;margin:4px auto!important;font-size:15px!important}
+.ticket-summary-row b{white-space:nowrap!important;text-align:right!important;font-size:15px!important}
+.ticket-total-box{width:54mm!important;max-width:54mm!important;margin:8px auto 10px!important;padding:7px 0 6px!important;border-top:2px solid #000!important;border-bottom:2px solid #000!important;text-align:center!important}
+.ticket-total-label{font-size:19px!important;line-height:1!important;font-weight:900!important}
+.ticket-total-amount{font-size:27px!important;line-height:1.05!important;font-weight:900!important;margin-top:4px!important;white-space:nowrap!important;text-align:center!important}
+.ticket-payment-box{width:56mm!important;max-width:56mm!important;margin:10px auto!important;padding:7px 5px!important;border:2px solid #000!important;box-sizing:border-box!important}
+.ticket-payment-label{text-align:center!important;font-size:12px!important;font-weight:900!important}
+.ticket-payment-title{text-align:center!important;font-size:18px!important;line-height:1.1!important;font-weight:900!important;margin-top:2px!important}
+.ticket-payment-detail{text-align:center!important;font-size:12px!important;line-height:1.2!important;font-weight:900!important;margin-top:3px!important}
+.ticket-payment-divider{border-top:1px dashed #000!important;margin:6px 0!important}
+.ticket-payment-money{text-align:center!important}
+.ticket-payment-money span{display:block!important;font-size:13px!important;line-height:1.15!important}
+.ticket-payment-money b{display:block!important;font-size:22px!important;line-height:1.05!important;margin-top:3px!important;white-space:nowrap!important}
+.ticket-payment-money.secondary{margin-top:7px!important;padding-top:6px!important;border-top:1px dashed #000!important}
+.ticket-notes-title{font-size:14px!important;font-weight:900!important}
+.ticket-notes{font-size:14px!important;min-height:25px!important;margin-top:2px!important}
+.ticket-end{text-align:center!important;font-size:17px!important;font-weight:900!important}
+.ticket-thanks{text-align:center!important;font-size:12px!important;letter-spacing:.6px!important;margin-top:4px!important}
+
 </style>
 
 
 <link rel="preload" as="image" href="img/imagen-07.jpg" fetchpriority="high">
 <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+
+<!-- =========================================================
+     META PIXEL (Facebook / Instagram Ads)
+     CAMBIA "1636707078179523" EN LOS DOS LUGARES DE ABAJO
+     ========================================================= -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1636707078179523');
+fbq('track', 'PageView');
+
+// Envía un evento al Pixel sin romper la página si el Pixel no cargó.
+function metaTrack(evento, datos, eventID){
+  try{
+    if(typeof fbq !== "function") return;
+    if(eventID) fbq('track', evento, datos || {}, {eventID: eventID});
+    else fbq('track', evento, datos || {});
+  }catch(e){}
+}
+
+// Registra la compra una sola vez por pedido.
+function metaPurchase(p){
+  if(!p || !p.pedido_id) return;
+  const k = "metaPurchase_" + p.pedido_id;
+  try{
+    if(localStorage.getItem(k)) return;
+    localStorage.setItem(k, "1");
+  }catch(e){}
+  metaTrack("Purchase", {
+    value: Number(p.pago?.subtotal_alimentos || 0),
+    currency: "MXN",
+    content_type: "product",
+    order_id: p.pedido_id
+  }, p.pedido_id);
+}
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1636707078179523&ev=PageView&noscript=1"/></noscript>
+<!-- Fin Meta Pixel -->
 
 </head>
 <body>
@@ -6132,9 +6211,9 @@ let ULTIMO_CALCULO_ESPERA = null;
  {id:4,name:"Yaquesita",category:"Rollos Empanizados",price:165,emoji:"🧀",photo:"img/imagen-06.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón y surimi; coronado con mozzarella, queso crema, chimichurri, salsa sriracha y ajonjolí."},
  {id:5,name:"¡Que Chulada!",category:"Rollos Empanizados",price:170,emoji:"🍤",photo:"img/imagen-07.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y surimi; coronado con queso especial de la casa, tampico y camarones empanizados, bañado en salsa de anguila y ajonjolí."},
  {id:6,name:"Que Rollo",category:"Rollos Empanizados",price:170,emoji:"🥓",photo:"img/imagen-08.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, pollo y res; coronado con tampico y trozos de tocino frito."},
- {id:7,name:"Algo-Bien",category:"Rollos Empanizados",price:170,emoji:"🥢",photo:"img/imagen-09.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, surimi y camarón; coronado con tampico, salsa de anguila, chipotle y sriracha."},
+ {id:7,name:"Algo-Bien",category:"Rollos Empanizados",price:170,emoji:"🥢",photo:"img/imagen-09.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, surimi y camarón; coronado con tampico, salsa de anguila, aguacate y sriracha."},
  {id:8,name:"Túmbate el Rollo",category:"Rollos Empanizados",price:195,emoji:"🍗",photo:"img/imagen-10.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, camarón, res y surimi; coronado con tampico y pollo empanizado, bañado en BBQ y ranch con ajonjolí."},
- {id:9,name:"Rollo Culichi",category:"Rollos Empanizados",price:205,emoji:"🌶️",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, res, pollo y chile güero; coronado con queso especial de la casa, tampico, tocino picado y ajonjolí."},
+ {id:9,name:"Rollo Culichi",category:"Rollos Empanizados",price:205,emoji:"🌶️",photo:"img/imagen-15.jpeg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate, res, pollo y chile güero; coronado con queso especial de la casa, tampico, tocino picado y ajonjolí."},
  {id:10,name:"Que Chilo",category:"Rollos Empanizados",price:160,emoji:"🍣",photo:"img/imagen-11.jpg",tag:"EMPANIZADO",desc:"Relleno de alga, queso crema, aguacate y camarón; coronado con tampico, tocino, salsa de anguila y aderezo ranch."},
  {id:11,name:"Machin Roll",category:"Rollo Horneado",price:215,emoji:"🔥",photo:"img/imagen-12.jpg",tag:"HORNEADO",desc:"Rollo horneado y empanizado relleno de alga, queso crema, aguacate, tocino, res y camarón; coronado con queso de la casa al horno creando una costra y salsa de anguila."},
  {id:12,name:"Suchinaloa",category:"El Especial",price:250,emoji:"⭐",photo:"img/imagen-13.jpg",tag:"EL ESPECIAL",desc:"Rollo empanizado relleno de alga, queso crema, aguacate, pollo, tocino y surimi. Por fuera: queso crema, res y tocino; tampico; camarones empanizados bañados en salsa chipotle."},
@@ -6310,6 +6389,11 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  const found = cart.find(i=>i.id===id);
  if(found) found.qty++;
  else cart.push({id,qty:1});
+
+ // META PIXEL · AddToCart
+ const pMeta = products.find(x=>x.id===id);
+ if(pMeta) metaTrack("AddToCart",{content_ids:[String(id)],content_name:pMeta.name,content_type:"product",value:pMeta.price,currency:"MXN"});
+
  saveCart();
  }
 
@@ -6597,6 +6681,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  await calcularTiempoEsperaActual();
 
+ // META PIXEL · InitiateCheckout
+ metaTrack("InitiateCheckout",{value:getTotals().subtotal,currency:"MXN",num_items:cart.reduce((s,i)=>s+i.qty,0)});
+
  document.getElementById("checkoutOverlay").classList.remove("hidden");
  document.body.classList.add("checkout-open");
  setTimeout(()=>{ aplicarEstadoEfectivo(); actualizarControlLluvia(); actualizarPagoCheckout(); obtenerUbicacion(false); },150);
@@ -6653,33 +6740,29 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  function buildKitchenTicket(order,customerNotes,data,totals){
  const now=new Date();
-
  const lines=cart.map(item=>{
    const p=products.find(x=>x.id===item.id);
    const precioUnitario=Number(p?.price || 0);
    const importe=precioUnitario * Number(item.qty || 0);
    return `
-   <div style="margin:9px 0">
-     <div style="font-size:16px;font-weight:900">${item.qty} x ${p?.name || "Producto"}</div>
-     <div class="ticket-detail-price" style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-top:2px">
+   <div class="ticket-item">
+     <div class="ticket-item-name">${item.qty} x ${p?.name || "Producto"}</div>
+     <div class="ticket-item-money">
        <span>${money(precioUnitario)} c/u</span>
-       <b class="ticket-amount">${money(importe)}</b>
+       <b>${money(importe)}</b>
      </div>
    </div>`;
  }).join("");
 
  const metodo = data?.payment || "No especificado";
  const modalidad = data?.payment_scope || "todo";
-
  const subtotal = Number(totals?.subtotal || 0);
  const envio = Number(totals?.delivery || 0);
  const total = Number(totals?.total || 0);
-
  let pagoTitulo = "";
  let pagoDetalle = "";
  let montoTarjeta = 0;
  let montoEfectivo = 0;
-
  if(metodo === "Efectivo"){
    pagoTitulo = "EFECTIVO";
    pagoDetalle = "PAGAR TODO AL RECIBIR";
@@ -6694,73 +6777,40 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    montoTarjeta = subtotal;
    montoEfectivo = envio;
  }
-
  const paymentRows = metodo === "Efectivo"
-   ? `
-     <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:4px">
-       <span>A COBRAR EN EFECTIVO</span><b>${money(montoEfectivo)}</b>
-     </div>`
+   ? `<div class="ticket-payment-money"><span>A COBRAR EN EFECTIVO</span><b>${money(montoEfectivo)}</b></div>`
    : modalidad === "todo"
-     ? `
-       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:4px">
-         <span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b>
-       </div>
-       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:3px">
-         <span>A COBRAR POR REPARTIDOR</span><b>${money(0)}</b>
-       </div>`
-     : `
-       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:4px">
-         <span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b>
-       </div>
-       <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin-top:3px">
-         <span>A COBRAR POR REPARTIDOR</span><b>${money(montoEfectivo)}</b>
-       </div>`;
-
+     ? `<div class="ticket-payment-money"><span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b></div><div class="ticket-payment-money secondary"><span>A COBRAR POR REPARTIDOR</span><b>${money(0)}</b></div>`
+     : `<div class="ticket-payment-money"><span>PAGO MERCADO PAGO</span><b>${money(montoTarjeta)}</b></div><div class="ticket-payment-money secondary"><span>A COBRAR POR REPARTIDOR</span><b>${money(montoEfectivo)}</b></div>`;
  return `
- <div style="text-align:center;font-weight:900;font-size:19px">SUCHINALOA</div>
- <div style="text-align:center;margin-top:4px">COMANDA / PEDIDO</div>
- <hr>
-
- <div style="text-align:center;font-size:22px;font-weight:900">${order}</div>
- <div style="text-align:center">${now.toLocaleDateString("es-MX")} · ${now.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}</div>
-
- <hr>
-
- <div style="font-size:13px;font-weight:900;margin-bottom:4px">DETALLE DEL PEDIDO</div>
- ${lines}
-
- <hr>
-
- <div style="font-size:15px;font-weight:900;margin-bottom:5px">TOTALES</div>
- <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin:3px 0">
-   <span>ALIMENTOS</span><b>${money(subtotal)}</b>
- </div>
- <div class="ticket-money-row" style="display:flex;justify-content:space-between;margin:3px 0">
-   <span>ENVIO</span><b>${money(envio)}</b>
- </div>
- <div class="ticket-money-row ticket-grand-total" style="display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:2px solid #000;font-size:19px;font-weight:900">
-   <span>TOTAL</span><span>${money(total)}</span>
- </div>
-
- <div style="
-   border:3px solid #000;
-   padding:8px 7px;
-   margin:10px 0;
- ">
-   <div style="text-align:center;font-size:13px;font-weight:900">FORMA DE PAGO</div>
-   <div style="text-align:center;font-size:18px;font-weight:900;margin-top:3px">${pagoTitulo}</div>
-   <div style="text-align:center;font-size:13px;font-weight:900;margin-top:3px">${pagoDetalle}</div>
-   <div style="border-top:1px dashed #000;margin-top:6px;padding-top:4px">
+ <div class="ticket-layout">
+   <div class="ticket-brand">SUCHINALOA</div>
+   <div class="ticket-subtitle">COMANDA / PEDIDO</div>
+   <div class="ticket-separator"></div>
+   <div class="ticket-order">${order}</div>
+   <div class="ticket-date">${now.toLocaleDateString("es-MX")} · ${now.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}</div>
+   <div class="ticket-separator"></div>
+   <div class="ticket-section-title">DETALLE DEL PEDIDO</div>
+   ${lines}
+   <div class="ticket-separator"></div>
+   <div class="ticket-section-title totals-title">TOTALES</div>
+   <div class="ticket-summary-row"><span>ALIMENTOS</span><b>${money(subtotal)}</b></div>
+   <div class="ticket-summary-row"><span>ENVIO</span><b>${money(envio)}</b></div>
+   <div class="ticket-total-box"><div class="ticket-total-label">TOTAL</div><div class="ticket-total-amount">${money(total)}</div></div>
+   <div class="ticket-payment-box">
+     <div class="ticket-payment-label">FORMA DE PAGO</div>
+     <div class="ticket-payment-title">${pagoTitulo}</div>
+     <div class="ticket-payment-detail">${pagoDetalle}</div>
+     <div class="ticket-payment-divider"></div>
      ${paymentRows}
    </div>
- </div>
-
- <hr>
- <div><b>OBSERVACIONES:</b></div>
- <div style="min-height:30px">${customerNotes||"Sin observaciones"}</div>
-
- <hr>
- <div style="text-align:center;font-weight:900">FIN DE COMANDA</div>`;
+   <div class="ticket-separator"></div>
+   <div class="ticket-notes-title">OBSERVACIONES:</div>
+   <div class="ticket-notes">${customerNotes||"Sin observaciones"}</div>
+   <div class="ticket-separator"></div>
+   <div class="ticket-end">FIN DE COMANDA</div>
+   <div class="ticket-thanks">¡GRACIAS POR TU PEDIDO!</div>
+ </div>`;
  }
  function printKitchenTicket(){
  window.print();
@@ -6861,6 +6911,40 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    max-width:42%!important;
  }
  .ticket-grand-total>span:last-child{font-size:16px!important;}
+
+
+/* ===== TICKET SUCHINALOA · REDISEÑO SEGURO PARA 80MM ===== */
+.ticket-layout{width:60mm!important;max-width:60mm!important;margin:0 auto!important;padding:0!important;color:#000!important;background:#fff!important;font-family:Arial,Helvetica,sans-serif!important;box-sizing:border-box!important}
+.ticket-brand{text-align:center!important;font-size:22px!important;line-height:1.05!important;font-weight:900!important;letter-spacing:.2px!important}
+.ticket-subtitle{text-align:center!important;font-size:15px!important;margin-top:3px!important}
+.ticket-separator{width:100%!important;border-top:1px dashed #000!important;margin:8px 0!important}
+.ticket-order{text-align:center!important;font-size:23px!important;line-height:1.05!important;font-weight:900!important}
+.ticket-date{text-align:center!important;font-size:13px!important;margin-top:3px!important}
+.ticket-section-title{font-size:15px!important;font-weight:900!important;margin-bottom:6px!important}
+.ticket-item{margin:10px 0!important;width:100%!important}
+.ticket-item-name{font-size:16px!important;line-height:1.18!important;font-weight:900!important;overflow-wrap:anywhere!important}
+.ticket-item-money{display:grid!important;grid-template-columns:1fr auto!important;align-items:end!important;column-gap:4mm!important;width:54mm!important;max-width:54mm!important;margin:3px auto 0!important;font-size:13px!important}
+.ticket-item-money span{min-width:0!important}
+.ticket-item-money b{white-space:nowrap!important;text-align:right!important;font-size:13px!important}
+.ticket-summary-row{display:grid!important;grid-template-columns:1fr auto!important;column-gap:4mm!important;align-items:center!important;width:54mm!important;max-width:54mm!important;margin:4px auto!important;font-size:15px!important}
+.ticket-summary-row b{white-space:nowrap!important;text-align:right!important;font-size:15px!important}
+.ticket-total-box{width:54mm!important;max-width:54mm!important;margin:8px auto 10px!important;padding:7px 0 6px!important;border-top:2px solid #000!important;border-bottom:2px solid #000!important;text-align:center!important}
+.ticket-total-label{font-size:19px!important;line-height:1!important;font-weight:900!important}
+.ticket-total-amount{font-size:27px!important;line-height:1.05!important;font-weight:900!important;margin-top:4px!important;white-space:nowrap!important;text-align:center!important}
+.ticket-payment-box{width:56mm!important;max-width:56mm!important;margin:10px auto!important;padding:7px 5px!important;border:2px solid #000!important;box-sizing:border-box!important}
+.ticket-payment-label{text-align:center!important;font-size:12px!important;font-weight:900!important}
+.ticket-payment-title{text-align:center!important;font-size:18px!important;line-height:1.1!important;font-weight:900!important;margin-top:2px!important}
+.ticket-payment-detail{text-align:center!important;font-size:12px!important;line-height:1.2!important;font-weight:900!important;margin-top:3px!important}
+.ticket-payment-divider{border-top:1px dashed #000!important;margin:6px 0!important}
+.ticket-payment-money{text-align:center!important}
+.ticket-payment-money span{display:block!important;font-size:13px!important;line-height:1.15!important}
+.ticket-payment-money b{display:block!important;font-size:22px!important;line-height:1.05!important;margin-top:3px!important;white-space:nowrap!important}
+.ticket-payment-money.secondary{margin-top:7px!important;padding-top:6px!important;border-top:1px dashed #000!important}
+.ticket-notes-title{font-size:14px!important;font-weight:900!important}
+.ticket-notes{font-size:14px!important;min-height:25px!important;margin-top:2px!important}
+.ticket-end{text-align:center!important;font-size:17px!important;font-weight:900!important}
+.ticket-thanks{text-align:center!important;font-size:12px!important;letter-spacing:.6px!important;margin-top:4px!important}
+
 </style>
 </head>
 <body>
@@ -7982,6 +8066,40 @@ Favor de confirmar quién toma el envío.`;
    max-width:42%!important;
  }
  .ticket-grand-total>span:last-child{font-size:16px!important;}
+
+
+/* ===== TICKET SUCHINALOA · REDISEÑO SEGURO PARA 80MM ===== */
+.ticket-layout{width:60mm!important;max-width:60mm!important;margin:0 auto!important;padding:0!important;color:#000!important;background:#fff!important;font-family:Arial,Helvetica,sans-serif!important;box-sizing:border-box!important}
+.ticket-brand{text-align:center!important;font-size:22px!important;line-height:1.05!important;font-weight:900!important;letter-spacing:.2px!important}
+.ticket-subtitle{text-align:center!important;font-size:15px!important;margin-top:3px!important}
+.ticket-separator{width:100%!important;border-top:1px dashed #000!important;margin:8px 0!important}
+.ticket-order{text-align:center!important;font-size:23px!important;line-height:1.05!important;font-weight:900!important}
+.ticket-date{text-align:center!important;font-size:13px!important;margin-top:3px!important}
+.ticket-section-title{font-size:15px!important;font-weight:900!important;margin-bottom:6px!important}
+.ticket-item{margin:10px 0!important;width:100%!important}
+.ticket-item-name{font-size:16px!important;line-height:1.18!important;font-weight:900!important;overflow-wrap:anywhere!important}
+.ticket-item-money{display:grid!important;grid-template-columns:1fr auto!important;align-items:end!important;column-gap:4mm!important;width:54mm!important;max-width:54mm!important;margin:3px auto 0!important;font-size:13px!important}
+.ticket-item-money span{min-width:0!important}
+.ticket-item-money b{white-space:nowrap!important;text-align:right!important;font-size:13px!important}
+.ticket-summary-row{display:grid!important;grid-template-columns:1fr auto!important;column-gap:4mm!important;align-items:center!important;width:54mm!important;max-width:54mm!important;margin:4px auto!important;font-size:15px!important}
+.ticket-summary-row b{white-space:nowrap!important;text-align:right!important;font-size:15px!important}
+.ticket-total-box{width:54mm!important;max-width:54mm!important;margin:8px auto 10px!important;padding:7px 0 6px!important;border-top:2px solid #000!important;border-bottom:2px solid #000!important;text-align:center!important}
+.ticket-total-label{font-size:19px!important;line-height:1!important;font-weight:900!important}
+.ticket-total-amount{font-size:27px!important;line-height:1.05!important;font-weight:900!important;margin-top:4px!important;white-space:nowrap!important;text-align:center!important}
+.ticket-payment-box{width:56mm!important;max-width:56mm!important;margin:10px auto!important;padding:7px 5px!important;border:2px solid #000!important;box-sizing:border-box!important}
+.ticket-payment-label{text-align:center!important;font-size:12px!important;font-weight:900!important}
+.ticket-payment-title{text-align:center!important;font-size:18px!important;line-height:1.1!important;font-weight:900!important;margin-top:2px!important}
+.ticket-payment-detail{text-align:center!important;font-size:12px!important;line-height:1.2!important;font-weight:900!important;margin-top:3px!important}
+.ticket-payment-divider{border-top:1px dashed #000!important;margin:6px 0!important}
+.ticket-payment-money{text-align:center!important}
+.ticket-payment-money span{display:block!important;font-size:13px!important;line-height:1.15!important}
+.ticket-payment-money b{display:block!important;font-size:22px!important;line-height:1.05!important;margin-top:3px!important;white-space:nowrap!important}
+.ticket-payment-money.secondary{margin-top:7px!important;padding-top:6px!important;border-top:1px dashed #000!important}
+.ticket-notes-title{font-size:14px!important;font-weight:900!important}
+.ticket-notes{font-size:14px!important;min-height:25px!important;margin-top:2px!important}
+.ticket-end{text-align:center!important;font-size:17px!important;font-weight:900!important}
+.ticket-thanks{text-align:center!important;font-size:12px!important;letter-spacing:.6px!important;margin-top:4px!important}
+
 </style>
 </head>
 <body>
@@ -8025,6 +8143,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function aplicarEstadoPagoConfirmado(){
+   // META PIXEL · Purchase (tarjeta confirmada)
+   metaPurchase(lastOrderPayload);
+
    // El pago ya quedó confirmado: ahora sí limpiamos el carrito guardado.
    cart = [];
    saveCart();
@@ -8078,51 +8199,99 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const status = document.getElementById("paymentStatus");
  const button = document.getElementById("mercadoPagoBtn");
 
+ // Safari/iPhone: abrir la pestaña inmediatamente dentro del toque del usuario.
+ const paymentWindow = window.open("about:blank", "_blank");
+
+ if(!paymentWindow){
+   if(status){
+     status.textContent = "Safari bloqueó la pestaña de pago. Permite ventanas emergentes e inténtalo de nuevo.";
+     status.style.color = "#a81616";
+   }
+   alert("Safari bloqueó la pestaña de Mercado Pago. Permite ventanas emergentes para este sitio e inténtalo nuevamente.");
+   return;
+ }
+
  try{
- if(button){
- button.disabled = true;
- button.textContent = "CREANDO PAGO...";
- }
+   try{ paymentWindow.opener = null; }catch(_){}
 
- if(status){
- status.textContent = "Preparando Checkout Pro...";
- status.style.color = "#8a5a00";
- }
+   try{
+     paymentWindow.document.open();
+     paymentWindow.document.write(`<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preparando Mercado Pago</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#fff;color:#222;text-align:center}
+.box{max-width:420px}.spinner{width:42px;height:42px;margin:0 auto 18px;border:4px solid #e7e7e7;border-top-color:#009ee3;border-radius:50%;animation:spin .8s linear infinite}
+h2{margin:0 0 8px;font-size:22px}p{margin:0;color:#666;line-height:1.45}@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body><div class="box"><div class="spinner"></div><h2>Preparando tu pago...</h2><p>En un momento se abrirá Mercado Pago.</p></div></body>
+</html>`);
+     paymentWindow.document.close();
+   }catch(_){}
 
- const response = await fetch(`${MERCADOPAGO_SERVER_URL}/crear-preferencia`,{
- method:"POST",
- headers:{"Content-Type":"application/json"},
- body:JSON.stringify({pedido_id:lastOrderPayload.pedido_id})
- });
+   if(button){
+     button.disabled = true;
+     button.textContent = "CREANDO PAGO...";
+   }
 
- const result = await response.json().catch(()=>({}));
- if(!response.ok || !result.ok){
- throw new Error(result.error || "No se pudo crear el pago.");
- }
+   if(status){
+     status.textContent = "Preparando Checkout Pro...";
+     status.style.color = "#8a5a00";
+   }
 
- const checkoutUrl = result.init_point;
- if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
+   const response = await fetch(`${MERCADOPAGO_SERVER_URL}/crear-preferencia`,{
+     method:"POST",
+     headers:{"Content-Type":"application/json"},
+     body:JSON.stringify({pedido_id:lastOrderPayload.pedido_id})
+   });
 
- if(status){
- status.textContent = "Checkout abierto. Esperando confirmación automática...";
- status.style.color = "#8a5a00";
- }
+   const result = await response.json().catch(()=>({}));
+   if(!response.ok || !result.ok){
+     throw new Error(result.error || "No se pudo crear el pago.");
+   }
 
- window.open(checkoutUrl,"_blank","noopener,noreferrer");
- iniciarMonitoreoPago(lastOrderPayload.pedido_id);
+   const checkoutUrl = result.init_point;
+   if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
+
+   if(status){
+     status.textContent = "Checkout abierto. Esperando confirmación automática...";
+     status.style.color = "#8a5a00";
+   }
+
+   // La pestaña ya existe desde el toque inicial; ahora solo la enviamos a Mercado Pago.
+   try{
+     paymentWindow.location.replace(checkoutUrl);
+   }catch(_){
+     paymentWindow.location.href = checkoutUrl;
+   }
+
+   try{ paymentWindow.focus(); }catch(_){}
+   iniciarMonitoreoPago(lastOrderPayload.pedido_id);
 
  }catch(error){
- if(status){
- status.textContent = `Error al iniciar Mercado Pago: ${error.message}`;
- status.style.color = "#a81616";
- }
+   try{
+     if(paymentWindow && !paymentWindow.closed){
+       paymentWindow.document.open();
+       paymentWindow.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Error de pago</title></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;padding:32px;text-align:center"><h2>No se pudo iniciar Mercado Pago</h2><p>Puedes cerrar esta pestaña y volver a intentarlo.</p></body></html>`);
+       paymentWindow.document.close();
+     }
+   }catch(_){}
+
+   if(status){
+     status.textContent = `Error al iniciar Mercado Pago: ${error.message}`;
+     status.style.color = "#a81616";
+   }
  }finally{
- if(button && !button.dataset.pagado){
- button.disabled = false;
- button.textContent = "PAGAR CON MERCADO PAGO";
+   if(button && !button.dataset.pagado){
+     button.disabled = false;
+     button.innerHTML = `<span class="payment-final-button-icon">💳</span><span><small>Continuar al pago seguro</small>PAGAR CON MERCADO PAGO</span><b>›</b>`;
+   }
  }
- }
- }
+}
 
  function iniciarMonitoreoPago(pedidoId){
  if(paymentPollTimer) clearInterval(paymentPollTimer);
@@ -8253,6 +8422,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  guardarPedidoActivo();
+
+ // META PIXEL · Purchase (efectivo)
+ if(lastOrderPayload.pago.metodo === "Efectivo") metaPurchase(lastOrderPayload);
 
  const estadoInicial = lastOrderPayload.pago.metodo === "Efectivo"
    ? "efectivo"
@@ -8542,13 +8714,65 @@ html,body{overflow-x:hidden!important;}
 const SUCHINALOA_TIMEZONE = "America/Mexico_City";
 const PEDIDOS_INICIO_MIN = 13 * 60;
 const PEDIDOS_CIERRE_MIN = 21 * 60;
-const OPERACION_CIERRE_MIN = 21 * 60 + 30;
-function horaSuchinaloa(){const partes=new Intl.DateTimeFormat("es-MX",{timeZone:SUCHINALOA_TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const valor=tipo=>Number(partes.find(p=>p.type===tipo)?.value||0);return{hora:valor("hour"),minuto:valor("minute"),segundo:valor("second")};}
-function minutosActualesSuchinaloa(){const t=horaSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
-function horarioPedidosActivo(){const min=minutosActualesSuchinaloa();return min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;}
-function estadoHorarioSuchinaloa(){const min=minutosActualesSuchinaloa();if(min<PEDIDOS_INICIO_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Recibimos pedidos hoy de 1:00 pm a 7:30 pm."};if(min<PEDIDOS_CIERRE_MIN)return{abierto:true,titulo:"Pedidos abiertos",texto:"Estamos recibiendo pedidos hasta las 9:00 pm."};if(min<OPERACION_CIERRE_MIN)return{abierto:false,titulo:"Pedidos cerrados",texto:"Ya cerramos pedidos por hoy. El servicio continúa hasta las 8:00 pm."};return{abierto:false,titulo:"Pedidos cerrados",texto:"Volvemos a recibir pedidos mañana a la 1:00 pm."};}
-function mostrarAvisoHorario(){const e=estadoHorarioSuchinaloa();alert(e.abierto?"Estamos recibiendo pedidos.":"En este momento no estamos recibiendo pedidos. Nuestro horario para ordenar es de 1:00 pm a 9:00 pm.");}
-function actualizarEstadoHorario(){const e=estadoHorarioSuchinaloa();const bar=document.getElementById("orderHoursBar"),title=document.getElementById("orderHoursTitle"),text=document.getElementById("orderHoursText");if(bar){bar.classList.toggle("is-open",e.abierto);bar.classList.toggle("is-closed",!e.abierto)}if(title)title.textContent=e.titulo;if(text)text.textContent=e.texto;document.body.classList.toggle("orders-closed",!e.abierto);document.querySelectorAll(".cart-review-continue,.checkout,.submit-order").forEach(btn=>{btn.disabled=!e.abierto;if(btn.classList.contains("cart-review-continue"))btn.title=e.abierto?"":"Pedidos disponibles de 1:00 pm a 7:30 pm";});}
+// 0=domingo, 1=lunes ... 6=sábado
+const PEDIDOS_DIAS_ACTIVOS = new Set([0,4,5,6]); // jueves, viernes, sábado y domingo
+
+function fechaHoraSuchinaloa(){
+  const partes=new Intl.DateTimeFormat("en-US",{
+    timeZone:SUCHINALOA_TIMEZONE,
+    weekday:"short",
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit",
+    hourCycle:"h23"
+  }).formatToParts(new Date());
+  const valor=tipo=>partes.find(p=>p.type===tipo)?.value||"";
+  const mapaDia={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  return{
+    dia:mapaDia[valor("weekday")],
+    hora:Number(valor("hour")||0),
+    minuto:Number(valor("minute")||0),
+    segundo:Number(valor("second")||0)
+  };
+}
+function minutosActualesSuchinaloa(){const t=fechaHoraSuchinaloa();return t.hora*60+t.minuto+(t.segundo/60);}
+function diaPedidosActivo(){return PEDIDOS_DIAS_ACTIVOS.has(fechaHoraSuchinaloa().dia);}
+function horarioPedidosActivo(){
+  const t=fechaHoraSuchinaloa();
+  const min=t.hora*60+t.minuto+(t.segundo/60);
+  return PEDIDOS_DIAS_ACTIVOS.has(t.dia)&&min>=PEDIDOS_INICIO_MIN&&min<PEDIDOS_CIERRE_MIN;
+}
+function estadoHorarioSuchinaloa(){
+  const t=fechaHoraSuchinaloa();
+  const min=t.hora*60+t.minuto+(t.segundo/60);
+
+  if(!PEDIDOS_DIAS_ACTIVOS.has(t.dia)){
+    return{abierto:false,titulo:"Pedidos cerrados",texto:"Recibimos pedidos de jueves a domingo, de 1:00 pm a 9:00 pm."};
+  }
+  if(min<PEDIDOS_INICIO_MIN){
+    return{abierto:false,titulo:"Pedidos cerrados",texto:"Hoy recibimos pedidos de 1:00 pm a 9:00 pm."};
+  }
+  if(min<PEDIDOS_CIERRE_MIN){
+    return{abierto:true,titulo:"Pedidos abiertos",texto:"Estamos recibiendo pedidos hasta las 9:00 pm."};
+  }
+  return{abierto:false,titulo:"Pedidos cerrados",texto:"Ya cerramos pedidos por hoy. Horario: jueves a domingo, de 1:00 pm a 9:00 pm."};
+}
+function mostrarAvisoHorario(){
+  const e=estadoHorarioSuchinaloa();
+  alert(e.abierto?"Estamos recibiendo pedidos.":"En este momento no estamos recibiendo pedidos. Nuestro horario para ordenar es de jueves a domingo, de 1:00 pm a 9:00 pm.");
+}
+function actualizarEstadoHorario(){
+  const e=estadoHorarioSuchinaloa();
+  const bar=document.getElementById("orderHoursBar"),title=document.getElementById("orderHoursTitle"),text=document.getElementById("orderHoursText");
+  if(bar){bar.classList.toggle("is-open",e.abierto);bar.classList.toggle("is-closed",!e.abierto)}
+  if(title)title.textContent=e.titulo;
+  if(text)text.textContent=e.texto;
+  document.body.classList.toggle("orders-closed",!e.abierto);
+  document.querySelectorAll(".cart-review-continue,.checkout,.submit-order").forEach(btn=>{
+    btn.disabled=!e.abierto;
+    if(btn.classList.contains("cart-review-continue"))btn.title=e.abierto?"":"Pedidos disponibles de jueves a domingo, de 1:00 pm a 9:00 pm";
+  });
+}
 document.addEventListener("DOMContentLoaded",()=>{actualizarEstadoHorario();setInterval(actualizarEstadoHorario,15000);});
 </script>
 
