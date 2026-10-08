@@ -950,6 +950,42 @@ input:focus, select:focus{
 .paymentSelector{margin-top:14px;padding:12px;border-radius:18px;background:linear-gradient(180deg,rgba(21,101,192,.05),rgba(251,192,45,.08));border:1px solid rgba(21,101,192,.14)}.paymentSelectorTitle{font-size:12px;font-weight:1000;color:#355070;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}.paymentGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:640px){.paymentGrid{grid-template-columns:1fr}}.payBtn{border:2px solid rgba(21,101,192,.14);border-radius:16px;padding:12px 10px;background:#fff;cursor:pointer;font-weight:1000;color:#0b4f93;text-align:center}.payBtn.active{background:linear-gradient(180deg,var(--green),var(--green-dark));color:#fff;border-color:var(--green-dark)}.closeHint{margin-top:8px;font-size:12px;color:var(--muted);font-weight:800}
 
 .hiddenField{display:none!important}
+
+.personaAddBtn{
+  background:#fff!important;
+  color:#0b4f93!important;
+  border:2px dashed rgba(21,101,192,.35)!important;
+}
+.notasComandaBox{
+  margin-top:14px;
+  padding:12px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fffdf3,#fff7dc);
+  border:2px solid rgba(251,192,45,.45);
+}
+.notasComandaBox textarea{
+  width:100%;
+  min-height:84px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:2px solid rgba(21,101,192,.14);
+  background:#fff;
+  font-size:16px;
+  font-family:inherit;
+  color:var(--ink);
+  resize:vertical;
+  outline:none;
+}
+.notasComandaBox textarea:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(21,101,192,.10);
+}
+.notasHint{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+}
 .print-area{display:none}
 
 
@@ -1188,6 +1224,12 @@ input:focus, select:focus{
         </div>
 
         <div class="comandaCompacta" id="cart"></div>
+
+        <div class="notasComandaBox">
+          <label for="notasComanda">📝 Notas de la comanda</label>
+          <textarea id="notasComanda" rows="3" placeholder="Ej. Cliente con prisa, salsas aparte, cobrar junto con otro pedido..."></textarea>
+          <div class="notasHint">Estas notas salen impresas en el ticket de cocina, en la reimpresión y en el resumen.</div>
+        </div>
 
         <div class="inlineNotice" id="mainNotice"></div>
 
@@ -1649,6 +1691,9 @@ async function toggleReceptorImpresion(){
 }
 
 
+var supabase;
+var supabaseReady = false;
+
 try{
   if (
     SUPABASE_URL &&
@@ -1780,6 +1825,15 @@ const catalogo = [
     id: "quesa_cabeza",
     cat: "QUESADILLAS",
     name: "Quesadilla de Cabeza",
+    price: 36,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "quesa_cachete",
+    cat: "QUESADILLAS",
+    name: "Quesadilla de Cachete",
     price: 36,
     desc: "",
     requiereNota: false,
@@ -1933,6 +1987,15 @@ const catalogo = [
     id: "volcan_sesos",
     cat: "VOLCANES",
     name: "Volcán de Sesos",
+    price: 35,
+    desc: "",
+    requiereNota: false,
+    cocina: true
+  },
+  {
+    id: "volcan_barbacoa",
+    cat: "VOLCANES",
+    name: "Volcán de Barbacoa",
     price: 35,
     desc: "",
     requiereNota: false,
@@ -2301,7 +2364,46 @@ const catalogo = [
 ];
 
 const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "ALAMBRES", "CARNE POR KILO", "COMPLEMENTOS", "BEBIDAS", "AGUAS FRESCAS"];
-const PLATOS = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
+const PLATOS_BASE = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
+let PLATOS = [...PLATOS_BASE];
+
+function ordenarPlatos(lista){
+  const num = p => { const m = String(p).match(/^Plato\s+(\d+)$/i); return m ? Number(m[1]) : null; };
+  return [...new Set(lista)].sort((a,b)=>{
+    const na = num(a), nb = num(b);
+    if(na !== null && nb !== null) return na - nb;
+    if(na !== null) return -1;
+    if(nb !== null) return 1;
+    if(a === "General") return 1;
+    if(b === "General") return -1;
+    return String(a).localeCompare(String(b));
+  });
+}
+
+function asegurarPlato(nombre){
+  if(!nombre || PLATOS.includes(nombre)) return;
+  PLATOS = ordenarPlatos([...PLATOS, nombre]);
+}
+
+function reiniciarPlatos(){
+  PLATOS = [...PLATOS_BASE];
+  if(!PLATOS.includes(personaActiva)) personaActiva = "Plato 1";
+}
+
+function agregarNuevoPlato(){
+  const numeros = PLATOS
+    .map(p => { const m = String(p).match(/^Plato\s+(\d+)$/i); return m ? Number(m[1]) : 0; });
+  const siguiente = Math.max(0, ...numeros) + 1;
+  const nuevo = `Plato ${siguiente}`;
+  asegurarPlato(nuevo);
+  personaActiva = nuevo;
+  activeCat = "TACOS";
+  openGroups.add(nuevo);
+  renderPersonas();
+  renderCats();
+  renderItems();
+  showToast(`${nuevo} agregado`);
+}
 const MESAS = ["Mesa 1","Mesa 2","Mesa 3","Mesa 4","Mesa 5"];
 const CARRITOS = ["Carrito 1","Carrito 2","Carrito 3","Carrito 4","Carrito 5"];
 const PARA_LLEVAR = ["Para llevar 1","Para llevar 2","Para llevar 3","Para llevar 4","Para llevar 5"];
@@ -2326,6 +2428,9 @@ const openGroups = new Set();
 let toastTimer = null;
 
 let comandaIdActual = null;
+let notasComanda = "";
+let notasColumnaDisponible = true;
+let notasTimer = null;
 let metodoPagoSeleccionado = "EFECTIVO";
 let syncing = false;
 let syncQueued = false;
@@ -2820,6 +2925,9 @@ async function cargarComandaDeMesa(mesa){
   if(!comanda){
     cart = [];
     comandaIdActual = null;
+    reiniciarPlatos();
+    setNotasComanda("");
+    renderPersonas();
     openGroups.clear();
     Object.keys(lastConfigByPlateProduct).forEach(k=>delete lastConfigByPlateProduct[k]);
     updateHeaderPill();
@@ -2830,6 +2938,7 @@ async function cargarComandaDeMesa(mesa){
   }
 
   comandaIdActual = comanda.id;
+  setNotasComanda(comanda.notas || "");
 
   if (comanda.mesero) {
     meseroNombre = comanda.mesero;
@@ -2865,16 +2974,60 @@ async function cargarComandaDeMesa(mesa){
   Object.keys(lastConfigByPlateProduct).forEach(k=>delete lastConfigByPlateProduct[k]);
   openGroups.clear();
 
+  reiniciarPlatos();
   cart.forEach(line=>{
+    asegurarPlato(line.persona);
     saveLastConfig(line.id, line.persona, line.note || "");
     openGroups.add(line.persona);
   });
+  renderPersonas();
 
   updateResumeViews();
   updateHeaderPill();
   renderCart();
   renderItems();
   setSyncStatus(`${mesa} cargada desde Supabase`, "ok");
+}
+
+function limpiarNotasComanda(){
+  if(notasTimer) clearTimeout(notasTimer);
+  setNotasComanda("");
+  reiniciarPlatos();
+  if(personasBox) renderPersonas();
+}
+
+function setNotasComanda(texto){
+  notasComanda = String(texto || "");
+  const el = document.getElementById("notasComanda");
+  if(el) el.value = notasComanda;
+}
+
+async function guardarNotasEnSupabase(comandaId){
+  if(!notasColumnaDisponible || !comandaId) return;
+  const { error } = await supabase
+    .from("comandas_conquistadores")
+    .update({ notas: notasComanda || null })
+    .eq("id", comandaId);
+
+  if(error){
+    const msg = String(error.message || "") + " " + String(error.code || "");
+    if(/notas|column|PGRST204|42703/i.test(msg)){
+      notasColumnaDisponible = false;
+      console.warn("La columna 'notas' no existe en comandas_conquistadores. Las notas se imprimen pero no se guardan en Supabase.");
+    }else{
+      console.error("Error guardando notas:", error);
+    }
+  }
+}
+
+function htmlNotasTicket(){
+  const t = String(notasComanda || "").trim();
+  if(!t) return "";
+  return `
+      <div class="g">NOTAS</div>
+      <div class="it"><div class="itn">${escapeHtml(t).replace(/\n/g,"<br>")}</div></div>
+      <div class="hr"></div>
+  `;
 }
 
 async function syncComandaToSupabase(){
@@ -2906,6 +3059,8 @@ async function syncComandaToSupabase(){
       .eq("id", comandaId);
 
     if(errUpdate) throw errUpdate;
+
+    await guardarNotasEnSupabase(comandaId);
 
     const { error: errDelete } = await supabase
       .from("comandas_conquistadores_items")
@@ -3057,6 +3212,7 @@ async function cerrarPedidoAbiertoDirecto(comandaId, metodoPago, ref, btn){
 
     if(String(comandaIdActual || "") === String(comandaId)){
       cart = [];
+      limpiarNotasComanda();
       comandaIdActual = null;
       mesaActiva = "";
       if(autoColorInput) autoColorInput.value = "";
@@ -3145,7 +3301,7 @@ async function cerrarPedidoActual(){
   const { error } = await supabase.from("comandas_conquistadores").update(updatePayload).eq("id", comandaIdActual);
   if(btn){ btn.disabled = false; btn.textContent = "Cerrar pedido y guardar pago"; }
   if(error){ console.error(error); showInlineNotice("No se pudo cerrar. Revisa columnas metodo_pago, total_cerrado y cerrado_at en Supabase.", "bad"); return; }
-  cart = []; comandaIdActual = null; mesaActiva = "";
+  cart = []; comandaIdActual = null; mesaActiva = ""; limpiarNotasComanda();
   if(autoColorInput) autoColorInput.value = "";
   if(autoTipoInput) autoTipoInput.value = "";
   if(personaNombreInput) personaNombreInput.value = "";
@@ -3407,6 +3563,13 @@ function renderPersonas(){
     };
     personasBox.appendChild(b);
   });
+
+  const add = document.createElement("button");
+  add.type = "button";
+  add.className = "personaBtn personaAddBtn";
+  add.textContent = "➕ Agregar plato";
+  add.onclick = agregarNuevoPlato;
+  personasBox.appendChild(add);
 }
   
 function renderCats(){
@@ -4281,6 +4444,7 @@ function buildTicketCocinaPendiente(){
     html += `<div class="hr"></div>`;
   });
 
+  html += htmlNotasTicket();
   html += `
       <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
         <span>TOTAL NUEVO</span><span>${money(total)}</span>
@@ -4323,6 +4487,7 @@ function buildTicketCocinaCompleto(){
     html += `<div class="hr"></div>`;
   });
 
+  html += htmlNotasTicket();
   html += `
       <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
         <span>TOTAL</span><span>${money(total)}</span>
@@ -4367,6 +4532,7 @@ function buildResumenComanda(){
     html += `<div class="hr"></div>`;
   });
 
+  html += htmlNotasTicket();
   html += `
       <div class="totalLine" style="font-size:18px;border-top:2px solid #000;padding-top:6px;margin-top:6px">
         <span>TOTAL</span><span>${money(total)}</span>
@@ -4519,6 +4685,17 @@ if(btnCorteCaja) btnCorteCaja.onclick = mostrarCorteCaja;
 const btnReceptorImpresion = document.getElementById("btnReceptorImpresion");
 if(btnReceptorImpresion) btnReceptorImpresion.onclick = toggleReceptorImpresion;
 actualizarBotonReceptor();
+
+const notasComandaEl = document.getElementById("notasComanda");
+if(notasComandaEl){
+  notasComandaEl.addEventListener("input", ()=>{
+    notasComanda = notasComandaEl.value;
+    clearTimeout(notasTimer);
+    notasTimer = setTimeout(()=>{
+      if(mesaActiva) syncComandaToSupabase();
+    }, 900);
+  });
+}
 
 /* =========================
    INIT
