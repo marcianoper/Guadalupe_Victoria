@@ -7909,6 +7909,7 @@ Favor de confirmar quién toma el envío.`;
      estadoPago !== "approved"
    ){
      iniciarMonitoreoPago(lastOrderPayload.pedido_id);
+     prepararPreferenciaMP();
    }
  }
 
@@ -8139,103 +8140,150 @@ ${document.getElementById("kitchenTicket").innerHTML}
    }
  }
 
- async function openMercadoPago(){
- const status = document.getElementById("paymentStatus");
- const button = document.getElementById("mercadoPagoBtn");
+ /* =========================================================
+    MERCADO PAGO · MISMA PESTAÑA (corrige iPhone)
+    - Ya NO se abre una pestaña nueva (window.open fallaba en
+      iPhone: "No se pudo abrir la aplicación").
+    - La preferencia se crea en cuanto aparece la pantalla de
+      pago, así el toque del cliente navega de inmediato.
+    - Al regresar de Mercado Pago, la página recupera el pedido
+      y sigue esperando la confirmación automática.
+    ========================================================= */
+ let mpPreferencia = {pedidoId:null, url:null, promesa:null};
 
- // Safari/iPhone: abrir la pestaña inmediatamente dentro del toque del usuario.
- const paymentWindow = window.open("about:blank", "_blank");
-
- if(!paymentWindow){
-   if(status){
-     status.textContent = "Safari bloqueó la pestaña de pago. Permite ventanas emergentes e inténtalo de nuevo.";
-     status.style.color = "#a81616";
+ async function crearPreferenciaMP(pedidoId){
+   if(mpPreferencia.pedidoId === pedidoId && mpPreferencia.url){
+     return mpPreferencia.url;
    }
-   alert("Safari bloqueó la pestaña de Mercado Pago. Permite ventanas emergentes para este sitio e inténtalo nuevamente.");
-   return;
- }
-
- try{
-   try{ paymentWindow.opener = null; }catch(_){}
-
-   try{
-     paymentWindow.document.open();
-     paymentWindow.document.write(`<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Preparando Mercado Pago</title>
-<style>
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#fff;color:#222;text-align:center}
-.box{max-width:420px}.spinner{width:42px;height:42px;margin:0 auto 18px;border:4px solid #e7e7e7;border-top-color:#009ee3;border-radius:50%;animation:spin .8s linear infinite}
-h2{margin:0 0 8px;font-size:22px}p{margin:0;color:#666;line-height:1.45}@keyframes spin{to{transform:rotate(360deg)}}
-</style>
-</head>
-<body><div class="box"><div class="spinner"></div><h2>Preparando tu pago...</h2><p>En un momento se abrirá Mercado Pago.</p></div></body>
-</html>`);
-     paymentWindow.document.close();
-   }catch(_){}
-
-   if(button){
-     button.disabled = true;
-     button.textContent = "CREANDO PAGO...";
+   if(mpPreferencia.pedidoId === pedidoId && mpPreferencia.promesa){
+     return mpPreferencia.promesa;
    }
 
-   if(status){
-     status.textContent = "Preparando Checkout Pro...";
-     status.style.color = "#8a5a00";
-   }
+   const regreso = window.location.origin + window.location.pathname;
 
-   const response = await fetch(`${MERCADOPAGO_SERVER_URL}/crear-preferencia`,{
-     method:"POST",
-     headers:{"Content-Type":"application/json"},
-     body:JSON.stringify({pedido_id:lastOrderPayload.pedido_id})
-   });
+   const promesa = (async ()=>{
+     const response = await fetch(`${MERCADOPAGO_SERVER_URL}/crear-preferencia`,{
+       method:"POST",
+       headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({
+         pedido_id:pedidoId,
+         // Para que el servidor los use como back_urls (ver nota en el chat).
+         back_urls:{
+           success:`${regreso}?pago=ok&pedido=${encodeURIComponent(pedidoId)}`,
+           failure:`${regreso}?pago=error&pedido=${encodeURIComponent(pedidoId)}`,
+           pending:`${regreso}?pago=pendiente&pedido=${encodeURIComponent(pedidoId)}`
+         }
+       })
+     });
 
-   const result = await response.json().catch(()=>({}));
-   if(!response.ok || !result.ok){
-     throw new Error(result.error || "No se pudo crear el pago.");
-   }
-
-   const checkoutUrl = result.init_point;
-   if(!checkoutUrl) throw new Error("Mercado Pago no devolvió URL de pago.");
-
-   if(status){
-     status.textContent = "Checkout abierto. Esperando confirmación automática...";
-     status.style.color = "#8a5a00";
-   }
-
-   // La pestaña ya existe desde el toque inicial; ahora solo la enviamos a Mercado Pago.
-   try{
-     paymentWindow.location.replace(checkoutUrl);
-   }catch(_){
-     paymentWindow.location.href = checkoutUrl;
-   }
-
-   try{ paymentWindow.focus(); }catch(_){}
-   iniciarMonitoreoPago(lastOrderPayload.pedido_id);
-
- }catch(error){
-   try{
-     if(paymentWindow && !paymentWindow.closed){
-       paymentWindow.document.open();
-       paymentWindow.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Error de pago</title></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;padding:32px;text-align:center"><h2>No se pudo iniciar Mercado Pago</h2><p>Puedes cerrar esta pestaña y volver a intentarlo.</p></body></html>`);
-       paymentWindow.document.close();
+     const result = await response.json().catch(()=>({}));
+     if(!response.ok || !result.ok){
+       throw new Error(result.error || "No se pudo crear el pago.");
      }
-   }catch(_){}
+     if(!result.init_point){
+       throw new Error("Mercado Pago no devolvió URL de pago.");
+     }
+     mpPreferencia.url = result.init_point;
+     return result.init_point;
+   })();
 
-   if(status){
-     status.textContent = `Error al iniciar Mercado Pago: ${error.message}`;
-     status.style.color = "#a81616";
-   }
- }finally{
-   if(button && !button.dataset.pagado){
-     button.disabled = false;
-     button.innerHTML = `<span class="payment-final-button-icon">💳</span><span><small>Continuar al pago seguro</small>PAGAR CON MERCADO PAGO</span><b>›</b>`;
+   mpPreferencia = {pedidoId, url:null, promesa};
+
+   try{
+     return await promesa;
+   }catch(error){
+     // Si falló, permitimos reintentar en el siguiente toque.
+     mpPreferencia = {pedidoId:null, url:null, promesa:null};
+     throw error;
    }
  }
-}
+
+ function prepararPreferenciaMP(){
+   const id = lastOrderPayload?.pedido_id;
+   if(!id || lastOrderPayload?.pago?.metodo === "Efectivo") return;
+   crearPreferenciaMP(id).catch(error=>{
+     console.warn("Preferencia anticipada:", error);
+   });
+ }
+
+ async function openMercadoPago(){
+   const status = document.getElementById("paymentStatus");
+   const button = document.getElementById("mercadoPagoBtn");
+   const pedidoId = lastOrderPayload?.pedido_id;
+   if(!pedidoId) return;
+
+   // Guardamos el pedido para recuperarlo al volver de Mercado Pago.
+   guardarPedidoActivo();
+
+   // Caso normal: la URL ya está lista -> navegamos dentro del mismo toque.
+   if(mpPreferencia.pedidoId === pedidoId && mpPreferencia.url){
+     window.location.href = mpPreferencia.url;
+     return;
+   }
+
+   // Si todavía no está lista, la creamos y luego navegamos en la misma pestaña.
+   try{
+     if(button){
+       button.disabled = true;
+       button.textContent = "PREPARANDO PAGO...";
+     }
+     if(status){
+       status.textContent = "Preparando pago seguro...";
+       status.style.color = "#8a5a00";
+     }
+
+     const url = await crearPreferenciaMP(pedidoId);
+     window.location.href = url;
+
+   }catch(error){
+     if(status){
+       status.textContent = `Error al iniciar Mercado Pago: ${error.message}`;
+       status.style.color = "#a81616";
+     }
+     if(button && !button.dataset.pagado){
+       button.disabled = false;
+       button.innerHTML = `<span class="payment-final-button-icon">💳</span><span><small>Continuar al pago seguro</small>PAGAR CON MERCADO PAGO</span><b>›</b>`;
+     }
+   }
+ }
+
+ // Al volver de Mercado Pago (o recargar) retomamos el pedido pendiente.
+ async function retomarPedidoAlRegresar(){
+   const params = new URLSearchParams(window.location.search);
+   const vieneDePago = params.has("pago") || params.has("collection_status") || params.has("payment_id");
+   window.SUCHI_REGRESO_MP = vieneDePago;
+   const activo = leerPedidoActivo();
+
+   // Solo abrimos automáticamente si el cliente viene regresando de Mercado Pago.
+   // En una recarga normal se muestra la tienda; "Ver pedido" retoma el pedido.
+   if(!vieneDePago || !activo?.payload?.pedido_id) return;
+
+   await recuperarPedidoActivo();
+
+   const pagoParam = params.get("pago") || params.get("collection_status") || params.get("status");
+   const status = document.getElementById("paymentStatus");
+   if(status && status.classList.contains("waiting")){
+     if(pagoParam === "error" || pagoParam === "rejected" || pagoParam === "null"){
+       status.textContent = "El pago no se completó. Puedes intentarlo de nuevo.";
+       status.style.color = "#a81616";
+     }else if(vieneDePago){
+       status.textContent = "Verificando tu pago con Mercado Pago...";
+     }
+   }
+
+   // Limpiamos la URL para que al recargar no se repita el aviso.
+   if(vieneDePago){
+     try{ history.replaceState(null, "", window.location.pathname); }catch(_){}
+   }
+ }
+
+ // iPhone: si el cliente regresa con "Atrás", Safari/Chrome restauran la
+ // página congelada; reanudamos la revisión del pago.
+ window.addEventListener("pageshow", function(e){
+   if(e.persisted && lastOrderPayload?.pedido_id && !document.querySelector(".success.payment-confirmed")){
+     iniciarMonitoreoPago(lastOrderPayload.pedido_id);
+   }
+ });
 
  function iniciarMonitoreoPago(pedidoId){
  if(paymentPollTimer) clearInterval(paymentPollTimer);
@@ -8415,6 +8463,13 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
    console.warn("Ubicación no pudo iniciar:", error);
  }
 
+ // Si el cliente viene de Mercado Pago o tenía un pago pendiente, lo retomamos.
+ try{
+   retomarPedidoAlRegresar();
+ }catch(error){
+   console.warn("No se pudo retomar el pedido:", error);
+ }
+
  // Al volver a abrir o recargar la página mostramos la tienda normal.
  // El carrito ya se recupera desde localStorage mediante loadCart().
  // Si existe un pedido pendiente, se conservará para retomarlo al continuar.
@@ -8427,6 +8482,13 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
 (function(){
   const intro = document.getElementById("suchinaloaIntro");
   if(!intro) return;
+
+  // Si el cliente regresa de Mercado Pago, no mostramos la intro.
+  if(window.SUCHI_REGRESO_MP || /[?&](pago|collection_status|payment_id)=/.test(window.location.search)){
+    intro.remove();
+    document.body.classList.add("sushinaloa-ready");
+    return;
+  }
 
   const slides = Array.from(intro.querySelectorAll(".intro-slide"));
   const bars = Array.from(intro.querySelectorAll(".intro-progress-segment"));
