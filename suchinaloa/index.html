@@ -5758,6 +5758,29 @@ footer{background:#030303!important;color:#8f784d!important}
 .ticket-end{text-align:center!important;font-size:17px!important;font-weight:900!important}
 .ticket-thanks{text-align:center!important;font-size:12px!important;letter-spacing:.6px!important;margin-top:4px!important}
 
+
+/* ===== PROMOS JUEVES / VIERNES ===== */
+.product.is-promo{
+  border:2px solid #f3c66a!important;
+  box-shadow:0 0 0 1px rgba(201,23,23,.6),0 14px 34px rgba(201,23,23,.22)!important;
+}
+.product.is-promo .mock-product-tag{
+  background:linear-gradient(180deg,#d01818,#9e0909)!important;
+  color:#fff7dc!important;
+  border-color:#ef2b2b!important;
+}
+.promo-category{
+  border-color:#f3c66a!important;
+  color:#fff1c4!important;
+}
+.promo-incluye{
+  display:block;
+  margin-top:4px;
+  font-size:11px;
+  line-height:1.3;
+  color:#b3832e;
+  font-weight:700;
+}
 </style>
 
 
@@ -5889,6 +5912,7 @@ footer{background:#030303!important;color:#8f784d!important}
 
  <div class="categories">
  <button class="category active" data-category="Todos" onclick="filterProducts('Todos',this)">Todos</button>
+ <button class="category promo-category hidden" data-category="Promos" onclick="filterProducts('Promos',this)">🎉 Promos</button>
  <button class="category" data-category="Entradas" onclick="filterProducts('Entradas',this)">Entradas</button>
  <button class="category" data-category="Rollos Empanizados" onclick="filterProducts('Rollos Empanizados',this)">Empanizados</button>
  <button class="category" data-category="Rollo Horneado" onclick="filterProducts('Rollo Horneado',this)">Horneado</button>
@@ -6176,7 +6200,10 @@ let ULTIMO_CALCULO_ESPERA = null;
  {id:14,name:"Té de Jazmín · 1 litro",category:"Bebidas",price:40,emoji:"🧋",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín, presentación de 1 litro."},
  {id:17,name:"Té de Jazmín · 500 ml",category:"Bebidas",price:30,emoji:"🧋",photo:"img/te-jazmin-saborate.png",tag:"BEBIDA",desc:"Té de jazmín, presentación de medio litro."},
  {id:15,name:"Extra de Salsa",category:"Extras",price:15,emoji:"🥣",tag:"EXTRA",desc:"Porción extra de salsa para acompañar tu pedido."},
- {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."}
+ {id:16,name:"Extra de Topping",category:"Extras",price:25,emoji:"✨",tag:"EXTRA",desc:"Porción extra de topping para complementar tu rollo."},
+ // PROMOS · solo jueves (4) y viernes (5), hora de Irapuato.
+ {id:101,name:"Promo 1 · Mar y Tierra",category:"Promos",price:215,emoji:"🎉",photo:"img/imagen-05.jpg",tag:"PROMO JUE · VIE",promo:true,dias:[4,5],incluye:["2 Rollos Mar y Tierra","1 Té de Jazmín · 1 litro"],desc:"2 rollos Mar y Tierra + 1 litro de té de jazmín. Solo jueves y viernes."},
+ {id:102,name:"Promo 2 · Chiles + Gohan",category:"Promos",price:250,emoji:"🎉",photo:"img/imagen-04.jpg",tag:"PROMO JUE · VIE",promo:true,dias:[4,5],incluye:["1 Orden Chiles Güeros Rellenos","1 Arroz Frito Gohan","1 Té de Jazmín · 1 litro"],desc:"1 orden de chiles güeros rellenos + 1 arroz frito gohan + 1 litro de té de jazmín. Solo jueves y viernes."}
  ];
 
  let cart = JSON.parse(localStorage.getItem("suchinaloaCart") || "[]");
@@ -6272,10 +6299,50 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
  let featuredCategory = "Todos";
 
+ // ===== PROMOS POR DÍA =====
+ // Día de la semana en hora de México (0=domingo ... 4=jueves, 5=viernes).
+ function diaSemanaMX(){
+   try{
+     const d = new Intl.DateTimeFormat("en-US",{timeZone:"America/Mexico_City",weekday:"short"}).format(new Date());
+     return {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[d];
+   }catch(_){
+     return new Date().getDay();
+   }
+ }
+ function productoDisponibleHoy(p){
+   if(!p) return false;
+   if(!p.promo) return true;
+   return (p.dias || []).includes(diaSemanaMX());
+ }
+ function hayPromosHoy(){
+   return products.some(p => p.promo && productoDisponibleHoy(p));
+ }
+ // Quita del carrito promos guardadas de otro día.
+ function limpiarPromosVencidas(){
+   const antes = cart.length;
+   cart = cart.filter(item => productoDisponibleHoy(products.find(x => x.id === item.id)));
+   if(cart.length !== antes){
+     try{ localStorage.setItem("suchinaloaCart", JSON.stringify(cart)); }catch(_){}
+     return true;
+   }
+   return false;
+ }
+ function actualizarBotonPromos(){
+   const btn = document.querySelector('.category[data-category="Promos"]');
+   if(btn) btn.classList.toggle("hidden", !hayPromosHoy());
+ }
+ function incluyePromoHTML(p){
+   if(!p?.promo || !p.incluye?.length) return "";
+   return `<small class="promo-incluye">Incluye: ${p.incluye.join(" + ")}</small>`;
+ }
+
  function getFeaturedList(){
-   return featuredCategory === "Todos"
-     ? products
-     : products.filter(p => p.category === featuredCategory);
+   const visibles = products.filter(productoDisponibleHoy);
+   if(featuredCategory === "Todos"){
+     // Promos primero.
+     return [...visibles.filter(p=>p.promo), ...visibles.filter(p=>!p.promo)];
+   }
+   return visibles.filter(p => p.category === featuredCategory);
  }
 
  function renderProducts(category="Todos"){
@@ -6297,7 +6364,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    // Todos los productos quedan visibles y acomodados.
    // Ya no hay páginas, flechas, temporizador ni cambio automático.
    container.innerHTML = list.map(p=>`
-     <article class="product mock-product-card">
+     <article class="product mock-product-card ${p.promo ? "is-promo" : ""}">
        <div class="mock-product-photo ${p.photo ? "" : "is-empty"}">
          ${p.photo
            ? `<img src="${p.photo}" alt="${p.name}" loading="lazy" decoding="async">`
@@ -6341,6 +6408,11 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    alert("Los pedidos están cerrados por hoy. Mañana volvemos a recibir pedidos.");
    return;
  }
+ const prod = products.find(x=>x.id===id);
+ if(!productoDisponibleHoy(prod)){
+   alert("Esta promoción solo está disponible jueves y viernes.");
+   return;
+ }
  const found = cart.find(i=>i.id===id);
  if(found) found.qty++;
  else cart.push({id,qty:1});
@@ -6368,7 +6440,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
  function getTotals(){
  const subtotal = cart.reduce((sum,item)=>{
  const p=products.find(x=>x.id===item.id);
- return sum+(p.price*item.qty);
+ return sum+(p ? p.price*item.qty : 0);
  },0);
 
  // La entrega se calcula con Google Routes cuando conocemos el destino.
@@ -6425,8 +6497,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
          <div class="cart-item">
            <div class="cart-item-top">
              <div>
-               <strong>${p.name}</strong>
+               <strong>${p.promo ? "🎉 " : ""}${p.name}</strong>
                <small>${money(p.price)} c/u</small>
+               ${incluyePromoHTML(p)}
              </div>
              <strong>${money(p.price*item.qty)}</strong>
            </div>
@@ -6484,8 +6557,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
          return `
            <div class="cart-review-item">
              <div class="cart-review-item-info">
-               <strong>${p.name}</strong>
+               <strong>${p.promo ? "🎉 " : ""}${p.name}</strong>
                <small>${money(p.price)} c/u</small>
+               ${incluyePromoHTML(p)}
              </div>
 
              <div class="cart-review-item-total">${money(p.price*item.qty)}</div>
@@ -6691,6 +6765,18 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    const p=products.find(x=>x.id===item.id);
    const precioUnitario=Number(p?.price || 0);
    const importe=precioUnitario * Number(item.qty || 0);
+   if(p?.promo){
+     return `
+   <div class="ticket-item" style="border:2px solid #000;padding:5px 6px;margin:10px 0;box-sizing:border-box">
+     <div style="background:#000;color:#fff;text-align:center;font-weight:900;font-size:13px;letter-spacing:1px;padding:2px 0;margin-bottom:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact">*** PROMO JUEVES / VIERNES ***</div>
+     <div class="ticket-item-name">${item.qty} x ${p.name.toUpperCase()}</div>
+     ${(p.incluye||[]).map(x=>`<div style="font-size:14px;font-weight:700;line-height:1.25;padding-left:6px">&gt; ${item.qty > 1 ? item.qty + " x (" + x + ")" : x}</div>`).join("")}
+     <div class="ticket-item-money">
+       <span>${money(precioUnitario)} c/u</span>
+       <b>${money(importe)}</b>
+     </div>
+   </div>`;
+   }
    return `
    <div class="ticket-item">
      <div class="ticket-item-name">${item.qty} x ${p?.name || "Producto"}</div>
@@ -7596,7 +7682,11 @@ ${document.getElementById("kitchenTicket").innerHTML}
  function buildDeliveryMessage(order, data, orderItems, totals){
  const productsText = orderItems.map(item => {
  const p = products.find(x => x.id === item.id);
- return `• ${item.qty} x ${p.name}`;
+ if(p?.promo){
+   return `🎉 *PROMO JUE/VIE* — ${item.qty} x ${p.name} (${money(p.price)})\n` +
+     (p.incluye||[]).map(x => `   ↳ ${x}`).join("\n");
+ }
+ return `• ${item.qty} x ${p?.name || "Producto"}`;
  }).join("\n");
 
  const payment = data.payment || "No especificado";
@@ -8337,6 +8427,17 @@ ${document.getElementById("kitchenTicket").innerHTML}
    return;
  }
 
+ if(limpiarPromosVencidas()){
+   renderCart();
+   if(typeof renderCartReview === "function") renderCartReview();
+   alert("Quitamos de tu carrito una promoción que solo aplica jueves y viernes. Revisa tu pedido.");
+   return;
+ }
+ if(!cart.length){
+   alert("Tu carrito está vacío.");
+   return;
+ }
+
  await calcularTiempoEsperaActual();
 
  const formData=new FormData(event.target);
@@ -8444,6 +8545,13 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
  if(checkoutNode) checkoutFormOriginal = checkoutNode.innerHTML;
 
  // PRIORIDAD: el menú debe aparecer aunque falle cualquier servicio externo.
+ try{
+   limpiarPromosVencidas();
+   actualizarBotonPromos();
+ }catch(error){
+   console.warn("Promos:", error);
+ }
+
  try{
    renderProducts("Todos");
  }catch(error){
