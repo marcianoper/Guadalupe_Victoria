@@ -6284,7 +6284,8 @@ let ULTIMO_CALCULO_ESPERA = null;
  // Si la página se abre en otro dispositivo, cambia 127.0.0.1 por la IP
  // local de la computadora de cocina, por ejemplo: 192.168.1.50
  const MERCADOPAGO_LINK = "http://link.mercadopago.com.mx/suchinaloa";
-const MERCADOPAGO_SERVER_URL = "https://variable-seldom-prevail.ngrok-free.dev";
+// Servidor de pagos en Supabase (siempre en línea, ya no depende de ngrok).
+const MERCADOPAGO_SERVER_URL = "https://rcegikeiaxptolrduguc.supabase.co/functions/v1/suchinaloa-mp";
 
 const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
@@ -8378,8 +8379,16 @@ ${document.getElementById("kitchenTicket").innerHTML}
  function iniciarMonitoreoPago(pedidoId){
  if(paymentPollTimer) clearInterval(paymentPollTimer);
 
+ let ticks = 0;
+ const inicioMonitoreo = Date.now();
  const revisar = async ()=>{
  try{
+ // Cada ~10 s le pedimos al servidor que consulte a Mercado Pago directamente,
+ // por si el aviso automático (webhook) se retrasa. Máximo 20 minutos.
+ ticks++;
+ if(ticks % 4 === 0 && Date.now() - inicioMonitoreo < 20*60*1000){
+   fetch(`${MERCADOPAGO_SERVER_URL}/verificar-pago/${encodeURIComponent(pedidoId)}`).catch(()=>{});
+ }
  const {data,error} = await supabaseClient
  .from("comandas_sushi")
  .select("pedido_id,estado_pago,mercado_pago_status,mercado_pago_payment_id,pagado_at")
