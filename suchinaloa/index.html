@@ -6059,15 +6059,15 @@ footer{background:#030303!important;color:#8f784d!important}
 
   <div class="payment-main-choice">
     <label id="cashPaymentChoice" class="payment-main-option">
-      <input type="radio" name="payment" value="Efectivo" onchange="actualizarPagoCheckout()" />
+      <input type="radio" name="payment" value="Efectivo" checked onchange="actualizarPagoCheckout()" />
       <span>
         <strong>💵 Efectivo</strong>
         <small>Pagas todo al recibir.</small>
       </span>
     </label>
 
-    <label class="payment-main-option">
-      <input type="radio" name="payment" value="Mercado Pago" checked onchange="actualizarPagoCheckout()" />
+    <label id="cardPaymentChoice" class="payment-main-option" style="display:none">
+      <input type="radio" name="payment" value="Mercado Pago" onchange="actualizarPagoCheckout()" />
       <span>
         <strong>💳 Tarjeta</strong>
         <small>Paga con Mercado Pago.</small>
@@ -6218,6 +6218,10 @@ let ULTIMO_CALCULO_ESPERA = null;
  // Configuración local del equipo/negocio.
  // El botón del formulario guarda esta preferencia en localStorage.
  let EFECTIVO_HABILITADO = localStorage.getItem("suchinaloaCashEnabled") !== "false";
+
+ // PAGO CON TARJETA: lo enciende/apaga el servidor (secreto TARJETA_ACTIVA en Supabase).
+ // Empieza apagado y solo se muestra si el servidor confirma que está activo.
+ let TARJETA_HABILITADA = false;
 
  // ADMINISTRACIÓN LOCAL
  // Para entrar: abre la página agregando ?admin=1 al final de la URL.
@@ -7077,6 +7081,15 @@ ${document.getElementById("kitchenTicket").innerHTML}
  }
 
  function actualizarPagoCheckout(){
+ // Tarjeta apagada: ocultamos la opción y forzamos efectivo.
+ const cardChoice = document.getElementById("cardPaymentChoice");
+ const cashChoiceEl = document.getElementById("cashPaymentChoice");
+ if(cardChoice) cardChoice.style.display = TARJETA_HABILITADA ? "flex" : "none";
+ if(!TARJETA_HABILITADA){
+   if(cashChoiceEl) cashChoiceEl.style.display = "flex";
+   const cashR = document.querySelector('input[name="payment"][value="Efectivo"]');
+   if(cashR && !cashR.checked) cashR.checked = true;
+ }
  const payment = document.querySelector('input[name="payment"]:checked')?.value || "Mercado Pago";
  const scope = document.querySelector('input[name="payment_scope"]:checked')?.value || "todo";
  const cardScope = document.getElementById("cardPaymentScope");
@@ -7107,7 +7120,9 @@ ${document.getElementById("kitchenTicket").innerHTML}
 
  if(note){
    if(isCash){
-     note.textContent = "Alimentos y envío se pagan en efectivo al recibir.";
+     note.textContent = TARJETA_HABILITADA
+       ? "Alimentos y envío se pagan en efectivo al recibir."
+       : "Por el momento solo aceptamos efectivo. Alimentos y envío se pagan al recibir.";
    }else if(scope === "todo"){
      note.textContent = "La tarjeta cobrará alimentos + envío.";
    }else{
@@ -8452,6 +8467,12 @@ ${document.getElementById("kitchenTicket").innerHTML}
  const formData=new FormData(event.target);
  const data=Object.fromEntries(formData.entries());
 
+ if(data.payment === "Mercado Pago" && !TARJETA_HABILITADA){
+   alert("El pago con tarjeta no está disponible por el momento. Elige efectivo.");
+   actualizarPagoCheckout();
+   return;
+ }
+
  const submitButton = event.target.querySelector('button[type="submit"]');
  const originalSubmitText = submitButton?.textContent || "Confirmar pedido";
 
@@ -8552,6 +8573,18 @@ document.getElementById("checkoutOverlay").addEventListener("click",e=>{
 
  const checkoutNode = document.getElementById("checkoutContent");
  if(checkoutNode) checkoutFormOriginal = checkoutNode.innerHTML;
+
+ // ¿Está activo el pago con tarjeta? Lo decide el servidor.
+ (async ()=>{
+   try{
+     const r = await fetch(`${MERCADOPAGO_SERVER_URL}/estado`, {cache:"no-store"});
+     const j = await r.json();
+     TARJETA_HABILITADA = j?.tarjeta_activa === true;
+   }catch(error){
+     TARJETA_HABILITADA = false;
+   }
+   try{ actualizarPagoCheckout(); }catch(_){}
+ })();
 
  // PRIORIDAD: el menú debe aparecer aunque falle cualquier servicio externo.
  try{
