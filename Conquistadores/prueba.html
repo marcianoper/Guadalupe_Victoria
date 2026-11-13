@@ -2429,6 +2429,26 @@ const catalogo = [
   }
 ];
 
+/* ==== Precios editables desde precios.html (Supabase: conquistadores_precios) ==== */
+(function cargarPreciosEditables(){
+  try{
+    fetch(SUPABASE_URL + "/rest/v1/conquistadores_precios?select=id,price", {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+    })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      if(!Array.isArray(rows) || !rows.length) return;
+      var mapa = {};
+      rows.forEach(function(r){ var p = Number(r && r.price); if(r && r.id && isFinite(p) && p >= 0) mapa[r.id] = p; });
+      var cambio = false;
+      catalogo.forEach(function(it){ if(it && mapa.hasOwnProperty(it.id) && Number(it.price) !== mapa[it.id]){ it.price = mapa[it.id]; cambio = true; } });
+      if(cambio && typeof renderItems === "function"){ try{ renderItems(); }catch(e){ console.warn(e); } }
+    })
+    .catch(function(e){ console.warn("Precios editables no disponibles", e); });
+  }catch(e){ console.warn(e); }
+})();
+
+
 const CATS = ["TACOS", "QUESADILLAS", "BARBACOA", "VOLCANES", "TORTAS", "BURRITOS", "ALAMBRES", "CARNE POR KILO", "COMPLEMENTOS", "BEBIDAS", "AGUAS FRESCAS"];
 const PLATOS = ["Plato 1","Plato 2","Plato 3","Plato 4","Plato 5","General"];
 const MESAS = Array.from({length:15}, (_,i)=>`Mesa ${i+1}`);

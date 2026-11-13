@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Precios — Tacos Los Conquistadores</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --bg:#1a0f0c; --bg2:#24130f;
+    --card:#fff6ec; --card2:#fff1e2;
+    --ink:#2b1a14; --muted:#6a4a3c; --line:rgba(0,0,0,.10);
+    --accent:#d9480f; --accent2:#b83d0c;
+    --ok:#2f7d32; --bad:#c62828; --chg:#fff0b3;
+    --r:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+  .wrap{max-width:760px;margin:0 auto;padding:16px 16px 120px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff;margin:4px 0 14px}
+  header h1{font-size:20px;margin:0;line-height:1.2}
+  header small{display:block;color:#e9c9b6;font-weight:500;font-size:13px}
+  .card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:0 12px 36px rgba(0,0,0,.25)}
+  label{font-weight:700;font-size:14px;display:block;margin:0 0 6px}
+  input{font:inherit}
+  .in{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:17px}
+  .in:focus{outline:none;border-color:var(--accent)}
+  .btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btnMain{background:var(--accent);color:#fff}
+  .btnMain:not(:disabled):active{background:var(--accent2)}
+  .btnLight{background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}
+  .btnGhost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);padding:8px 12px;font-size:13px}
+  .msg{margin-top:10px;font-size:14px;min-height:1.2em}
+  .msg.bad{color:var(--bad)} .msg.ok{color:var(--ok)}
+  .hidden{display:none!important}
+
+  .tools{display:flex;gap:8px;margin-bottom:12px}
+  .tools .in{font-size:16px;padding:10px 12px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;background:var(--bg2);color:#f3dccd;cursor:pointer;white-space:nowrap}
+  .chip.on{background:var(--card);color:var(--ink)}
+
+  .cat{margin:0 0 14px}
+  .catHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .catHead h2{font-size:16px;margin:0;letter-spacing:.3px}
+  .bulk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+  .bulk input{width:64px;padding:7px 8px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;text-align:center}
+  .bulk .btn{padding:7px 10px;font-size:13px}
+  .card.list{padding:0;overflow:hidden}
+  .row{display:grid;grid-template-columns:1fr 116px;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .row.chg{background:var(--chg)}
+  .name{font-weight:650;font-size:15px;line-height:1.25}
+  .name .was{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px}
+  .price{position:relative}
+  .price span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700}
+  .price input{width:100%;padding:10px 10px 10px 24px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-size:17px;font-weight:700;text-align:right}
+  .price input:focus{outline:none;border-color:var(--accent)}
+  .price input.err{border-color:var(--bad)}
+  .unit{grid-column:1/-1;margin-top:-6px;font-size:12px;color:var(--muted)}
+  .empty{color:#e9c9b6;text-align:center;padding:30px 0}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);box-shadow:0 -10px 30px rgba(0,0,0,.3);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .barIn{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px}
+  .barIn .count{flex:1;font-weight:700;font-size:14px}
+  .barIn .count small{display:block;font-weight:500;color:var(--muted)}
+
+  dialog{border:0;border-radius:var(--r);padding:18px;max-width:360px;width:calc(100% - 32px);background:var(--card)}
+  dialog::backdrop{background:rgba(0,0,0,.55)}
+  dialog h3{margin:0 0 12px}
+  dialog .in{margin-bottom:10px}
+  .btnRow{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Precios del menú<small>Tacos Los Conquistadores</small></h1>
+    <button class="btn btnGhost hidden" id="btnPin" type="button">Cambiar clave</button>
+  </header>
+
+  <!-- Entrada con clave -->
+  <section id="login" class="card">
+    <label for="pinIn">Clave de encargado</label>
+    <input id="pinIn" class="in" type="password" inputmode="numeric" autocomplete="off" placeholder="Clave">
+    <div style="margin-top:12px"><button class="btn btnMain" id="btnEntrar" type="button" style="width:100%">Entrar</button></div>
+    <div class="msg" id="loginMsg"></div>
+  </section>
+
+  <!-- Editor -->
+  <section id="editor" class="hidden">
+    <div class="tools"><input id="buscar" class="in" type="search" placeholder="Buscar producto…" autocomplete="off"></div>
+    <div class="chips" id="chips"></div>
+    <div id="lista"></div>
+  </section>
+</div>
+
+<div class="bar hidden" id="bar">
+  <div class="barIn">
+    <div class="count" id="barCount">Sin cambios<small>Los cambios se ven en todas las páginas al recargarlas.</small></div>
+    <button class="btn btnLight" id="btnDescartar" type="button" disabled>Deshacer</button>
+    <button class="btn btnMain" id="btnGuardar" type="button" disabled>Guardar</button>
+  </div>
+</div>
+
+<dialog id="dlgPin">
+  <h3>Cambiar clave</h3>
+  <input id="pinNuevo" class="in" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Clave nueva (4 a 10 números)">
+  <input id="pinNuevo2" class="in" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Repite la clave nueva">
+  <div class="msg" id="pinMsg"></div>
+  <div class="btnRow">
+    <button class="btn btnLight" id="pinCancelar" type="button">Cancelar</button>
+    <button class="btn btnMain" id="pinGuardar" type="button">Guardar</button>
+  </div>
+</dialog>
+
+<script>
+const SUPABASE_URL = "https://rcegikeiaxptolrduguc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8";
+
+/* Productos de las páginas de Conquistadores: [id, categoría, nombre, precio base].
+   Si agregas un producto nuevo a las páginas, agrégalo también aquí con el mismo id. */
+const PRODUCTOS = [["taco_pastor","TACOS","Taco de Pastor",19],["taco_cabeza","TACOS","Taco de Cabeza",19],["taco_chorizo","TACOS","Taco de Chorizo",19],["taco_cachete","TACOS","Taco de Cachete",19],["taco_ojo","TACOS","Taco de Ojo",19],["taco_maciza","TACOS","Taco de Maciza",20],["taco_bistec","TACOS","Taco de Bistec",20],["taco_campechano","TACOS","Taco Campechano (bistec y chorizo)",20],["taco_lengua","TACOS","Taco de Lengua",26],["taco_sesos","TACOS","Taco de Sesos",26],["quesa_sencilla","QUESADILLAS","Quesadilla sencilla",27],["quesa_pastor","QUESADILLAS","Quesadilla de Pastor",38],["quesa_chorizo","QUESADILLAS","Quesadilla de Chorizo",38],["quesa_cabeza","QUESADILLAS","Quesadilla de Cabeza",38],["quesa_cachete","QUESADILLAS","Quesadilla de Cachete",38],["quesa_ojo","QUESADILLAS","Quesadilla de Ojo",38],["quesa_bistec","QUESADILLAS","Quesadilla de Bistec",40],["quesa_campechana","QUESADILLAS","Quesadilla Campechana (bistec y chorizo)",40],["quesa_maciza","QUESADILLAS","Quesadilla de Maciza",40],["quesa_lengua","QUESADILLAS","Quesadilla de Lengua",50],["quesa_sesos","QUESADILLAS","Quesadilla de Sesos",50],["burrito_pastor","BURRITOS","Burrito de Pastor",77],["burrito_cabeza","BURRITOS","Burrito de Cabeza",77],["burrito_chorizo","BURRITOS","Burrito de Chorizo",77],["burrito_cachete","BURRITOS","Burrito de Cachete",77],["burrito_ojo","BURRITOS","Burrito de Ojo",77],["burrito_bistec","BURRITOS","Burrito de Bistec",77],["burrito_maciza","BURRITOS","Burrito de Maciza",77],["burrito_barbacoa","BURRITOS","Burrito de Barbacoa",77],["volcan_pastor","VOLCANES","Volcán de Pastor",32],["volcan_cabeza","VOLCANES","Volcán de Cabeza",32],["volcan_chorizo","VOLCANES","Volcán de Chorizo",32],["volcan_cachete","VOLCANES","Volcán de Cachete",32],["volcan_ojo","VOLCANES","Volcán de Ojo",32],["volcan_bistec","VOLCANES","Volcán de Bistec",33],["volcan_campechano","VOLCANES","Volcán Campechano (bistec y chorizo)",33],["volcan_maciza","VOLCANES","Volcán de Maciza",33],["volcan_lengua","VOLCANES","Volcán de Lengua",36],["volcan_sesos","VOLCANES","Volcán de Sesos",36],["volcan_barbacoa","VOLCANES","Volcán de Barbacoa",36],["torta_pastor","TORTAS","Torta de Pastor",59],["torta_cabeza","TORTAS","Torta de Cabeza",59],["torta_cachete","TORTAS","Torta de Cachete",59],["torta_chorizo","TORTAS","Torta de Chorizo",59],["torta_bistec","TORTAS","Torta de Bistec",59],["torta_pastor_con_queso","TORTAS","Torta de Pastor con queso",69],["torta_cabeza_con_queso","TORTAS","Torta de Cabeza con queso",69],["torta_cachete_con_queso","TORTAS","Torta de Cachete con queso",69],["torta_chorizo_con_queso","TORTAS","Torta de Chorizo con queso",69],["torta_bistec_con_queso","TORTAS","Torta de Bistec con queso",69],["torta_maciza","TORTAS","Torta de Maciza",79],["torta_lengua","TORTAS","Torta de Lengua",79],["torta_maciza_con_queso","TORTAS","Torta de Maciza con queso",89],["torta_lengua_con_queso","TORTAS","Torta de Lengua con queso",89],["barb_taco","BARBACOA","Taco de Barbacoa",20],["barb_quesadilla","BARBACOA","Quesadilla de Barbacoa",40],["barb_torta","BARBACOA","Torta de Barbacoa",79],["barb_torta_con_queso","BARBACOA","Torta de Barbacoa con queso",89],["volcan_planchadito_barbacoa","BARBACOA","Planchadito de Barbacoa",36],["barb_medio_kilo","BARBACOA","Medio kilo de Barbacoa",255],["barb_kilo","BARBACOA","Kilo de Barbacoa",510],["alambre_especial_conquistadores","ALAMBRES","Alambre Especial Conquistadores",240],["alambre_porky","ALAMBRES","Alambre Porky",240],["alambre_no_falla","ALAMBRES","Alambre No falla",240],["alambre_torito","ALAMBRES","Alambre Torito",240],["alambre_taconazo","ALAMBRES","Alambre Taconazo",240],["alambre_hawaiano","ALAMBRES","Alambre Hawaiano",240],["carne_pastor","CARNE POR KILO","Pastor",490],["carne_bistec","CARNE POR KILO","Bistec",490],["carne_cabeza","CARNE POR KILO","Cabeza",490],["carne_chorizo","CARNE POR KILO","Chorizo",490],["carne_barbacoa","CARNE POR KILO","Barbacoa",490],["agua_medio_limón_con_chía","AGUAS FRESCAS","Vaso 1/2 litro — Limón con chía",36],["agua_litro_limón_con_chía","AGUAS FRESCAS","Litro — Limón con chía",52],["agua_medio_piña-hierbabuena","AGUAS FRESCAS","Vaso 1/2 litro — Piña-Hierbabuena",36],["agua_litro_piña-hierbabuena","AGUAS FRESCAS","Litro — Piña-Hierbabuena",52],["agua_medio_horchata","AGUAS FRESCAS","Vaso 1/2 litro — Horchata",36],["agua_litro_horchata","AGUAS FRESCAS","Litro — Horchata",52],["agua_medio_pepino_con_limón","AGUAS FRESCAS","Vaso 1/2 litro — Pepino con limón",36],["agua_litro_pepino_con_limón","AGUAS FRESCAS","Litro — Pepino con limón",52],["agua_medio_jamaica","AGUAS FRESCAS","Vaso 1/2 litro — Jamaica",36],["agua_litro_jamaica","AGUAS FRESCAS","Litro — Jamaica",52],["ref_coca_cola","BEBIDAS","Coca-Cola",36],["ref_sprite","BEBIDAS","Sprite",36],["ref_fresca","BEBIDAS","Fresca",36],["ref_manzana","BEBIDAS","Manzana",36],["ref_fanta","BEBIDAS","Fanta",36],["agua_mineral","BEBIDAS","Agua Mineral",34],["extra_chimichurri","COMPLEMENTOS","Chimichurri extra",15],["extra_tortillas","COMPLEMENTOS","Tortillas extras",15]];
+
+const $ = id => document.getElementById(id);
+const HDR = { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+const money = n => "$" + Number(n).toLocaleString("es-MX", { minimumFractionDigits: Number(n) % 1 ? 2 : 0, maximumFractionDigits: 2 });
+
+let pin = "";
+let guardado = {};   // precio vigente por id
+let editado = {};    // precio escrito en pantalla por id
+let catActiva = "TODAS";
+
+async function rpc(fn, body){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, { method: "POST", headers: HDR, body: JSON.stringify(body) });
+  const txt = await r.text();
+  let data = null; try{ data = txt ? JSON.parse(txt) : null; }catch(_){}
+  if(!r.ok){
+    const m = (data && (data.message || data.hint)) || "No se pudo conectar con el servidor.";
+    if(/function .* does not exist|Could not find the function/i.test(m)) throw new Error("La página de precios todavía no está activada en el servidor.");
+    throw new Error(m);
+  }
+  return data;
+}
+
+async function cargarPrecios(){
+  guardado = {};
+  PRODUCTOS.forEach(([id,, , p]) => guardado[id] = p);
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/conquistadores_precios?select=id,price`, { headers: HDR });
+  if(!r.ok) throw new Error("No se pudieron leer los precios guardados.");
+  (await r.json()).forEach(x => { if(x && x.id in guardado) guardado[x.id] = Number(x.price); });
+  editado = { ...guardado };
+}
+
+/* ---------- Entrada ---------- */
+async function entrar(){
+  const v = $("pinIn").value.trim();
+  const msg = $("loginMsg");
+  if(!v){ msg.className = "msg bad"; msg.textContent = "Escribe la clave."; return; }
+  $("btnEntrar").disabled = true; msg.className = "msg"; msg.textContent = "Revisando…";
+  try{
+    await rpc("conquistadores_entrar", { p_pin: v });
+    pin = v;
+    await cargarPrecios();
+    $("login").classList.add("hidden");
+    $("editor").classList.remove("hidden");
+    $("bar").classList.remove("hidden");
+    $("btnPin").classList.remove("hidden");
+    renderChips(); render();
+  }catch(e){
+    msg.className = "msg bad"; msg.textContent = e.message;
+  }finally{ $("btnEntrar").disabled = false; }
+}
+$("btnEntrar").onclick = entrar;
+$("pinIn").addEventListener("keydown", e => { if(e.key === "Enter") entrar(); });
+
+/* ---------- Editor ---------- */
+function categorias(){ return [...new Set(PRODUCTOS.map(p => p[1]))]; }
+
+function renderChips(){
+  const box = $("chips"); box.innerHTML = "";
+  ["TODAS", ...categorias()].forEach(c => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip" + (c === catActiva ? " on" : "");
+    b.textContent = c === "TODAS" ? "Todas" : c.charAt(0) + c.slice(1).toLowerCase();
+    b.onclick = () => { catActiva = c; renderChips(); render(); };
+    box.appendChild(b);
+  });
+}
+
+function cambios(){
+  return PRODUCTOS.filter(([id]) => editado[id] !== guardado[id]).map(([id]) => ({ id, price: editado[id] }));
+}
+
+function actualizarBarra(){
+  const n = cambios().length;
+  const hayError = document.querySelector(".price input.err");
+  $("barCount").innerHTML = n
+    ? `${n} ${n === 1 ? "precio cambiado" : "precios cambiados"}<small>Toca Guardar para aplicarlos.</small>`
+    : `Sin cambios<small>Los cambios se ven en todas las páginas al recargarlas.</small>`;
+  $("btnGuardar").disabled = !n || !!hayError;
+  $("btnDescartar").disabled = !n;
+}
+
+function render(){
+  const q = $("buscar").value.trim().toLowerCase();
+  const lista = $("lista"); lista.innerHTML = "";
+  const cats = catActiva === "TODAS" ? categorias() : [catActiva];
+  let total = 0;
+  cats.forEach(cat => {
+    const items = PRODUCTOS.filter(p => p[1] === cat && (!q || p[2].toLowerCase().includes(q)));
+    if(!items.length) return;
+    total += items.length;
+    const sec = document.createElement("div"); sec.className = "card list cat";
+    sec.innerHTML = `<div class="catHead"><h2>${cat}</h2>
+      <div class="bulk">Subir todos $<input type="number" inputmode="numeric" step="1" placeholder="0" aria-label="Cantidad a subir en ${cat}">
+      <button class="btn btnLight" type="button">Aplicar</button></div></div>`;
+    const bulkIn = sec.querySelector(".bulk input");
+    sec.querySelector(".bulk .btn").onclick = () => {
+      const d = Number(bulkIn.value);
+      if(!d) return;
+      items.forEach(([id]) => { editado[id] = Math.max(0, Math.round((editado[id] + d) * 100) / 100); });
+      render();
+    };
+    items.forEach(([id, , name]) => {
+      const row = document.createElement("div");
+      const chg = editado[id] !== guardado[id];
+      row.className = "row" + (chg ? " chg" : "");
+      row.innerHTML = `<div class="name"></div>
+        <div class="price"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.5" aria-label="Precio"></div>
+        ${cat === "CARNE POR KILO" ? '<div class="unit">Precio por kilo</div>' : ""}`;
+      const nm = row.querySelector(".name");
+      nm.textContent = name;
+      if(chg){ const w = document.createElement("span"); w.className = "was"; w.textContent = "Antes " + money(guardado[id]); nm.appendChild(w); }
+      const inp = row.querySelector("input");
+      inp.value = editado[id];
+      inp.addEventListener("input", () => {
+        const v = inp.value === "" ? NaN : Number(inp.value);
+        const ok = Number.isFinite(v) && v >= 0 && v < 100000;
+        inp.classList.toggle("err", !ok);
+        if(ok) editado[id] = Math.round(v * 100) / 100;
+        const c = ok && editado[id] !== guardado[id];
+        row.classList.toggle("chg", c);
+        let w = nm.querySelector(".was");
+        if(c && !w){ w = document.createElement("span"); w.className = "was"; nm.appendChild(w); }
+        if(w){ if(c) w.textContent = "Antes " + money(guardado[id]); else w.remove(); }
+        actualizarBarra();
+      });
+      inp.addEventListener("focus", () => inp.select());
+      sec.appendChild(row);
+    });
+    lista.appendChild(sec);
+  });
+  if(!total) lista.innerHTML = '<div class="empty">No hay productos con ese nombre.</div>';
+  actualizarBarra();
+}
+$("buscar").addEventListener("input", render);
+
+$("btnDescartar").onclick = () => { editado = { ...guardado }; render(); };
+
+$("btnGuardar").onclick = async () => {
+  const lista = cambios();
+  if(!lista.length) return;
+  const resumen = lista.slice(0, 8).map(c => {
+    const p = PRODUCTOS.find(x => x[0] === c.id);
+    return `• ${p[2]}: ${money(guardado[c.id])} → ${money(c.price)}`;
+  }).join("\n") + (lista.length > 8 ? `\n…y ${lista.length - 8} más` : "");
+  if(!confirm(`¿Guardar ${lista.length} ${lista.length === 1 ? "cambio" : "cambios"}?\n\n${resumen}`)) return;
+  const btn = $("btnGuardar"); btn.disabled = true; btn.textContent = "Guardando…";
+  try{
+    await rpc("conquistadores_guardar_precios", { p_pin: pin, p_precios: lista });
+    lista.forEach(c => guardado[c.id] = c.price);
+    btn.textContent = "Guardar";
+    render();
+    $("barCount").innerHTML = `<span style="color:var(--ok)">✓ Precios guardados</span><small>Recarga las páginas de caja y menú para verlos.</small>`;
+  }catch(e){
+    btn.textContent = "Guardar"; actualizarBarra();
+    alert("No se guardó: " + e.message);
+  }
+};
+
+window.addEventListener("beforeunload", e => { if(cambios().length){ e.preventDefault(); e.returnValue = ""; } });
+
+/* ---------- Cambiar clave ---------- */
+$("btnPin").onclick = () => { $("pinNuevo").value = ""; $("pinNuevo2").value = ""; $("pinMsg").textContent = ""; $("dlgPin").showModal(); };
+$("pinCancelar").onclick = () => $("dlgPin").close();
+$("pinGuardar").onclick = async () => {
+  const a = $("pinNuevo").value.trim(), b = $("pinNuevo2").value.trim(), m = $("pinMsg");
+  m.className = "msg bad";
+  if(!/^\d{4,10}$/.test(a)){ m.textContent = "Usa de 4 a 10 números."; return; }
+  if(a !== b){ m.textContent = "Las claves no coinciden."; return; }
+  try{
+    await rpc("conquistadores_cambiar_pin", { p_pin: pin, p_nuevo: a });
+    pin = a; m.className = "msg ok"; m.textContent = "Clave cambiada.";
+    setTimeout(() => $("dlgPin").close(), 900);
+  }catch(e){ m.textContent = e.message; }
+};
+</script>
+</body>
+</html>
